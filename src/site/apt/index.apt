@@ -1,0 +1,46 @@
+            ------
+            Pivot4J JSF Sample Application
+            ------
+            Xavier Cho
+            ------
+             2012-10-7
+
+About
+
+	This project contains a sample application demonstrating basic API usage of <<Pivot4J>> library. 
+	It is built with {{{http://http://www.primefaces.org/}PrimeFaces}} and can be deployed on Servlet 2.5 
+	compatible containers.
+
+Motivation
+
+	The most important aim of the project is to provide Pivot4J users a working example to help them 
+	understand the API and use it to build their own pivot application. In that regards, this project
+	would eventually become something like the JPivot web application which is bundled with their distribution.
+	
+	On the other hand, it was also intended to help the developers of the project themselves as to examine the 
+	common use cases from end user's standpoint and to find out potential problems and improve upon the design.
+
+	We expect many part of source code which is written for this sample application would eventually generalized 
+	and introduced to Pivot4J project itself.  
+
+Current Status
+
+	It's still in very early stage of development. Schema navigation and query axis configuration  are not implemented 
+	in this release.  
+
+	Below is the screenshot and screencast of the application (Click {{{./images/screenshot.jpeg}here}} for a larger image):
+
+[./images/screenshot-thumb.jpeg] Screenshot of the application
+
+	* And there's also a screencast demonstrating features of the application : 
+	(Link to the YouTube video {{{http://www.youtube.com/watch?v=Hh4HT314_H0}here}}).
+
+News
+
+	* <<[2012-10-07]>> First snaphost release is available. You can download it from 
+	{{{https://github.com/mysticfall/pivot4j-jsf/downloads}here}}.
+
+Contact
+
+	If you have any question or suggestion for the project, please leave your message at 
+	{{{http://groups.google.com/d/forum/pivot4j-list}the support forum}}.

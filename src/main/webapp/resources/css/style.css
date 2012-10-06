@@ -1,0 +1,130 @@
+body {
+	font-size: smaller;
+}
+
+#toolbar-pane.pe-layout-pane-content {
+	padding: 0;
+	overflow: hidden;
+}
+
+#navigator-pane .ui-tree {
+	border: none;
+	width: auto;
+}
+
+#navigator-pane .ui-tree-container {
+	overflow: visible;
+}
+
+.navigator .ui-treenode-icon {
+	background-position: 0 0;
+}
+
+.navigator .ui-icon-dim {
+	background-image: url('../images/dimension.gif');
+}
+
+.navigator .ui-icon-hier {
+	background-image: url('../images/hierarchy.gif');
+}
+
+.navigator .ui-icon-level0 {
+	background-image: url('../images/level_0.gif');
+}
+
+.navigator .ui-icon-level1 {
+	background-image: url('../images/level_1.gif');
+}
+
+.navigator .ui-icon-level2 {
+	background-image: url('../images/level_2.gif');
+}
+
+.navigator .ui-icon-level3 {
+	background-image: url('../images/level_3.gif');
+}
+
+.navigator .ui-icon-level4 {
+	background-image: url('../images/level_4.gif');
+}
+
+.navigator .ui-icon-level5 {
+	background-image: url('../images/level_5.gif');
+}
+
+.navigator .ui-icon-level6 {
+	background-image: url('../images/level_6.gif');
+}
+
+.navigator .ui-icon-level7 {
+	background-image: url('../images/level_7.gif');
+}
+
+.navigator .ui-icon-level8 {
+	background-image: url('../images/level_8.gif');
+}
+
+.navigator .ui-icon-mem {
+	background-image: url('../images/member.gif');
+}
+
+.navigator .ui-icon-measure {
+	background-image: url('../images/measure.gif');
+}
+
+.pivot-grid .value-cell {
+	text-align: right;
+}
+
+.pivot-grid .value-cell.cell-odd {
+	background-color: rgb(242, 245, 249);
+}
+
+.pivot-grid .row-hdr-cell {
+	vertical-align: top;
+	white-space: nowrap;
+	background-color: dedede;
+	background-image: none;
+}
+
+#mdx-editor-pane .pe-layout-pane-content {
+	padding: 0;
+}
+
+.ajax-status {
+	width: 64px;
+	height: 64px;
+	position: fixed;
+	right: 5px;
+	bottom: 5px;
+}
+
+.member-icon.ui-button-icon-only {
+	width: 16px;
+	height: 16px;
+	margin-right: 2px;
+	vertical-align: middle;
+}
+
+.x-hide-display {
+	display: none !important;
+}
+
+.about .about-title {
+	font-weight: bold;
+	font-size: large;
+}
+
+.about img {
+	float: left;
+	margin: 5px 15px 5px 5px;
+}
+
+.about button {
+	float: right;
+}
+
+.about .about-text {
+	display: block;
+	padding: 10px;
+}

@@ -1,0 +1,193 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<h:head>
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+	<title>Pivot4J JSF Sample Application</title>
+	<link type="text/css" rel="stylesheet" href="resources/css/style.css" />
+	<script type="text/javascript" src="resources/js/mdx.js"></script>
+</h:head>
+
+<h:body id="body">
+	<pe:layout id="workbench" fullPage="true"
+		options="#{workbenchHandler.layoutOptions}" widgetVar="workbench">
+		<pe:layoutPane id="toolbar-pane" position="north" size="42"
+			resizable="false" closable="false" collapsible="false" gutter="0"
+			styleClass="toolbar-area">
+			<h:form id="toolbar-form">
+				<p:toolbar id="toolbar">
+					<p:toolbarGroup align="left">
+						<p:commandButton type="button" value="About" icon="ui-icon-info"
+							onclick="about.show();" />
+						<p:separator />
+						<h:outputLabel value="Drilldown : " />
+						<p:selectOneButton style="display: inline"
+							value="#{pivotGridHandler.drillDownMode}">
+							<f:selectItem itemLabel="Position" itemValue="Position" />
+							<f:selectItem itemLabel="Member" itemValue="Member" />
+							<f:selectItem itemLabel="Replace" itemValue="Replace" />
+							<p:ajax update=":grid-form"
+								listener="#{pivotGridHandler.buildPivotGrid}" />
+						</p:selectOneButton>
+						<p:separator />
+						<p:selectBooleanButton
+							value="#{pivotGridHandler.showParentMembers}"
+							onLabel="Hide Parent" offLabel="Show Parent"
+							onIcon="ui-icon-arrowthickstop-1-n"
+							offIcon="ui-icon-arrowthickstop-1-n">
+							<p:ajax update=":grid-form"
+								listener="#{pivotGridHandler.buildPivotGrid}" />
+						</p:selectBooleanButton>
+						<p:selectBooleanButton value="#{pivotGridHandler.hideSpans}"
+							onLabel="Show Spans" offLabel="Hide Spans"
+							onIcon="ui-icon-circlesmall-minus"
+							offIcon="ui-icon-circlesmall-minus">
+							<p:ajax update=":grid-form"
+								listener="#{pivotGridHandler.buildPivotGrid}" />
+						</p:selectBooleanButton>
+						<p:selectBooleanButton value="#{pivotGridHandler.nonEmpty}"
+							onLabel="Non Empty" offLabel="Non Empty"
+							onIcon="ui-icon-circlesmall-close"
+							offIcon="ui-icon-circlesmall-close">
+							<p:ajax update=":grid-form,:editor-form"
+								listener="#{pivotGridHandler.toggleNonEmpty}" />
+						</p:selectBooleanButton>
+						<p:selectBooleanButton value="#{pivotGridHandler.swapAxes}"
+							onLabel="Swap Axes" offLabel="Swap Axes" onIcon="ui-icon-refresh"
+							offIcon="ui-icon-refresh">
+							<p:ajax update=":grid-form,:editor-form"
+								listener="#{pivotGridHandler.toggleSwapAxes}" />
+						</p:selectBooleanButton>
+						<p:separator />
+						<p:selectBooleanButton
+							value="#{workbenchHandler.navigatorPaneVisible}"
+							onLabel="Hide Navigator" offLabel="Show Navigator"
+							onIcon="ui-icon-search" offIcon="ui-icon-search">
+							<p:ajax oncomplete="workbench.toggle('west');" />
+						</p:selectBooleanButton>
+						<p:selectBooleanButton onchange="workbench.toggle('south');"
+							value="#{workbenchHandler.editorPaneVisible}" onLabel="Hide MDX"
+							offLabel="Show MDX" onIcon="ui-icon-script"
+							offIcon="ui-icon-script">
+							<p:ajax update=":editor-form" />
+						</p:selectBooleanButton>
+					</p:toolbarGroup>
+
+					<p:toolbarGroup align="right">
+						<p:menuButton value="Links">
+							<p:menuitem value="Home"
+								url="http://mysticfall.github.com/pivot4j" />
+							<p:menuitem value="Project Page"
+								url="https://github.com/mysticfall/pivot4j" />
+							<p:menuitem value="Discussion Forum"
+								url="https://groups.google.com/forum/#!forum/pivot4j-list" />
+						</p:menuButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+
+				<p:growl id="toolbar-growl" showDetail="true" sticky="true" />
+			</h:form>
+		</pe:layoutPane>
+
+		<pe:layoutPane id="navigator-pane" position="west"
+			widgetVar="navigatorPane">
+			<f:facet name="header">
+				<h:outputText value="OLAP Navigator" />
+			</f:facet>
+			<h:form id="navigator-form">
+				<p:tree id="navigator" styleClass="navigator"
+					value="#{navigatorHandler.rootNode}" dynamic="true" cache="true"
+					var="node">
+					<p:treeNode type="cube" icon="ui-icon-cube">
+						<h:outputText value="#{node.caption}" />
+					</p:treeNode>
+
+					<p:treeNode type="dimension" icon="ui-icon-dim">
+						<h:outputText value="#{node.caption}" />
+					</p:treeNode>
+
+					<p:treeNode type="hierarchy" icon="ui-icon-hier">
+						<h:outputText value="#{node.caption}" />
+					</p:treeNode>
+
+					<p:treeNode type="level" icon="ui-icon-level#{node.depth}">
+						<h:outputText value="#{node.caption}" />
+					</p:treeNode>
+
+					<p:treeNode type="member" icon="ui-icon-measure">
+						<h:outputText id="member-node" value="#{node.caption}" />
+						<p:draggable for="member-node" helper="clone" revert="true" />
+					</p:treeNode>
+				</p:tree>
+			</h:form>
+		</pe:layoutPane>
+
+		<pe:layoutPane id="content-pane" position="center">
+			<f:facet name="header">
+				<h:outputText value="Query Result" />
+			</f:facet>
+			<h:form id="grid-form">
+				<p:panelGrid id="pivot-grid" styleClass="pivot-grid"
+					binding="#{pivotGridHandler.pivotGrid}" />
+				<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
+
+				<p:growl id="grid-growl" showDetail="true" sticky="true" />
+			</h:form>
+		</pe:layoutPane>
+
+		<pe:layoutPane id="mdx-editor-pane" position="south"
+			widgetVar="editorPane">
+			<f:facet name="header">
+				<h:outputText value="MDX Query" />
+			</f:facet>
+			<h:form id="editor-form">
+				<p:toolbar id="editor-toolbar">
+					<p:toolbarGroup align="left">
+						<p:commandButton value="Run" icon="ui-icon-play"
+							action="#{pivotGridHandler.executeMdx}"
+							update=":grid-form,:editor-form" />
+						<p:commandButton value="Reset" icon="ui-icon-arrowreturnthick-1-w"
+							update="mdx-editor" />
+					</p:toolbarGroup>
+				</p:toolbar>
+				<pe:codeMirror id="mdx-editor" mode="text/x-mdx"
+					value="#{pivotGridHandler.currentMdx}" lineNumbers="true"
+					lineWrapping="true" matchBrackets="true" theme="eclipse"
+					required="true" />
+
+				<p:growl id="editor-growl" showDetail="true" sticky="true" />
+			</h:form>
+		</pe:layoutPane>
+	</pe:layout>
+
+	<p:dialog id="modalDialog" header="About This Application"
+		widgetVar="about" modal="true" height="120" closable="true"
+		resizable="false" styleClass="about">
+		<h:form id="about-form">
+			<h:graphicImage value="/resources/images/pivot4j.png"
+				alt="Pivot4J Logo" styleClass="logo" />
+			<h:outputText value="Welcome to Pivot4J JSF Sample Application!"
+				styleClass="about-title" />
+			<h:panelGroup stylcClass="about-text" layout="block">
+				<h:outputText
+					value="Pivot4J JSF is a sample application built with PrimeFaces to show basic usage of Pivot4J library."
+					styleClass="about-text" />
+			</h:panelGroup>
+			<p:commandButton type="button" value="Close" icon="ui-icon-close"
+				onclick="about.hide();" />
+		</h:form>
+	</p:dialog>
+
+	<p:ajaxStatus styleClass="ajax-status">
+		<f:facet name="start">
+			<p:graphicImage value="/resources/images/loading.gif" />
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+</h:body>
+</html>
