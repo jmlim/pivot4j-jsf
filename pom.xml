@@ -77,7 +77,7 @@
 						<goals>
 							<goal>upload</goal>
 						</goals>
-						<phase>install</phase>
+						<phase>deploy</phase>
 					</execution>
 				</executions>
 			</plugin>
