@@ -4,6 +4,7 @@ import org.olap4j.Axis;
 import org.olap4j.CellSetAxis;
 
 import com.eyeq.pivot4j.ui.BuildContext;
+import com.eyeq.pivot4j.ui.CellType;
 import com.eyeq.pivot4j.ui.html.HtmlTableBuilder;
 import com.eyeq.pivot4j.ui.html.HtmlTableCell;
 import com.eyeq.pivot4j.ui.html.HtmlTableModel;
@@ -57,35 +58,27 @@ public class PrimeFacesTableBuilder extends HtmlTableBuilder {
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.base.HtmlTableBuilder#createCell(com.eyeq.pivot4j.ui.BuildContext,
-	 *      com.eyeq.pivot4j.ui.base.HtmlTableModel,
-	 *      com.eyeq.pivot4j.ui.base.HtmlTableRow, int, int, int, int)
+	 * @see com.eyeq.pivot4j.ui.html.HtmlTableBuilder#createCell(com.eyeq.pivot4j.ui.BuildContext,
+	 *      com.eyeq.pivot4j.ui.html.HtmlTableModel,
+	 *      com.eyeq.pivot4j.ui.html.HtmlTableRow, com.eyeq.pivot4j.ui.CellType,
+	 *      int, int, int, int)
 	 */
 	@Override
 	protected HtmlTableCell createCell(BuildContext context,
-			HtmlTableModel table, HtmlTableRow row, int colIndex, int rowIndex,
-			int colSpan, int rowSpan) {
+			HtmlTableModel table, HtmlTableRow row, CellType type,
+			int colIndex, int rowIndex, int colSpan, int rowSpan) {
 		CellSetAxis axis = context.getAxis();
-
-		String label = null;
 
 		String style = null;
 		String styleClass = null;
 
-		boolean header = false;
-
 		if (context.getCell() != null) {
-			label = context.getCell().getFormattedValue();
-
 			if (rowIndex % 2 == 0) {
 				styleClass = "value-cell cell-even";
 			} else {
 				styleClass = "value-cell cell-odd";
 			}
 		} else if (context.getMember() != null) {
-			label = context.getMember().getCaption();
-			header = true;
-
 			styleClass = "ui-widget-header";
 
 			if (axis != null && axis.getAxisOrdinal() == Axis.ROWS) {
@@ -95,17 +88,13 @@ public class PrimeFacesTableBuilder extends HtmlTableBuilder {
 			} else {
 				styleClass = "col-hdr-cell";
 			}
-		} else if (context.getHierarchy() != null) {
-			label = context.getHierarchy().getDimension().getCaption();
-			header = true;
 		}
 
-		DrillableTableCell cell = new DrillableTableCell();
+		DrillableTableCell cell = new DrillableTableCell(type);
 
-		cell.setLabel(label);
 		cell.setColSpan(colSpan);
 		cell.setRowSpan(rowSpan);
-		cell.setHeader(header);
+		cell.setHeader(type != CellType.Value);
 		cell.setStyle(style);
 		cell.setStyleClass(styleClass);
 
