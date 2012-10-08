@@ -1,0 +1,15 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+	<properties>
+		<title>Pivot4J Project</title>
+		<author email="fender@eyeq.co.kr">Xavier Cho</author>
+	</properties>
+	<body>
+		<release version="0.0.2" date="2012-10-08" description="Pivot4J JSF 0.0.2 release">
+			<action dev="mysticfall" type="add" issue="6">
+				Updated project for the Pivot4J 0.0.2 release.
+			</action>
+		</release>
+	</body>
+</document>

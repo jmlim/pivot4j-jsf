@@ -18,11 +18,11 @@ Motivation
 	understand the API and use it to build their own pivot application. In that regards, this project
 	would eventually become something like the JPivot web application which is bundled with their distribution.
 	
-	On the other hand, it was also intended to help the developers of the project themselves as to examine the 
+	On the other hand, it was also intended to help developers of the project themselves as to examine the 
 	common use cases from end user's standpoint and to find out potential problems and improve upon the design.
 
-	We expect many part of source code which is written for this sample application would eventually generalized 
-	and introduced to Pivot4J project itself.  
+	We expect many part of the source code which is written for this sample application would eventually generalized 
+	and introduced to the Pivot4J project itself.  
 
 Current Status
 
@@ -38,7 +38,7 @@ Current Status
 
 News
 
-	* <<[2012-10-07]>> First snaphost release is available. You can download it from 
+	* <<[2012-10-08]>> First public release for Pivot4J 0.0.2 is available now. You can download it from 
 	{{{https://github.com/mysticfall/pivot4j-jsf/downloads}here}}.
 
 Contact
