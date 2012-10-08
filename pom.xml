@@ -109,6 +109,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -117,6 +118,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -129,6 +131,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -140,6 +143,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2</version>
 				<executions>
 					<execution>
 						<goals>
@@ -158,7 +162,7 @@
 						<configuration>
 							<target unless="maven.test.skip">
 								<unzip src="${basedir}/src/main/test-data/derby-foodmart.zip"
-									dest="${project.build.directory}/${pom.artifactId}-${pom.version}/WEB-INF"
+									dest="${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF"
 									overwrite="false" />
 							</target>
 						</configuration>
@@ -275,6 +279,12 @@
 					<artifactId>javacup</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>javacup</groupId>
+			<artifactId>javacup</artifactId>
+			<version>10k</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
