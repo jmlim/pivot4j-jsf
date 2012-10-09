@@ -9,7 +9,7 @@
     <copyright>&#169;2012 Eyeq MC</copyright>
     <item>
       <title>File: 20,
-             Errors: 1750,
+             Errors: 1745,
              Warnings: 0,
              Infos: 0
       </title>
@@ -29,7 +29,7 @@
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillDownHandler.java">com/eyeq/pivot4j/ui/primefaces/command/DrillDownHandler.java</a>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.LevelNode.java">com/eyeq/pivot4j/ui/primefaces/tree/LevelNode.java</a>
                 </td>
                 <td>
                   0
@@ -38,77 +38,7 @@
                   0
                 </td>
                 <td>
-                  27
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.MemberNode.java">com/eyeq/pivot4j/ui/primefaces/tree/MemberNode.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  70
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.CubeNode.java">com/eyeq/pivot4j/ui/primefaces/tree/CubeNode.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  61
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.table.PrimeFacesTableBuilder.java">com/eyeq/pivot4j/ui/primefaces/table/PrimeFacesTableBuilder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  124
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.NavigatorHandler.java">com/eyeq/pivot4j/ui/primefaces/NavigatorHandler.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  33
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.WorkbenchHandler.java">com/eyeq/pivot4j/ui/primefaces/WorkbenchHandler.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  99
+                  53
                 </td>
               </tr>
                           <tr>
@@ -127,34 +57,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillDownMode.java">com/eyeq/pivot4j/ui/primefaces/command/DrillDownMode.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  20
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillableTableCell.java">com/eyeq/pivot4j/ui/primefaces/command/DrillableTableCell.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  23
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillDownOnPositionHandler.java">com/eyeq/pivot4j/ui/primefaces/command/DrillDownOnPositionHandler.java</a>
                 </td>
                 <td>
@@ -169,7 +71,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillReplaceHandler.java">com/eyeq/pivot4j/ui/primefaces/command/DrillReplaceHandler.java</a>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.table.PrimeFacesTableBuilder.java">com/eyeq/pivot4j/ui/primefaces/table/PrimeFacesTableBuilder.java</a>
                 </td>
                 <td>
                   0
@@ -178,12 +80,12 @@
                   0
                 </td>
                 <td>
-                  158
+                  111
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.DataSourceManager.java">com/eyeq/pivot4j/ui/primefaces/DataSourceManager.java</a>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.AbstractDrillDownHandler.java">com/eyeq/pivot4j/ui/primefaces/command/AbstractDrillDownHandler.java</a>
                 </td>
                 <td>
                   0
@@ -192,12 +94,12 @@
                   0
                 </td>
                 <td>
-                  58
+                  13
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.DimensionNode.java">com/eyeq/pivot4j/ui/primefaces/tree/DimensionNode.java</a>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.WorkbenchHandler.java">com/eyeq/pivot4j/ui/primefaces/WorkbenchHandler.java</a>
                 </td>
                 <td>
                   0
@@ -206,7 +108,7 @@
                   0
                 </td>
                 <td>
-                  59
+                  99
                 </td>
               </tr>
                           <tr>
@@ -239,7 +141,7 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.LevelNode.java">com/eyeq/pivot4j/ui/primefaces/tree/LevelNode.java</a>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.DimensionNode.java">com/eyeq/pivot4j/ui/primefaces/tree/DimensionNode.java</a>
                 </td>
                 <td>
                   0
@@ -248,12 +150,12 @@
                   0
                 </td>
                 <td>
-                  53
+                  59
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.PivotGridHandler.java">com/eyeq/pivot4j/ui/primefaces/PivotGridHandler.java</a>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.DataSourceManager.java">com/eyeq/pivot4j/ui/primefaces/DataSourceManager.java</a>
                 </td>
                 <td>
                   0
@@ -262,21 +164,7 @@
                   0
                 </td>
                 <td>
-                  306
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.AbstractDrillDownHandler.java">com/eyeq/pivot4j/ui/primefaces/command/AbstractDrillDownHandler.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  13
+                  57
                 </td>
               </tr>
                           <tr>
@@ -290,7 +178,119 @@
                   0
                 </td>
                 <td>
-                  98
+                  99
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.NavigatorHandler.java">com/eyeq/pivot4j/ui/primefaces/NavigatorHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  33
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.PivotGridHandler.java">com/eyeq/pivot4j/ui/primefaces/PivotGridHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  307
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillDownMode.java">com/eyeq/pivot4j/ui/primefaces/command/DrillDownMode.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  19
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.CubeNode.java">com/eyeq/pivot4j/ui/primefaces/tree/CubeNode.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  61
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.MemberNode.java">com/eyeq/pivot4j/ui/primefaces/tree/MemberNode.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  70
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillReplaceHandler.java">com/eyeq/pivot4j/ui/primefaces/command/DrillReplaceHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  158
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillableTableCell.java">com/eyeq/pivot4j/ui/primefaces/command/DrillableTableCell.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  31
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.command.DrillDownHandler.java">com/eyeq/pivot4j/ui/primefaces/command/DrillDownHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  27
                 </td>
               </tr>
                           <tr>
