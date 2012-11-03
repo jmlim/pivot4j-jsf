@@ -11,6 +11,8 @@
 </h:head>
 
 <h:body id="body">
+	<f:event type="preRenderView" listener="#{pivotGridHandler.render}" />
+
 	<pe:layout id="workbench" fullPage="true"
 		options="#{workbenchHandler.layoutOptions}" widgetVar="workbench">
 		<pe:layoutPane id="toolbar-pane" position="north" size="42"
@@ -22,14 +24,13 @@
 						<p:commandButton type="button" value="About" icon="ui-icon-info"
 							onclick="about.show();" />
 						<p:separator />
-						<h:outputLabel value="Drilldown : " />
-						<p:selectOneButton style="display: inline"
+						<h:outputLabel value="Drilldown : " for="drilldown-mode" />
+						<p:selectOneButton id="drilldown-mode" style="display: inline"
 							value="#{pivotGridHandler.drillDownMode}">
-							<f:selectItem itemLabel="Position" itemValue="Position" />
-							<f:selectItem itemLabel="Member" itemValue="Member" />
-							<f:selectItem itemLabel="Replace" itemValue="Replace" />
-							<p:ajax update=":grid-form"
-								listener="#{pivotGridHandler.buildPivotGrid}" />
+							<f:selectItem itemLabel="Position" itemValue="position" />
+							<f:selectItem itemLabel="Member" itemValue="member" />
+							<f:selectItem itemLabel="Replace" itemValue="replace" />
+							<p:ajax update=":grid-form,:editor-form" />
 						</p:selectOneButton>
 						<p:separator />
 						<p:selectBooleanButton
@@ -37,15 +38,13 @@
 							onLabel="Hide Parent" offLabel="Show Parent"
 							onIcon="ui-icon-arrowthickstop-1-n"
 							offIcon="ui-icon-arrowthickstop-1-n">
-							<p:ajax update=":grid-form"
-								listener="#{pivotGridHandler.buildPivotGrid}" />
+							<p:ajax update=":grid-form,:editor-form" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.hideSpans}"
 							onLabel="Show Spans" offLabel="Hide Spans"
 							onIcon="ui-icon-circlesmall-minus"
 							offIcon="ui-icon-circlesmall-minus">
-							<p:ajax update=":grid-form"
-								listener="#{pivotGridHandler.buildPivotGrid}" />
+							<p:ajax update=":grid-form,:editor-form" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.nonEmpty}"
 							onLabel="Non Empty" offLabel="Non Empty"
@@ -86,8 +85,6 @@
 						</p:menuButton>
 					</p:toolbarGroup>
 				</p:toolbar>
-
-				<p:growl id="toolbar-growl" showDetail="true" sticky="true" />
 			</h:form>
 		</pe:layoutPane>
 
@@ -118,7 +115,9 @@
 
 					<p:treeNode type="member" icon="ui-icon-measure">
 						<h:outputText id="member-node" value="#{node.caption}" />
-						<p:draggable for="member-node" helper="clone" revert="true" />
+						<!-- workaround for issue #1 -->
+						<p:draggable for="member-node" helper="clone', appendTo: 'body"
+							revert="true" />
 					</p:treeNode>
 				</p:tree>
 			</h:form>
@@ -131,9 +130,12 @@
 			<h:form id="grid-form">
 				<p:panelGrid id="pivot-grid" styleClass="pivot-grid"
 					binding="#{pivotGridHandler.pivotGrid}" />
-				<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
 
-				<p:growl id="grid-growl" showDetail="true" sticky="true" />
+				<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
+				<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
+				<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
+				<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
+				<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
 			</h:form>
 		</pe:layoutPane>
 
@@ -158,6 +160,12 @@
 					required="true" />
 
 				<p:growl id="editor-growl" showDetail="true" sticky="true" />
+
+				<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
+				<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
+				<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
+				<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
+				<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
 			</h:form>
 		</pe:layoutPane>
 	</pe:layout>
@@ -189,5 +197,7 @@
 			<h:outputText value="" />
 		</f:facet>
 	</p:ajaxStatus>
+
+	<p:growl id="growl" showDetail="true" sticky="true" />
 </h:body>
 </html>

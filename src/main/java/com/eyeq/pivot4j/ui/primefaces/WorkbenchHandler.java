@@ -69,7 +69,11 @@ public class WorkbenchHandler {
 			editorOptions.addOption("togglerClass", "x-hide-display");
 
 			layoutOptions.setSouthOptions(editorOptions);
+
+			LayoutOptions contentOptions = new LayoutOptions();
+			layoutOptions.setCenterOptions(contentOptions);
 		}
+
 		return layoutOptions;
 	}
 
