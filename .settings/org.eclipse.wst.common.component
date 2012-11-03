@@ -5,6 +5,9 @@
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/foodmart" source-path="/target/pivot4j-jsf-0.0.2-SNAPSHOT/WEB-INF/foodmart"/>
+        <dependent-module archiveName="pivot4j-0.0.5-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/pivot4j/pivot4j">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
     <property name="java-output-path" value="/target/classes"/>
         <property name="context-root" value="pivot4j"/>
   </wb-module>
