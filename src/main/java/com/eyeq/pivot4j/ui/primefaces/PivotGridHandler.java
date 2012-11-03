@@ -12,7 +12,6 @@ import javax.faces.context.FacesContext;
 
 import org.olap4j.metadata.Member;
 import org.primefaces.component.panelgrid.PanelGrid;
-import org.primefaces.event.DashboardReorderEvent;
 import org.primefaces.event.DragDropEvent;
 import org.primefaces.model.TreeNode;
 
@@ -287,7 +286,7 @@ public class PivotGridHandler {
 		TreeNode node = findDraggedNode(navigator.getRootNode(), indexes);
 		Member member = (Member) node.getData();
 
-		//TODO
+		// TODO
 		String id = createIdFromUniqueName(member.getUniqueName());
 		System.out.println(id);
 	}
@@ -313,20 +312,5 @@ public class PivotGridHandler {
 		} else {
 			return parent.getChildren().get(indexes.get(0));
 		}
-	}
-
-	/**
-	 * @param event
-	 */
-	public void onColumnReorder(DashboardReorderEvent event) {
-		FacesMessage message = new FacesMessage();
-		message.setSeverity(FacesMessage.SEVERITY_INFO);
-		message.setSummary("Reordered: " + event.getWidgetId());
-		message.setDetail("Item index: " + event.getItemIndex()
-				+ ", Column index: " + event.getColumnIndex()
-				+ ", Sender index: " + event.getSenderColumnIndex());
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, message);
 	}
 }
