@@ -39,6 +39,7 @@ Current Status
 News
 
 	* <<[2012-11-03]>> Updated project to use the new renderer API (Pivot4J 0.0.5).
+
 	* <<[2012-10-08]>> First public release for Pivot4J 0.0.2 is available now. You can download it from 
 	{{{https://github.com/mysticfall/pivot4j-jsf/downloads}here}}.
 
