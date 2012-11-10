@@ -54,9 +54,7 @@ public class WorkbenchHandler {
 			navigatorOptions.addOption("resizable", true);
 			navigatorOptions.addOption("closable", true);
 			navigatorOptions.addOption("slidable", true);
-			navigatorOptions.addOption("initHidden", !navigatorPaneVisible);
 			navigatorOptions.addOption("size", 280);
-			navigatorOptions.addOption("togglerClass", "x-hide-display");
 
 			layoutOptions.setWestOptions(navigatorOptions);
 
@@ -64,14 +62,16 @@ public class WorkbenchHandler {
 			editorOptions.addOption("resizable", true);
 			editorOptions.addOption("closable", true);
 			editorOptions.addOption("slidable", true);
-			editorOptions.addOption("initHidden", !editorPaneVisible);
-			editorOptions.addOption("size", 280);
-			editorOptions.addOption("togglerClass", "x-hide-display");
+			editorOptions.addOption("size", 160);
+			editorOptions.addOption("contentSelector", "CodeMirror-scroll");
 
 			layoutOptions.setSouthOptions(editorOptions);
 
 			LayoutOptions contentOptions = new LayoutOptions();
 			layoutOptions.setCenterOptions(contentOptions);
+
+			LayoutOptions childCenterOptions = new LayoutOptions();
+			contentOptions.setChildOptions(childCenterOptions);
 		}
 
 		return layoutOptions;

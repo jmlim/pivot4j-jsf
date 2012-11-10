@@ -135,6 +135,9 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 	public void startCell(RenderContext context, List<CellCommand> commands) {
 		this.column = new Column();
 
+		String id = "col-" + column.hashCode();
+
+		column.setId(id);
 		column.setColspan(context.getColSpan());
 		column.setRowspan(context.getRowSpan());
 
@@ -197,7 +200,7 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 							"#{pivotGridHandler.executeCommand}", Void.class,
 							new Class<?>[0]);
 			button.setActionExpression(expression);
-			button.setUpdate(":grid-form,:editor-form");
+			button.setUpdate(":grid-form,:editor-form,:axis-config-panel");
 
 			UIParameter commandParam = new UIParameter();
 			commandParam.setName("command");
@@ -235,6 +238,9 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 	@Override
 	public void cellContent(RenderContext context, String label) {
 		HtmlOutputText text = new HtmlOutputText();
+		String id = "txt-" + text.hashCode();
+
+		text.setId(id);
 		text.setValue(label);
 
 		column.getChildren().add(text);

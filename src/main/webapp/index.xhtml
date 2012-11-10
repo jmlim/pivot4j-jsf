@@ -7,6 +7,7 @@
 	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 	<title>Pivot4J JSF Sample Application</title>
 	<link type="text/css" rel="stylesheet" href="resources/css/style.css" />
+	<script type="text/javascript" src="resources/js/pivot4j.js"></script>
 	<script type="text/javascript" src="resources/js/mdx.js"></script>
 </h:head>
 
@@ -60,18 +61,6 @@
 								listener="#{pivotGridHandler.toggleSwapAxes}" />
 						</p:selectBooleanButton>
 						<p:separator />
-						<p:selectBooleanButton
-							value="#{workbenchHandler.navigatorPaneVisible}"
-							onLabel="Hide Navigator" offLabel="Show Navigator"
-							onIcon="ui-icon-search" offIcon="ui-icon-search">
-							<p:ajax oncomplete="workbench.toggle('west');" />
-						</p:selectBooleanButton>
-						<p:selectBooleanButton onchange="workbench.toggle('south');"
-							value="#{workbenchHandler.editorPaneVisible}" onLabel="Hide MDX"
-							offLabel="Show MDX" onIcon="ui-icon-script"
-							offIcon="ui-icon-script">
-							<p:ajax update=":editor-form" />
-						</p:selectBooleanButton>
 					</p:toolbarGroup>
 
 					<p:toolbarGroup align="right">
@@ -88,8 +77,7 @@
 			</h:form>
 		</pe:layoutPane>
 
-		<pe:layoutPane id="navigator-pane" position="west"
-			widgetVar="navigatorPane">
+		<pe:layoutPane id="navigator-pane" position="west">
 			<f:facet name="header">
 				<h:outputText value="OLAP Navigator" />
 			</f:facet>
@@ -127,20 +115,45 @@
 			<f:facet name="header">
 				<h:outputText value="Query Result" />
 			</f:facet>
-			<h:form id="grid-form">
-				<p:panelGrid id="pivot-grid" styleClass="pivot-grid"
-					binding="#{pivotGridHandler.pivotGrid}" />
+			<pe:layoutPane id="grid-header-pane" position="north">
+				<h:panelGroup id="axis-config-panel" layout="block">
+					<h:panelGrid styleClass="axis-config" columns="2"
+						columnClasses="ui-widget-header,axis-items">
+						<h:outputText value="Columns" />
+						<h:panelGroup id="grid-columns" layout="block"
+							styleClass="axis-items" binding="#{pivotGridHandler.columns}" />
 
-				<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
-				<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
-				<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
-				<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
-				<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
-			</h:form>
+						<h:outputText value="Rows" />
+						<h:panelGroup id="grid-rows" layout="block"
+							styleClass="axis-items" binding="#{pivotGridHandler.rows}" />
+
+						<h:outputText value="Filter" />
+						<h:panelGroup id="grid-filter" layout="block"
+							styleClass="axis-items" binding="#{pivotGridHandler.filter}" />
+					</h:panelGrid>
+
+					<script type="text/javascript">
+						jQuery(document).ready(function() {
+							initializeAxisItems()
+						});
+					</script>
+				</h:panelGroup>
+			</pe:layoutPane>
+			<pe:layoutPane id="grid-content-pane" position="center">
+				<h:form id="grid-form">
+					<p:panelGrid id="pivot-grid" styleClass="pivot-grid"
+						binding="#{pivotGridHandler.pivotGrid}" />
+
+					<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
+					<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
+					<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
+					<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
+					<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
+				</h:form>
+			</pe:layoutPane>
 		</pe:layoutPane>
 
-		<pe:layoutPane id="mdx-editor-pane" position="south"
-			widgetVar="editorPane">
+		<pe:layoutPane id="mdx-editor-pane" position="south">
 			<f:facet name="header">
 				<h:outputText value="MDX Query" />
 			</f:facet>
@@ -153,21 +166,31 @@
 						<p:commandButton value="Reset" icon="ui-icon-arrowreturnthick-1-w"
 							update="mdx-editor" />
 					</p:toolbarGroup>
+					<p:toolbarGroup align="right" styleClass="query-info"
+						rendered="#{!empty pivotGridHandler.duration}">
+						<h:outputText styleClass="ui-icon ui-icon-clock" />
+						<h:outputText value="Query execution time : " />
+						<h:outputText value="#{pivotGridHandler.duration}">
+							<f:convertNumber pattern="###,### msec" />
+						</h:outputText>
+					</p:toolbarGroup>
 				</p:toolbar>
 				<pe:codeMirror id="mdx-editor" mode="text/x-mdx"
 					value="#{pivotGridHandler.currentMdx}" lineNumbers="true"
 					lineWrapping="true" matchBrackets="true" theme="eclipse"
-					required="true" />
-
-				<p:growl id="editor-growl" showDetail="true" sticky="true" />
+					widgetVar="mdxEditor" required="true" />
 
 				<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
 				<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
 				<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
 				<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
 				<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
+
+				<p:growl id="editor-growl" showDetail="true" sticky="true" />
 			</h:form>
 		</pe:layoutPane>
+
+		<p:ajax event="open" update="editor-form:mdx-editor" />
 	</pe:layout>
 
 	<p:dialog id="modalDialog" header="About This Application"
