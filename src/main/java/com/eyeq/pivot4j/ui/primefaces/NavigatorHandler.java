@@ -7,7 +7,7 @@ import javax.faces.bean.RequestScoped;
 import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.ui.primefaces.tree.CubeNode;
 
-@ManagedBean
+@ManagedBean(name = "navigatorHandler")
 @RequestScoped
 public class NavigatorHandler {
 
@@ -36,7 +36,7 @@ public class NavigatorHandler {
 	 */
 	public CubeNode getRootNode() {
 		if (rootNode == null && model.isInitialized()) {
-			this.rootNode  = new CubeNode(model.getCube());
+			this.rootNode = new CubeNode(model.getCube());
 		}
 
 		return rootNode;

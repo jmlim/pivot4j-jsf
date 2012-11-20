@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.eyeq.pivot4j.datasource.SimpleOlapDataSource;
 
-@ManagedBean(eager = true)
+@ManagedBean(name = "dataSourceManager", eager = true)
 @ApplicationScoped
 public class DataSourceManager {
 

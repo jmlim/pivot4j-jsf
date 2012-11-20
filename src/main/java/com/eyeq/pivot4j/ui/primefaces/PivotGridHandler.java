@@ -34,7 +34,7 @@ import com.eyeq.pivot4j.ui.command.CellCommand;
 import com.eyeq.pivot4j.ui.command.CellParameters;
 import com.eyeq.pivot4j.ui.command.DrillDownCommand;
 
-@ManagedBean
+@ManagedBean(name = "pivotGridHandler")
 @RequestScoped
 public class PivotGridHandler implements QueryListener {
 
