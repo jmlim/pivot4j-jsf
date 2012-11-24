@@ -21,6 +21,14 @@ body {
 	padding: 0;
 }
 
+#navigator-pane .ui-layout-content {
+	padding-right: 0;
+}
+
+.navigator .ui-icon {
+	border-radius: 0;
+}
+
 .navigator .ui-treenode-icon {
 	background-position: 0 0;
 }
@@ -77,6 +85,30 @@ body {
 	background-image: url('../images/measure.gif');
 }
 
+.navigator .ui-icon-cols {
+	background-image: url('../images/columns.gif');
+}
+
+.navigator .ui-icon-rows {
+	background-image: url('../images/rows.gif');
+}
+
+.navigator .ui-icon-filter {
+	background-image: url('../images/filter.gif');
+}
+
+.navigator .drop-target-node {
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.ui-draggable-dragging.node-member {
+	background-image: url('../images/measure.gif');
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left: 18px;
+}
+
 #content-pane .ui-layout-content {
 	padding: 6px 0 0 0;
 }
@@ -84,55 +116,6 @@ body {
 #grid-content-pane {
 	padding: 0;
 	border: none;
-}
-
-.axis-config {
-	width: 100%;
-}
-
-.axis-config .ui-widget-header {
-	width: 80px;
-	padding: 0 5px 0 5px;
-	text-align: right;
-}
-
-.axis-config td.axis-items {
-	border: 1px dotted #a8a8a8;
-	padding: 2px;
-}
-
-.axis-config div.axis-items {
-	position: relative;
-}
-
-.axis-config .axis-item {
-	border-radius: 5px;
-	background-image: none;
-	margin-right: 2px;
-	white-space: nowrap;
-	width: auto;
-	float: left;
-}
-
-.axis-config .axis-item.ui-draggable-dragging {
-	position: absolute !important;
-}
-
-.axis-config .axis-item.ui-draggable-dragging .ui-button {
-	display: none;
-}
-
-.axis-config .placeholder {
-	border: 1px solid red;
-	padding-left: 5px;
-	margin-right: 2px;
-	background-color: #ffcccc;
-}
-
-.axis-config .axis-item .ui-button {
-	width: 16px;
-	height: 16px;
-	vertical-align: middle;
 }
 
 .pivot-grid .value-cell {

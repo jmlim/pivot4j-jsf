@@ -12,15 +12,14 @@ import org.olap4j.metadata.Level;
 import org.olap4j.metadata.Member;
 import org.primefaces.model.TreeNode;
 
-public class HierarchyNode extends NavigatorNode {
-
-	private Hierarchy hierarchy;
+public class HierarchyNode extends NavigatorNode<Hierarchy> {
 
 	/**
 	 * @param parent
 	 * @param hierarchy
 	 */
 	public HierarchyNode(TreeNode parent, Hierarchy hierarchy) {
+		super(hierarchy);
 		setParent(parent);
 
 		try {
@@ -28,8 +27,6 @@ public class HierarchyNode extends NavigatorNode {
 		} catch (OlapException e) {
 			throw new FacesException();
 		}
-
-		this.hierarchy = hierarchy;
 	}
 
 	/**
@@ -38,14 +35,6 @@ public class HierarchyNode extends NavigatorNode {
 	@Override
 	public String getType() {
 		return "hierarchy";
-	}
-
-	/**
-	 * @see org.primefaces.model.TreeNode#getData()
-	 */
-	@Override
-	public Hierarchy getData() {
-		return hierarchy;
 	}
 
 	/**
@@ -61,6 +50,9 @@ public class HierarchyNode extends NavigatorNode {
 	 */
 	@Override
 	protected List<TreeNode> createChildren() {
+		NodeSelectionFilter filter = getNodeFilter();
+
+		Hierarchy hierarchy = getElement();
 
 		try {
 			if (hierarchy.getDimension().getDimensionType() == Type.MEASURE) {
@@ -69,7 +61,12 @@ public class HierarchyNode extends NavigatorNode {
 						members.size());
 
 				for (Member member : members) {
-					children.add(new MemberNode(this, member));
+					if (filter == null || !filter.isSelected(member)) {
+						MemberNode node = new MemberNode(this, member);
+						node.setNodeFilter(filter);
+
+						children.add(node);
+					}
 				}
 
 				return children;
@@ -78,7 +75,12 @@ public class HierarchyNode extends NavigatorNode {
 				List<TreeNode> children = new ArrayList<TreeNode>(levels.size());
 
 				for (Level level : levels) {
-					children.add(new LevelNode(this, level));
+					if (filter == null || !filter.isSelected(level)) {
+						LevelNode node = new LevelNode(this, level);
+						node.setNodeFilter(filter);
+
+						children.add(node);
+					}
 				}
 
 				return children;

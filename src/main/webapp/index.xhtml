@@ -7,7 +7,6 @@
 	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 	<title>Pivot4J JSF Sample Application</title>
 	<link type="text/css" rel="stylesheet" href="resources/css/style.css" />
-	<script type="text/javascript" src="resources/js/pivot4j.js"></script>
 	<script type="text/javascript" src="resources/js/mdx.js"></script>
 </h:head>
 
@@ -81,64 +80,98 @@
 			<f:facet name="header">
 				<h:outputText value="OLAP Navigator" />
 			</f:facet>
-			<h:form id="navigator-form">
-				<p:tree id="navigator" styleClass="navigator"
-					value="#{navigatorHandler.rootNode}" dynamic="true" cache="true"
-					var="node">
-					<p:treeNode type="cube" icon="ui-icon-cube">
-						<h:outputText value="#{node.caption}" />
-					</p:treeNode>
+			<pe:layoutPane id="source-tree-pane" position="center">
+				<f:facet name="header">
+					<h:outputText value="Cube Structure" />
+				</f:facet>
+				<h:form id="source-tree-form">
+					<p:tree id="cube-navigator" styleClass="navigator"
+						value="#{navigatorHandler.cubeNode}" dynamic="true" cache="true"
+						var="node">
+						<p:treeNode type="dimension" icon="ui-icon-dim">
+							<h:outputText id="dimension-node" value="#{node.name}"
+								styleClass="node-dimension" />
+						</p:treeNode>
 
-					<p:treeNode type="dimension" icon="ui-icon-dim">
-						<h:outputText value="#{node.caption}" />
-					</p:treeNode>
+						<p:treeNode type="hierarchy" icon="ui-icon-hier">
+							<h:outputText id="hierarchy-node" value="#{node.name}"
+								styleClass="node-hierarchy" />
+						</p:treeNode>
 
-					<p:treeNode type="hierarchy" icon="ui-icon-hier">
-						<h:outputText value="#{node.caption}" />
-					</p:treeNode>
+						<p:treeNode type="level" icon="ui-icon-level#{node.depth}">
+							<h:outputText id="level-node" value="#{node.name}"
+								styleClass="node-level" />
+							<!-- workaround for issue #1 -->
+							<p:draggable for="level-node" helper="clone', appendTo: 'body"
+								revert="true" scope="level" />
+						</p:treeNode>
 
-					<p:treeNode type="level" icon="ui-icon-level#{node.depth}">
-						<h:outputText value="#{node.caption}" />
-					</p:treeNode>
+						<p:treeNode type="member" icon="ui-icon-measure">
+							<h:outputText id="member-node" value="#{node.name}"
+								styleClass="node-member" />
+							<!-- workaround for issue #1 -->
+							<p:draggable for="member-node" helper="clone', appendTo: 'body"
+								revert="true" scope="member" />
+						</p:treeNode>
+					</p:tree>
+				</h:form>
+			</pe:layoutPane>
+			<pe:layoutPane id="target-tree-pane" position="south">
+				<f:facet name="header">
+					<h:outputText value="Pivot Structure" />
+				</f:facet>
+				<h:form id="target-tree-form">
+					<p:tree id="target-navigator" styleClass="navigator"
+						value="#{navigatorHandler.targetNode}" dynamic="true" cache="true"
+						var="node">
+						<p:treeNode type="columns" icon="ui-icon-cols">
+							<h:outputText id="columns-node" value="Columns"
+								styleClass="node-axis" />
+							<p:droppable for="columns-node"
+								hoverStyleClass="drop-target-node" />
+						</p:treeNode>
 
-					<p:treeNode type="member" icon="ui-icon-measure">
-						<h:outputText id="member-node" value="#{node.caption}" />
-						<!-- workaround for issue #1 -->
-						<p:draggable for="member-node" helper="clone', appendTo: 'body"
-							revert="true" />
-					</p:treeNode>
-				</p:tree>
-			</h:form>
+						<p:treeNode type="rows" icon="ui-icon-rows">
+							<h:outputText id="rows-node" value="Rows" styleClass="node-axis" />
+							<p:droppable for="rows-node" hoverStyleClass="drop-target-node" />
+						</p:treeNode>
+
+						<p:treeNode type="filter" icon="ui-icon-filter">
+							<h:outputText id="filter-node" value="Filter"
+								styleClass="node-axis" />
+							<p:droppable for="filter-node" hoverStyleClass="drop-target-node" />
+						</p:treeNode>
+
+						<p:treeNode type="hierarchy" icon="ui-icon-hier">
+							<h:outputText id="hierarchy-node" value="#{node.name}"
+								styleClass="node-hierarchy" />
+							<p:draggable for="hierarchy-node" helper="clone" revert="true" />
+							<p:droppable for="hierarchy-node"
+								hoverStyleClass="drop-target-node" />
+						</p:treeNode>
+
+						<p:treeNode type="level" icon="ui-icon-level#{node.depth}">
+							<h:outputText value="#{node.name}" styleClass="node-level" />
+						</p:treeNode>
+
+						<p:treeNode type="member" icon="ui-icon-measure">
+							<h:outputText id="member-node" value="#{node.name}"
+								styleClass="node-member" />
+							<p:draggable for="member-node" helper="clone" revert="true"
+								scope="member" />
+							<p:droppable for="member-node" hoverStyleClass="drop-target-node"
+								scope="member" />
+						</p:treeNode>
+					</p:tree>
+				</h:form>
+			</pe:layoutPane>
 		</pe:layoutPane>
 
 		<pe:layoutPane id="content-pane" position="center">
 			<f:facet name="header">
 				<h:outputText value="Query Result" />
 			</f:facet>
-			<pe:layoutPane id="grid-header-pane" position="north">
-				<h:panelGroup id="axis-config-panel" layout="block">
-					<h:panelGrid styleClass="axis-config" columns="2"
-						columnClasses="ui-widget-header,axis-items">
-						<h:outputText value="Columns" />
-						<h:panelGroup id="grid-columns" layout="block"
-							styleClass="axis-items" binding="#{pivotGridHandler.columns}" />
 
-						<h:outputText value="Rows" />
-						<h:panelGroup id="grid-rows" layout="block"
-							styleClass="axis-items" binding="#{pivotGridHandler.rows}" />
-
-						<h:outputText value="Filter" />
-						<h:panelGroup id="grid-filter" layout="block"
-							styleClass="axis-items" binding="#{pivotGridHandler.filter}" />
-					</h:panelGrid>
-
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							initializeAxisItems()
-						});
-					</script>
-				</h:panelGroup>
-			</pe:layoutPane>
 			<pe:layoutPane id="grid-content-pane" position="center">
 				<h:form id="grid-form">
 					<p:panelGrid id="pivot-grid" styleClass="pivot-grid"
@@ -151,43 +184,43 @@
 					<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
 				</h:form>
 			</pe:layoutPane>
-		</pe:layoutPane>
 
-		<pe:layoutPane id="mdx-editor-pane" position="south">
-			<f:facet name="header">
-				<h:outputText value="MDX Query" />
-			</f:facet>
-			<h:form id="editor-form">
-				<p:toolbar id="editor-toolbar">
-					<p:toolbarGroup align="left">
-						<p:commandButton value="Run" icon="ui-icon-play"
-							action="#{pivotGridHandler.executeMdx}"
-							update=":grid-form,:editor-form" />
-						<p:commandButton value="Reset" icon="ui-icon-arrowreturnthick-1-w"
-							update="mdx-editor" />
-					</p:toolbarGroup>
-					<p:toolbarGroup align="right" styleClass="query-info"
-						rendered="#{!empty pivotGridHandler.duration}">
-						<h:outputText styleClass="ui-icon ui-icon-clock" />
-						<h:outputText value="Query execution time : " />
-						<h:outputText value="#{pivotGridHandler.duration}">
-							<f:convertNumber pattern="###,### msec" />
-						</h:outputText>
-					</p:toolbarGroup>
-				</p:toolbar>
-				<pe:codeMirror id="mdx-editor" mode="text/x-mdx"
-					value="#{pivotGridHandler.currentMdx}" lineNumbers="true"
-					lineWrapping="true" matchBrackets="true" theme="eclipse"
-					widgetVar="mdxEditor" required="true" />
+			<pe:layoutPane id="mdx-editor-pane" position="south">
+				<f:facet name="header">
+					<h:outputText value="MDX Query" />
+				</f:facet>
+				<h:form id="editor-form">
+					<p:toolbar id="editor-toolbar">
+						<p:toolbarGroup align="left">
+							<p:commandButton value="Run" icon="ui-icon-play"
+								action="#{pivotGridHandler.executeMdx}"
+								update=":grid-form,:editor-form" />
+							<p:commandButton value="Reset"
+								icon="ui-icon-arrowreturnthick-1-w" update="mdx-editor" />
+						</p:toolbarGroup>
+						<p:toolbarGroup align="right" styleClass="query-info"
+							rendered="#{!empty pivotGridHandler.duration}">
+							<h:outputText styleClass="ui-icon ui-icon-clock" />
+							<h:outputText value="Query execution time : " />
+							<h:outputText value="#{pivotGridHandler.duration}">
+								<f:convertNumber pattern="###,### msec" />
+							</h:outputText>
+						</p:toolbarGroup>
+					</p:toolbar>
+					<pe:codeMirror id="mdx-editor" mode="text/x-mdx"
+						value="#{pivotGridHandler.currentMdx}" lineNumbers="true"
+						lineWrapping="true" matchBrackets="true" theme="eclipse"
+						widgetVar="mdxEditor" required="true" />
 
-				<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
-				<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
-				<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
-				<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
-				<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
+					<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
+					<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
+					<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
+					<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
+					<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
 
-				<p:growl id="editor-growl" showDetail="true" sticky="true" />
-			</h:form>
+					<p:growl id="editor-growl" showDetail="true" sticky="true" />
+				</h:form>
+			</pe:layoutPane>
 		</pe:layoutPane>
 
 		<p:ajax event="open" update="editor-form:mdx-editor" />

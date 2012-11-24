@@ -2,11 +2,17 @@ package com.eyeq.pivot4j.ui.primefaces.tree;
 
 import java.util.List;
 
+import org.olap4j.metadata.MetadataElement;
 import org.primefaces.model.TreeNode;
 
-public abstract class NavigatorNode implements TreeNode {
+public abstract class NavigatorNode<T extends MetadataElement> implements
+		TreeNode {
 
 	private TreeNode parent;
+
+	private T element;
+
+	private NodeData data;
 
 	private boolean expanded = false;
 
@@ -16,12 +22,34 @@ public abstract class NavigatorNode implements TreeNode {
 
 	private List<TreeNode> children;
 
+	private NodeSelectionFilter nodeFilter;
+
+	/**
+	 * @param element
+	 */
+	public NavigatorNode(T element) {
+		this.element = element;
+		this.data = createData(element);
+	}
+
+	/**
+	 * @param element
+	 * @return
+	 */
+	protected NodeData createData(T element) {
+		return new NodeData(element);
+	}
+
 	/**
 	 * @see org.primefaces.model.TreeNode#getParent()
 	 */
 	@Override
 	public TreeNode getParent() {
 		return parent;
+	}
+
+	protected T getElement() {
+		return element;
 	}
 
 	/**
@@ -81,14 +109,34 @@ public abstract class NavigatorNode implements TreeNode {
 	}
 
 	/**
+	 * @see org.primefaces.model.TreeNode#getData()
+	 */
+	@Override
+	public NodeData getData() {
+		return data;
+	}
+
+	/**
+	 * @return the nodeFilter
+	 */
+	public NodeSelectionFilter getNodeFilter() {
+		return nodeFilter;
+	}
+
+	/**
+	 * @param nodeFilter
+	 *            the nodeFilter to set
+	 */
+	public void setNodeFilter(NodeSelectionFilter nodeFilter) {
+		this.nodeFilter = nodeFilter;
+	}
+
+	/**
 	 * @see org.primefaces.model.TreeNode#getChildCount()
 	 */
 	@Override
 	public int getChildCount() {
-		if (children == null) {
-			this.children = createChildren();
-		}
-		return children.size();
+		return getChildren().size();
 	}
 
 	/**

@@ -6,17 +6,25 @@ import java.util.List;
 import org.olap4j.metadata.Level;
 import org.primefaces.model.TreeNode;
 
-public class LevelNode extends NavigatorNode {
-
-	private Level level;
+public class LevelNode extends NavigatorNode<Level> {
 
 	/**
 	 * @param parent
 	 * @param level
 	 */
 	public LevelNode(TreeNode parent, Level level) {
+		super(level);
 		setParent(parent);
-		this.level = level;
+	}
+
+	/**
+	 * @param level
+	 * @return
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NavigatorNode#createData(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	protected NodeData createData(Level level) {
+		return new LevelNodeData(level);
 	}
 
 	/**
@@ -25,14 +33,6 @@ public class LevelNode extends NavigatorNode {
 	@Override
 	public String getType() {
 		return "level";
-	}
-
-	/**
-	 * @see org.primefaces.model.TreeNode#getData()
-	 */
-	@Override
-	public Level getData() {
-		return level;
 	}
 
 	/**

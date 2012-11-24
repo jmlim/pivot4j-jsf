@@ -58,20 +58,31 @@ public class WorkbenchHandler {
 
 			layoutOptions.setWestOptions(navigatorOptions);
 
-			LayoutOptions editorOptions = new LayoutOptions();
-			editorOptions.addOption("resizable", true);
-			editorOptions.addOption("closable", true);
-			editorOptions.addOption("slidable", true);
-			editorOptions.addOption("size", 160);
-			editorOptions.addOption("contentSelector", "CodeMirror-scroll");
+			LayoutOptions childWestOptions = new LayoutOptions();
+			navigatorOptions.setChildOptions(childWestOptions);
 
-			layoutOptions.setSouthOptions(editorOptions);
+			LayoutOptions targetTreeOptions = new LayoutOptions();
+			targetTreeOptions.addOption("resizable", true);
+			targetTreeOptions.addOption("closable", true);
+			targetTreeOptions.addOption("slidable", true);
+			targetTreeOptions.addOption("size", 300);
+
+			childWestOptions.setSouthOptions(targetTreeOptions);
 
 			LayoutOptions contentOptions = new LayoutOptions();
 			layoutOptions.setCenterOptions(contentOptions);
 
 			LayoutOptions childCenterOptions = new LayoutOptions();
 			contentOptions.setChildOptions(childCenterOptions);
+
+			LayoutOptions editorOptions = new LayoutOptions();
+			editorOptions.addOption("resizable", true);
+			editorOptions.addOption("closable", true);
+			editorOptions.addOption("slidable", true);
+			editorOptions.addOption("size", 180);
+			editorOptions.addOption("contentSelector", "CodeMirror-scroll");
+
+			childCenterOptions.setSouthOptions(editorOptions);
 		}
 
 		return layoutOptions;

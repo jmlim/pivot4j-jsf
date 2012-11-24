@@ -7,17 +7,15 @@ import org.olap4j.metadata.Dimension;
 import org.olap4j.metadata.Hierarchy;
 import org.primefaces.model.TreeNode;
 
-public class DimensionNode extends NavigatorNode {
-
-	private Dimension dimension;
+public class DimensionNode extends NavigatorNode<Dimension> {
 
 	/**
 	 * @param parent
 	 * @param dimension
 	 */
 	public DimensionNode(TreeNode parent, Dimension dimension) {
+		super(dimension);
 		setParent(parent);
-		this.dimension = dimension;
 	}
 
 	/**
@@ -26,14 +24,6 @@ public class DimensionNode extends NavigatorNode {
 	@Override
 	public String getType() {
 		return "dimension";
-	}
-
-	/**
-	 * @see org.primefaces.model.TreeNode#getData()
-	 */
-	@Override
-	public Dimension getData() {
-		return dimension;
 	}
 
 	/**
@@ -49,11 +39,20 @@ public class DimensionNode extends NavigatorNode {
 	 */
 	@Override
 	protected List<TreeNode> createChildren() {
-		List<Hierarchy> hierarchies = dimension.getHierarchies();
+		List<Hierarchy> hierarchies = getElement().getHierarchies();
+
+		NodeSelectionFilter filter = getNodeFilter();
 
 		List<TreeNode> children = new ArrayList<TreeNode>(hierarchies.size());
 		for (Hierarchy hierarchy : hierarchies) {
-			children.add(new HierarchyNode(this, hierarchy));
+			HierarchyNode node = new HierarchyNode(this, hierarchy);
+			node.setNodeFilter(filter);
+
+			if (filter != null) {
+				node.getData().setSelected(filter.isSelected(hierarchy));
+			}
+
+			children.add(node);
 		}
 
 		return children;
