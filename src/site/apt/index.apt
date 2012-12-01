@@ -34,9 +34,11 @@ Current Status
 [./images/screenshot-thumb.jpeg] Screenshot of the application
 
 	* And there's also a screencast demonstrating features of the application : 
-	(Link to the YouTube video {{{http://www.youtube.com/watch?v=Hh4HT314_H0}here}}).
+	(Link to the YouTube video {{{http://youtu.be/sGMVPVgycBg?hd=1}here}}).
 
 News
+
+	* <<[2012-12-01]>> Uploaded a new video demonstrating progress on the axis configuration feature.
 
 	* <<[2012-11-03]>> Updated project to use the new renderer API (Pivot4J 0.0.5).
 
