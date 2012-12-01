@@ -56,7 +56,7 @@
 						<p:selectBooleanButton value="#{pivotGridHandler.swapAxes}"
 							onLabel="Swap Axes" offLabel="Swap Axes" onIcon="ui-icon-refresh"
 							offIcon="ui-icon-refresh">
-							<p:ajax update=":grid-form,:editor-form"
+							<p:ajax update=":grid-form,:editor-form,:target-tree-form"
 								listener="#{pivotGridHandler.toggleSwapAxes}" />
 						</p:selectBooleanButton>
 						<p:separator />
@@ -96,6 +96,8 @@
 						<p:treeNode type="hierarchy" icon="ui-icon-hier">
 							<h:outputText id="hierarchy-node" value="#{node.name}"
 								styleClass="node-hierarchy" />
+							<p:draggable for="hierarchy-node"
+								helper="clone', appendTo: 'body" revert="true" />
 						</p:treeNode>
 
 						<p:treeNode type="level" icon="ui-icon-level#{node.depth}">
@@ -103,7 +105,7 @@
 								styleClass="node-level" />
 							<!-- workaround for issue #1 -->
 							<p:draggable for="level-node" helper="clone', appendTo: 'body"
-								revert="true" scope="level" />
+								revert="true" />
 						</p:treeNode>
 
 						<p:treeNode type="member" icon="ui-icon-measure">
@@ -111,9 +113,14 @@
 								styleClass="node-member" />
 							<!-- workaround for issue #1 -->
 							<p:draggable for="member-node" helper="clone', appendTo: 'body"
-								revert="true" scope="member" />
+								revert="true" />
 						</p:treeNode>
 					</p:tree>
+					<p:droppable for="cube-navigator"
+						hoverStyleClass="drop-target-node">
+						<p:ajax listener="#{navigatorHandler.onDrop}"
+							update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+					</p:droppable>
 				</h:form>
 			</pe:layoutPane>
 			<pe:layoutPane id="target-tree-pane" position="south">
@@ -128,12 +135,18 @@
 							<h:outputText id="columns-node" value="Columns"
 								styleClass="node-axis" />
 							<p:droppable for="columns-node"
-								hoverStyleClass="drop-target-node" />
+								hoverStyleClass="drop-target-node">
+								<p:ajax listener="#{navigatorHandler.onDropOnAxis}"
+									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+							</p:droppable>
 						</p:treeNode>
 
 						<p:treeNode type="rows" icon="ui-icon-rows">
 							<h:outputText id="rows-node" value="Rows" styleClass="node-axis" />
-							<p:droppable for="rows-node" hoverStyleClass="drop-target-node" />
+							<p:droppable for="rows-node" hoverStyleClass="drop-target-node">
+								<p:ajax listener="#{navigatorHandler.onDropOnAxis}"
+									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+							</p:droppable>
 						</p:treeNode>
 
 						<p:treeNode type="filter" icon="ui-icon-filter">
@@ -145,22 +158,28 @@
 						<p:treeNode type="hierarchy" icon="ui-icon-hier">
 							<h:outputText id="hierarchy-node" value="#{node.name}"
 								styleClass="node-hierarchy" />
-							<p:draggable for="hierarchy-node" helper="clone" revert="true" />
+							<!-- workaround for issue #1 -->
+							<p:draggable for="hierarchy-node"
+								helper="clone', appendTo: 'body" revert="true" />
 							<p:droppable for="hierarchy-node"
 								hoverStyleClass="drop-target-node" />
 						</p:treeNode>
 
 						<p:treeNode type="level" icon="ui-icon-level#{node.depth}">
-							<h:outputText value="#{node.name}" styleClass="node-level" />
+							<h:outputText id="level-node" value="#{node.name}"
+								styleClass="node-level" />
+							<!-- workaround for issue #1 -->
+							<p:draggable for="level-node" helper="clone', appendTo: 'body"
+								revert="true" />
 						</p:treeNode>
 
 						<p:treeNode type="member" icon="ui-icon-measure">
 							<h:outputText id="member-node" value="#{node.name}"
 								styleClass="node-member" />
-							<p:draggable for="member-node" helper="clone" revert="true"
-								scope="member" />
-							<p:droppable for="member-node" hoverStyleClass="drop-target-node"
-								scope="member" />
+							<!-- workaround for issue #1 -->
+							<p:draggable for="member-node" helper="clone', appendTo: 'body"
+								revert="true" />
+							<p:droppable for="member-node" hoverStyleClass="drop-target-node" />
 						</p:treeNode>
 					</p:tree>
 				</h:form>

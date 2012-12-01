@@ -65,7 +65,7 @@ public class WorkbenchHandler {
 			targetTreeOptions.addOption("resizable", true);
 			targetTreeOptions.addOption("closable", true);
 			targetTreeOptions.addOption("slidable", true);
-			targetTreeOptions.addOption("size", 300);
+			targetTreeOptions.addOption("size", 340);
 
 			childWestOptions.setSouthOptions(targetTreeOptions);
 

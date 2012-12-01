@@ -12,6 +12,8 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.component.panelgrid.PanelGrid;
 
+import com.eyeq.pivot4j.ModelChangeEvent;
+import com.eyeq.pivot4j.ModelChangeListener;
 import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.QueryEvent;
 import com.eyeq.pivot4j.QueryListener;
@@ -24,7 +26,7 @@ import com.eyeq.pivot4j.ui.command.DrillDownCommand;
 
 @ManagedBean(name = "pivotGridHandler")
 @RequestScoped
-public class PivotGridHandler implements QueryListener {
+public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
 	@ManagedProperty(value = "#{pivotModelManager.model}")
 	private PivotModel model;
@@ -51,11 +53,13 @@ public class PivotGridHandler implements QueryListener {
 	@PostConstruct
 	protected void initialize() {
 		model.addQueryListener(this);
+		model.addModelChangeListener(this);
 	}
 
 	@PreDestroy
 	protected void destroy() {
 		model.removeQueryListener(this);
+		model.removeModelChangeListener(this);
 	}
 
 	/**
@@ -164,9 +168,6 @@ public class PivotGridHandler implements QueryListener {
 		CellCommand command = renderer.getCommand(requestParameters
 				.get("command"));
 		command.execute(model, parameters);
-
-		navigator.setCubeNode(null);
-		navigator.setTargetNode(null);
 	}
 
 	public void executeMdx() {
@@ -295,5 +296,34 @@ public class PivotGridHandler implements QueryListener {
 	@Override
 	public void queryExecuted(QueryEvent e) {
 		this.duration = e.getDuration();
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ModelChangeListener#modelInitialized(com.eyeq.pivot4j.ModelChangeEvent)
+	 */
+	@Override
+	public void modelInitialized(ModelChangeEvent e) {
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ModelChangeListener#modelDestroyed(com.eyeq.pivot4j.ModelChangeEvent)
+	 */
+	@Override
+	public void modelDestroyed(ModelChangeEvent e) {
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ModelChangeListener#modelChanged(com.eyeq.pivot4j.ModelChangeEvent)
+	 */
+	@Override
+	public void modelChanged(ModelChangeEvent e) {
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ModelChangeListener#structureChanged(com.eyeq.pivot4j.ModelChangeEvent)
+	 */
+	@Override
+	public void structureChanged(ModelChangeEvent e) {
+		render();
 	}
 }

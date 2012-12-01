@@ -102,6 +102,23 @@ body {
 	font-weight: bold;
 }
 
+.navigator.drop-target-node {
+	background-color: #dddddd;
+}
+
+.ui-draggable-dragging.node-hierarchy {
+	background-image: url('../images/hierarchy.gif');
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left: 18px;
+}
+
+.ui-draggable-dragging.node-level {
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left: 18px;
+}
+
 .ui-draggable-dragging.node-member {
 	background-image: url('../images/measure.gif');
 	background-repeat: no-repeat;

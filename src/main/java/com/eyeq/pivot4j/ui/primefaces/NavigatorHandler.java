@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.faces.FacesException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -20,16 +23,22 @@ import org.primefaces.event.DragDropEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
+import com.eyeq.pivot4j.ModelChangeEvent;
+import com.eyeq.pivot4j.ModelChangeListener;
 import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.transform.PlaceHierarchiesOnAxes;
 import com.eyeq.pivot4j.transform.PlaceLevelsOnAxes;
 import com.eyeq.pivot4j.transform.PlaceMembersOnAxes;
 import com.eyeq.pivot4j.ui.primefaces.tree.CubeNode;
+import com.eyeq.pivot4j.ui.primefaces.tree.HierarchyNode;
+import com.eyeq.pivot4j.ui.primefaces.tree.LevelNode;
+import com.eyeq.pivot4j.ui.primefaces.tree.MemberNode;
 import com.eyeq.pivot4j.ui.primefaces.tree.NodeSelectionFilter;
 
 @ManagedBean(name = "navigatorHandler")
 @RequestScoped
-public class NavigatorHandler implements NodeSelectionFilter {
+public class NavigatorHandler implements ModelChangeListener,
+		NodeSelectionFilter {
 
 	@ManagedProperty(value = "#{pivotModelManager.model}")
 	private PivotModel model;
@@ -45,6 +54,16 @@ public class NavigatorHandler implements NodeSelectionFilter {
 	private Map<Hierarchy, List<Level>> levels;
 
 	private Map<Hierarchy, List<Member>> members;
+
+	@PostConstruct
+	protected void initialize() {
+		model.addModelChangeListener(this);
+	}
+
+	@PreDestroy
+	protected void destroy() {
+		model.removeModelChangeListener(this);
+	}
 
 	/**
 	 * @return the model
@@ -91,8 +110,8 @@ public class NavigatorHandler implements NodeSelectionFilter {
 			PlaceHierarchiesOnAxes transform = model
 					.getTransform(PlaceHierarchiesOnAxes.class);
 
-			result = new ArrayList<Hierarchy>();
-			hierarchies.put(axis, transform.findVisibleHierarchies(axis));
+			result = transform.findVisibleHierarchies(axis);
+			hierarchies.put(axis, result);
 		}
 
 		return result;
@@ -167,24 +186,25 @@ public class NavigatorHandler implements NodeSelectionFilter {
 
 	/**
 	 * @return the cubeNode
-	 * @throws OlapException
 	 */
-	public TreeNode getTargetNode() throws OlapException {
+	public TreeNode getTargetNode() {
 		if (targetNode == null && model.isInitialized()) {
 			this.targetNode = new DefaultTreeNode();
 
 			DefaultTreeNode columns = new DefaultTreeNode();
 			columns.setExpanded(true);
 			columns.setType("columns");
+			columns.setData(Axis.COLUMNS);
+			columns.setParent(targetNode);
 
-			targetNode.getChildren().add(columns);
 			configureAxis(columns, Axis.COLUMNS);
 
 			DefaultTreeNode rows = new DefaultTreeNode();
 			rows.setExpanded(true);
 			rows.setType("rows");
+			rows.setData(Axis.ROWS);
+			rows.setParent(targetNode);
 
-			targetNode.getChildren().add(rows);
 			configureAxis(rows, Axis.ROWS);
 		}
 
@@ -204,25 +224,29 @@ public class NavigatorHandler implements NodeSelectionFilter {
 	 * @param axis
 	 * @throws OlapException
 	 */
-	protected void configureAxis(TreeNode axisRoot, Axis axis)
-			throws OlapException {
+	protected void configureAxis(TreeNode axisRoot, Axis axis) {
 		List<Hierarchy> hierarchies = getHierarchies(axis);
 		for (Hierarchy hierarchy : hierarchies) {
 			DefaultTreeNode hierarchyNode = new DefaultTreeNode();
 			hierarchyNode.setData(hierarchy);
 			hierarchyNode.setType("hierarchy");
 			hierarchyNode.setExpanded(true);
+			hierarchyNode.setParent(axisRoot);
 
-			axisRoot.getChildren().add(hierarchyNode);
+			Type type;
+			try {
+				type = hierarchy.getDimension().getDimensionType();
+			} catch (OlapException e) {
+				throw new FacesException(e);
+			}
 
-			if (hierarchy.getDimension().getDimensionType() == Type.MEASURE) {
+			if (type == Type.MEASURE) {
 				List<Member> members = getMembers(hierarchy);
 				for (Member member : members) {
 					DefaultTreeNode memberNode = new DefaultTreeNode();
 					memberNode.setData(member);
 					memberNode.setType("member");
-
-					hierarchyNode.getChildren().add(memberNode);
+					memberNode.setParent(hierarchyNode);
 				}
 			} else {
 				List<Level> levels = getLevels(hierarchy);
@@ -230,43 +254,193 @@ public class NavigatorHandler implements NodeSelectionFilter {
 					DefaultTreeNode levelNode = new DefaultTreeNode();
 					levelNode.setData(level);
 					levelNode.setType("level");
-
-					hierarchyNode.getChildren().add(levelNode);
+					levelNode.setParent(hierarchyNode);
 				}
 			}
 		}
 	}
 
 	/**
-	 * @param e
+	 * @param id
+	 * @return
 	 */
-	public void onLevelDrop(DragDropEvent e) {
+	protected List<Integer> getNodePath(String id) {
 		// there should be a cleaner way to get data from the dropped component.
 		// it's a limitation on PFs' side :
 		// http://code.google.com/p/primefaces/issues/detail?id=2781
-		String[] segments = e.getDragId().split(":");
+		String[] segments = id.split(":");
 		String[] indexSegments = segments[segments.length - 2].split("_");
 
-		List<Integer> indexes = new ArrayList<Integer>(indexSegments.length);
+		List<Integer> path = new ArrayList<Integer>(indexSegments.length);
 		for (String index : indexSegments) {
-			indexes.add(Integer.parseInt(index));
+			path.add(Integer.parseInt(index));
 		}
 
-		TreeNode node = findDraggedNode(getCubeNode(), indexes);
-		System.out.println(node.getData());
-
-		Member member = (Member) node.getData();
-
-		createIdFromUniqueName(member.getUniqueName());
+		return path;
 	}
 
 	/**
-	 * @param name
+	 * @param id
 	 * @return
 	 */
-	private String createIdFromUniqueName(String name) {
-		return name.replaceAll("[\\[\\]]", "").replaceAll("[\\s\\.]", "_")
-				.toLowerCase();
+	protected boolean isSourceNode(String id) {
+		return id.startsWith("source-tree-form:cube-navigator");
+	}
+
+	/**
+	 * @param e
+	 */
+	public void onDrop(DragDropEvent e) {
+		List<Integer> path = getNodePath(e.getDragId());
+
+		boolean fromNavigator = isSourceNode(e.getDragId());
+		if (fromNavigator) {
+			return;
+		}
+
+		TreeNode node = findNodeFromPath(getTargetNode(), path);
+
+		if (node.getData() instanceof Hierarchy) {
+			Axis axis = (Axis) node.getParent().getData();
+			Hierarchy hierarchy = (Hierarchy) node.getData();
+
+			removeHierarhy(axis, hierarchy);
+		} else if (node.getData() instanceof Level) {
+			Axis axis = (Axis) node.getParent().getParent().getData();
+			Level level = (Level) node.getData();
+
+			removeLevel(axis, level);
+		} else if (node.getData() instanceof Member) {
+			Member member = (Member) node.getData();
+
+			removeMember(member);
+		}
+	}
+
+	/**
+	 * @param e
+	 */
+	public void onDropOnAxis(DragDropEvent e) {
+		List<Integer> sourcePath = getNodePath(e.getDragId());
+		List<Integer> targetPath = getNodePath(e.getDropId());
+
+		boolean fromNavigator = isSourceNode(e.getDragId());
+
+		TreeNode rootNode = fromNavigator ? getCubeNode() : getTargetNode();
+
+		TreeNode sourceNode = findNodeFromPath(rootNode, sourcePath);
+		TreeNode targetNode = findNodeFromPath(getTargetNode(), targetPath);
+
+		if (fromNavigator) {
+			onDropOnAxis(sourceNode, targetNode);
+		} else if (sourceNode.getData() instanceof Hierarchy) {
+			Axis targetAxis = (Axis) targetNode.getData();
+			Hierarchy hierarchy = (Hierarchy) sourceNode.getData();
+
+			if (sourceNode.getParent().equals(targetNode)) {
+				moveHierarhy(targetAxis, hierarchy, 0);
+			} else {
+				Axis sourceAxis = (Axis) sourceNode.getParent().getData();
+
+				removeHierarhy(sourceAxis, hierarchy);
+				addHierarhy(targetAxis, hierarchy);
+			}
+		}
+	}
+
+	/**
+	 * @param sourceNode
+	 * @param targetNode
+	 */
+	protected void onDropOnAxis(TreeNode sourceNode, TreeNode targetNode) {
+		Axis axis = (Axis) targetNode.getData();
+
+		if (sourceNode instanceof HierarchyNode) {
+			HierarchyNode node = (HierarchyNode) sourceNode;
+			Hierarchy hierarchy = node.getElement();
+
+			addHierarhy(axis, hierarchy);
+		} else if (sourceNode instanceof LevelNode) {
+			LevelNode node = (LevelNode) sourceNode;
+			Level level = node.getElement();
+
+			addLevel(axis, level);
+		} else if (sourceNode instanceof MemberNode) {
+			MemberNode node = (MemberNode) sourceNode;
+			Member member = node.getElement();
+
+			addMember(axis, member);
+		}
+	}
+
+	/**
+	 * @param axis
+	 * @param hierarchy
+	 */
+	protected void addHierarhy(Axis axis, Hierarchy hierarchy) {
+		PlaceHierarchiesOnAxes transform = getModel().getTransform(
+				PlaceHierarchiesOnAxes.class);
+		transform.addHierarchy(axis, hierarchy, false, 0);
+	}
+
+	/**
+	 * @param axis
+	 * @param hierarchy
+	 * @param position
+	 */
+	protected void moveHierarhy(Axis axis, Hierarchy hierarchy, int position) {
+		PlaceHierarchiesOnAxes transform = getModel().getTransform(
+				PlaceHierarchiesOnAxes.class);
+		transform.moveHierarchy(axis, hierarchy, position);
+	}
+
+	/**
+	 * @param axis
+	 * @param hierarchy
+	 */
+	protected void removeHierarhy(Axis axis, Hierarchy hierarchy) {
+		PlaceHierarchiesOnAxes transform = getModel().getTransform(
+				PlaceHierarchiesOnAxes.class);
+		transform.removeHierarchy(axis, hierarchy);
+	}
+
+	/**
+	 * @param axis
+	 * @param level
+	 */
+	protected void addLevel(Axis axis, Level level) {
+		PlaceLevelsOnAxes transform = getModel().getTransform(
+				PlaceLevelsOnAxes.class);
+		transform.addLevel(axis, level, 0);
+	}
+
+	/**
+	 * @param axis
+	 * @param level
+	 */
+	protected void removeLevel(Axis axis, Level level) {
+		PlaceLevelsOnAxes transform = getModel().getTransform(
+				PlaceLevelsOnAxes.class);
+		transform.removeLevel(axis, level);
+	}
+
+	/**
+	 * @param axis
+	 * @param member
+	 */
+	protected void addMember(Axis axis, Member member) {
+		PlaceMembersOnAxes transform = getModel().getTransform(
+				PlaceMembersOnAxes.class);
+		transform.addMember(axis, member, 0);
+	}
+
+	/**
+	 * @param member
+	 */
+	protected void removeMember(Member member) {
+		PlaceMembersOnAxes transform = getModel().getTransform(
+				PlaceMembersOnAxes.class);
+		transform.removeMember(member);
 	}
 
 	/**
@@ -274,9 +448,9 @@ public class NavigatorHandler implements NodeSelectionFilter {
 	 * @param indexes
 	 * @return
 	 */
-	protected TreeNode findDraggedNode(TreeNode parent, List<Integer> indexes) {
+	protected TreeNode findNodeFromPath(TreeNode parent, List<Integer> indexes) {
 		if (indexes.size() > 1) {
-			return findDraggedNode(parent.getChildren().get(indexes.get(0)),
+			return findNodeFromPath(parent.getChildren().get(indexes.get(0)),
 					indexes.subList(1, indexes.size()));
 		} else {
 			return parent.getChildren().get(indexes.get(0));
@@ -315,5 +489,39 @@ public class NavigatorHandler implements NodeSelectionFilter {
 	@Override
 	public boolean isSelected(Member member) {
 		return getMembers(member.getHierarchy()).contains(member);
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ModelChangeListener#modelInitialized(com.eyeq.pivot4j.ModelChangeEvent)
+	 */
+	@Override
+	public void modelInitialized(ModelChangeEvent e) {
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ModelChangeListener#modelDestroyed(com.eyeq.pivot4j.ModelChangeEvent)
+	 */
+	@Override
+	public void modelDestroyed(ModelChangeEvent e) {
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ModelChangeListener#modelChanged(com.eyeq.pivot4j.ModelChangeEvent)
+	 */
+	@Override
+	public void modelChanged(ModelChangeEvent e) {
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ModelChangeListener#structureChanged(com.eyeq.pivot4j.ModelChangeEvent)
+	 */
+	@Override
+	public void structureChanged(ModelChangeEvent e) {
+		this.cubeNode = null;
+		this.targetNode = null;
+
+		this.hierarchies = null;
+		this.levels = null;
+		this.members = null;
 	}
 }

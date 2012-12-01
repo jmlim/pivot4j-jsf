@@ -48,7 +48,7 @@ public abstract class NavigatorNode<T extends MetadataElement> implements
 		return parent;
 	}
 
-	protected T getElement() {
+	public T getElement() {
 		return element;
 	}
 
