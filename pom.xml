@@ -264,7 +264,7 @@
 		<dependency>
 			<groupId>com.eyeq</groupId>
 			<artifactId>pivot4j</artifactId>
-			<version>0.0.5</version>
+			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.olap4j</groupId>
@@ -341,8 +341,8 @@
 	<repositories>
 		<repository>
 			<id>dev.eyeq.co.kr</id>
-			<name>dev.eyeq.co.kr-release</name>
-			<url>http://dev.eyeq.co.kr/artifactory/libs-release</url>
+			<name>dev.eyeq.co.kr-snapshot</name>
+			<url>http://dev.eyeq.co.kr/artifactory/libs-snapshot</url>
 		</repository>
 		<repository>
 			<id>pentaho</id>
