@@ -1,5 +1,23 @@
+/* Default font settings.
+   The font-size percentage is of 16px. (0.75 * 16px = 12px) */
+html { font-size:100.01%; }
 body {
-	font-size: smaller;
+  font-size: 75%;
+  color: #222;
+  background: #fff;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+.pe-layout-pane-header {
+	padding-left: 3px;
+}
+
+#source-tree-pane .pe-layout-pane-header {
+	padding-left: 6px;
+}
+
+#target-tree-pane .pe-layout-pane-header {
+	padding-left: 6px;
 }
 
 #toolbar-pane.pe-layout-pane-content {
@@ -162,7 +180,7 @@ body {
 	background-image: none;
 }
 
-.pivot-grid .ui-button-icon-only {
+.ui-button-icon-only {
 	width: 16px;
 	height: 16px;
 	margin-left: 3px;
@@ -183,13 +201,9 @@ body {
 	padding: 8px 5px 0px 5px;	
 }
 
-.query-info .ui-icon, .info-panel .ui-icon {
+.ui-icon-title {
 	float: left;
-	margin-left: 2px;
-}
-
-#content-pane, .info-panel .ui-icon {
-	margin-right: 5px;
+	margin-right: 2px;
 }
 
 #content-pane .info-panel {

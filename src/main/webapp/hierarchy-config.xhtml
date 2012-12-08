@@ -1,0 +1,15 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<p:dialog id="hierarchy-config" header="Hierarchy Configuration"
+		widgetVar="hierarchyConfig" modal="true" height="120" closable="true"
+		resizable="false" styleClass="hierarchy-config">
+		<h:form id="hierarchy-form">
+			<p:commandButton type="button" value="Close" icon="ui-icon-close"
+				onclick="hierarchyConfig.hide();" />
+		</h:form>
+	</p:dialog>
+</ui:composition>

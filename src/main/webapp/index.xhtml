@@ -1,12 +1,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 <h:head>
 	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 	<title>Pivot4J JSF Sample Application</title>
 	<link type="text/css" rel="stylesheet" href="resources/css/style.css" />
+
 	<script type="text/javascript" src="resources/js/mdx.js"></script>
 </h:head>
 
@@ -78,7 +80,10 @@
 
 		<pe:layoutPane id="navigator-pane" position="west">
 			<f:facet name="header">
-				<h:outputText value="OLAP Navigator" />
+				<h:panelGroup layout="block">
+					<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-search" />
+					<h:outputText value="OLAP Navigator" />
+				</h:panelGroup>
 			</f:facet>
 
 			<pe:layoutPane id="cube-list-pane" position="north">
@@ -173,8 +178,12 @@
 						</p:treeNode>
 
 						<p:treeNode type="hierarchy" icon="ui-icon-hier">
-							<h:outputText id="hierarchy-node" value="#{node.name}"
-								styleClass="node-hierarchy" />
+							<div onmouseover="console.log('test')">
+								<h:outputText id="hierarchy-node" value="#{node.name}"
+									styleClass="node-hierarchy" />
+								<p:commandButton icon="ui-button-icon-only ui-icon-search"
+									onclick="hierarchyConfig.show();" style="display: none;" />
+							</div>
 							<!-- workaround for issue #1 -->
 							<p:draggable for="hierarchy-node"
 								helper="clone', appendTo: 'body" revert="true" />
@@ -211,7 +220,10 @@
 
 		<pe:layoutPane id="content-pane" position="center">
 			<f:facet name="header">
-				<h:outputText value="Query Result" />
+				<h:panelGroup layout="block">
+					<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-calculator" />
+					<h:outputText value="Query Result" />
+				</h:panelGroup>
 			</f:facet>
 
 			<pe:layoutPane id="grid-content-pane" position="center">
@@ -222,7 +234,7 @@
 
 					<h:panelGroup styleClass="info-panel" layout="block"
 						rendered="#{!pivotGridHandler.valid}">
-						<h:outputText styleClass="ui-icon ui-icon-info" />
+						<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-info" />
 						<h:outputText
 							value="You need to put at least one level or measure on Columns and Rows for a valid query."
 							styleClass="message-warn" />
@@ -238,7 +250,10 @@
 
 			<pe:layoutPane id="mdx-editor-pane" position="south">
 				<f:facet name="header">
-					<h:outputText value="MDX Query" />
+					<h:panelGroup layout="block">
+						<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-script" />
+						<h:outputText value="MDX Query" />
+					</h:panelGroup>
 				</f:facet>
 
 				<h:form id="editor-form">
@@ -252,7 +267,7 @@
 						</p:toolbarGroup>
 						<p:toolbarGroup align="right" styleClass="query-info"
 							rendered="#{!empty pivotGridHandler.duration}">
-							<h:outputText styleClass="ui-icon ui-icon-clock" />
+							<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-clock" />
 							<h:outputText value="Query execution time : " />
 							<h:outputText value="#{pivotGridHandler.duration}">
 								<f:convertNumber pattern="###,### msec" />
@@ -278,23 +293,8 @@
 		<p:ajax event="open" update="editor-form:mdx-editor" />
 	</pe:layout>
 
-	<p:dialog id="modalDialog" header="About This Application"
-		widgetVar="about" modal="true" height="120" closable="true"
-		resizable="false" styleClass="about">
-		<h:form id="about-form">
-			<h:graphicImage value="/resources/images/pivot4j.png"
-				alt="Pivot4J Logo" styleClass="logo" />
-			<h:outputText value="Welcome to Pivot4J JSF Sample Application!"
-				styleClass="about-title" />
-			<h:panelGroup stylcClass="about-text" layout="block">
-				<h:outputText
-					value="Pivot4J JSF is a sample application built with PrimeFaces to show basic usage of Pivot4J library."
-					styleClass="about-text" />
-			</h:panelGroup>
-			<p:commandButton type="button" value="Close" icon="ui-icon-close"
-				onclick="about.hide();" />
-		</h:form>
-	</p:dialog>
+	<ui:include src="about.xhtml" />
+	<ui:include src="hierarchy-config.xhtml" />
 
 	<p:ajaxStatus styleClass="ajax-status">
 		<f:facet name="start">

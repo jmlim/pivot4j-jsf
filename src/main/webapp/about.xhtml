@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<p:dialog id="about-dialog" header="About This Application"
+		widgetVar="about" modal="true" height="120" closable="true"
+		resizable="false" styleClass="about">
+		<h:form id="about-form">
+			<h:graphicImage value="/resources/images/pivot4j.png"
+				alt="Pivot4J Logo" styleClass="logo" />
+			<h:outputText value="Welcome to Pivot4J JSF Sample Application!"
+				styleClass="about-title" />
+			<h:panelGroup stylcClass="about-text" layout="block">
+				<h:outputText
+					value="Pivot4J JSF is a sample application built with PrimeFaces to show basic usage of Pivot4J library."
+					styleClass="about-text" />
+			</h:panelGroup>
+			<p:commandButton type="button" value="Close" icon="ui-icon-close"
+				onclick="about.hide();" />
+		</h:form>
+	</p:dialog>
+</ui:composition>
