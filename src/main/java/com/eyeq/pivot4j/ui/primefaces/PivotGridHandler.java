@@ -1,5 +1,6 @@
 package com.eyeq.pivot4j.ui.primefaces;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.olap4j.CellSetAxis;
 import org.primefaces.component.panelgrid.PanelGrid;
 
 import com.eyeq.pivot4j.ModelChangeEvent;
@@ -128,6 +130,16 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 		renderer.setEnableRowDrillDown(true);
 
 		return renderer;
+	}
+
+	public boolean isValid() {
+		List<CellSetAxis> axes = model.getCellSet().getAxes();
+		if (axes.size() < 2) {
+			return false;
+		}
+
+		return axes.get(0).getPositionCount() > 0
+				&& axes.get(1).getPositionCount() > 0;
 	}
 
 	public void render() {

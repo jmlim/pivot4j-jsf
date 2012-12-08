@@ -8,9 +8,11 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.FacesException;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 
 import org.olap4j.Axis;
 import org.olap4j.OlapException;
@@ -26,6 +28,7 @@ import org.primefaces.model.TreeNode;
 import com.eyeq.pivot4j.ModelChangeEvent;
 import com.eyeq.pivot4j.ModelChangeListener;
 import com.eyeq.pivot4j.PivotModel;
+import com.eyeq.pivot4j.transform.ChangeSlicer;
 import com.eyeq.pivot4j.transform.PlaceHierarchiesOnAxes;
 import com.eyeq.pivot4j.transform.PlaceLevelsOnAxes;
 import com.eyeq.pivot4j.transform.PlaceMembersOnAxes;
@@ -107,10 +110,15 @@ public class NavigatorHandler implements ModelChangeListener,
 
 		List<Hierarchy> result = hierarchies.get(axis);
 		if (result == null) {
-			PlaceHierarchiesOnAxes transform = model
-					.getTransform(PlaceHierarchiesOnAxes.class);
+			if (axis.equals(Axis.FILTER)) {
+				ChangeSlicer transform = model.getTransform(ChangeSlicer.class);
+				result = transform.getHierarchies();
+			} else {
+				PlaceHierarchiesOnAxes transform = model
+						.getTransform(PlaceHierarchiesOnAxes.class);
+				result = transform.findVisibleHierarchies(axis);
+			}
 
-			result = transform.findVisibleHierarchies(axis);
 			hierarchies.put(axis, result);
 		}
 
@@ -374,13 +382,99 @@ public class NavigatorHandler implements ModelChangeListener,
 	}
 
 	/**
+	 * @param e
+	 */
+	public void onDropOnHierarchy(DragDropEvent e) {
+		List<Integer> sourcePath = getNodePath(e.getDragId());
+		List<Integer> targetPath = getNodePath(e.getDropId());
+
+		int position = targetPath.get(targetPath.size() - 1) + 1;
+
+		boolean fromNavigator = isSourceNode(e.getDragId());
+
+		TreeNode rootNode = fromNavigator ? getCubeNode() : getTargetNode();
+
+		TreeNode sourceNode = findNodeFromPath(rootNode, sourcePath);
+		TreeNode targetNode = findNodeFromPath(getTargetNode(), targetPath);
+
+		if (fromNavigator) {
+			onDropOnHierarchy(sourceNode, targetNode, position);
+		} else if (sourceNode.getData() instanceof Hierarchy) {
+			Axis targetAxis = (Axis) targetNode.getParent().getData();
+			Hierarchy hierarchy = (Hierarchy) sourceNode.getData();
+
+			if (sourceNode.getParent().equals(targetNode)) {
+				moveHierarhy(targetAxis, hierarchy, position);
+			} else {
+				Axis sourceAxis = (Axis) sourceNode.getParent().getData();
+
+				removeHierarhy(sourceAxis, hierarchy);
+				addHierarhy(targetAxis, hierarchy, position);
+			}
+		}
+	}
+
+	/**
+	 * @param sourceNode
+	 * @param targetNode
+	 * @param position
+	 */
+	protected void onDropOnHierarchy(TreeNode sourceNode, TreeNode targetNode,
+			int position) {
+		Axis axis = (Axis) targetNode.getParent().getData();
+
+		if (sourceNode instanceof HierarchyNode) {
+			HierarchyNode node = (HierarchyNode) sourceNode;
+			Hierarchy hierarchy = node.getElement();
+
+			addHierarhy(axis, hierarchy, position);
+		} else if (sourceNode instanceof LevelNode) {
+			LevelNode node = (LevelNode) sourceNode;
+			Level level = node.getElement();
+
+			addLevel(axis, level, position);
+		} else if (sourceNode instanceof MemberNode) {
+			MemberNode node = (MemberNode) sourceNode;
+			Member member = node.getElement();
+
+			addMember(axis, member, position);
+		}
+	}
+
+	/**
 	 * @param axis
 	 * @param hierarchy
 	 */
 	protected void addHierarhy(Axis axis, Hierarchy hierarchy) {
+		addHierarhy(axis, hierarchy, 0);
+	}
+
+	/**
+	 * @param axis
+	 * @param hierarchy
+	 * @param position
+	 */
+	protected void addHierarhy(Axis axis, Hierarchy hierarchy, int position) {
+		for (Axis ax : new Axis[] { Axis.COLUMNS, Axis.ROWS, Axis.FILTER }) {
+			List<Hierarchy> hiersInAxis = getHierarchies(ax);
+
+			if (hiersInAxis.contains(hierarchy)) {
+				String title = "Unable to add hierarchy.";
+				String message = String
+						.format("The selected hierarchy already exists in the '%s' axis.",
+								ax.name());
+
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_WARN, title, message));
+				return;
+			}
+		}
+
 		PlaceHierarchiesOnAxes transform = getModel().getTransform(
 				PlaceHierarchiesOnAxes.class);
-		transform.addHierarchy(axis, hierarchy, false, 0);
+
+		transform.addHierarchy(axis, hierarchy, false, position);
 	}
 
 	/**
@@ -409,9 +503,40 @@ public class NavigatorHandler implements ModelChangeListener,
 	 * @param level
 	 */
 	protected void addLevel(Axis axis, Level level) {
+		addLevel(axis, level, 0);
+	}
+
+	/**
+	 * @param axis
+	 * @param level
+	 * @param position
+	 */
+	protected void addLevel(Axis axis, Level level, int position) {
+		Hierarchy hierarchy = level.getHierarchy();
+
+		for (Axis ax : new Axis[] { Axis.COLUMNS, Axis.ROWS, Axis.FILTER }) {
+			if (ax.equals(axis)) {
+				continue;
+			}
+
+			List<Hierarchy> hiersInAxis = getHierarchies(ax);
+
+			if (hiersInAxis.contains(hierarchy)) {
+				String title = "Unable to add level.";
+				String message = String
+						.format("Hierarchy of the selected level already exists in the '%s' axis.",
+								ax.name());
+
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_WARN, title, message));
+				return;
+			}
+		}
+
 		PlaceLevelsOnAxes transform = getModel().getTransform(
 				PlaceLevelsOnAxes.class);
-		transform.addLevel(axis, level, 0);
+		transform.addLevel(axis, level, position);
 	}
 
 	/**
@@ -429,9 +554,40 @@ public class NavigatorHandler implements ModelChangeListener,
 	 * @param member
 	 */
 	protected void addMember(Axis axis, Member member) {
+		addMember(axis, member, 0);
+	}
+
+	/**
+	 * @param axis
+	 * @param member
+	 * @param position
+	 */
+	protected void addMember(Axis axis, Member member, int position) {
+		Hierarchy hierarchy = member.getHierarchy();
+
+		for (Axis ax : new Axis[] { Axis.COLUMNS, Axis.ROWS, Axis.FILTER }) {
+			if (ax.equals(axis)) {
+				continue;
+			}
+
+			List<Hierarchy> hiersInAxis = getHierarchies(ax);
+
+			if (hiersInAxis.contains(hierarchy)) {
+				String title = "Unable to add member.";
+				String message = String
+						.format("Hierarchy of the selected member already exists in the '%s' axis.",
+								ax.name());
+
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_WARN, title, message));
+				return;
+			}
+		}
+
 		PlaceMembersOnAxes transform = getModel().getTransform(
 				PlaceMembersOnAxes.class);
-		transform.addMember(axis, member, 0);
+		transform.addMember(axis, member, position);
 	}
 
 	/**
