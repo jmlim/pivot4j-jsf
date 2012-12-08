@@ -199,7 +199,10 @@
 							<!-- workaround for issue #1 -->
 							<p:draggable for="member-node" helper="clone', appendTo: 'body"
 								revert="true" />
-							<p:droppable for="member-node" hoverStyleClass="drop-target-node" />
+							<p:droppable for="member-node" hoverStyleClass="drop-target-node">
+								<p:ajax listener="#{navigatorHandler.onDropOnMember}"
+									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+							</p:droppable>
 						</p:treeNode>
 					</p:tree>
 				</h:form>

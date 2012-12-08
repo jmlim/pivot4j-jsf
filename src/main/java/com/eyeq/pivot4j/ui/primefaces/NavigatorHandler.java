@@ -419,6 +419,10 @@ public class NavigatorHandler implements ModelChangeListener,
 				removeHierarhy(sourceAxis, hierarchy);
 				addHierarhy(targetAxis, hierarchy, position);
 			}
+		} else if (sourceNode.getData() instanceof Member) {
+			if (sourceNode.getParent().equals(targetNode)) {
+				moveMember((Member) sourceNode.getData(), 0);
+			}
 		}
 	}
 
@@ -445,7 +449,48 @@ public class NavigatorHandler implements ModelChangeListener,
 			MemberNode node = (MemberNode) sourceNode;
 			Member member = node.getElement();
 
+			if (member.getHierarchy().equals(targetNode.getData())) {
+				addMember(axis, member);
+			} else {
+				addMember(axis, member, position);
+			}
+		}
+	}
+
+	/**
+	 * @param e
+	 */
+	public void onDropOnMember(DragDropEvent e) {
+		List<Integer> sourcePath = getNodePath(e.getDragId());
+		List<Integer> targetPath = getNodePath(e.getDropId());
+
+		int position = targetPath.get(targetPath.size() - 1) + 1;
+
+		boolean fromNavigator = isSourceNode(e.getDragId());
+
+		TreeNode rootNode = fromNavigator ? getCubeNode() : getTargetNode();
+
+		TreeNode sourceNode = findNodeFromPath(rootNode, sourcePath);
+		TreeNode targetNode = findNodeFromPath(getTargetNode(), targetPath);
+
+		Member member;
+
+		if (fromNavigator) {
+			if (!(sourceNode instanceof MemberNode)) {
+				return;
+			}
+
+			member = ((MemberNode) sourceNode).getElement();
+
+			Axis axis = (Axis) targetNode.getParent().getParent().getData();
 			addMember(axis, member, position);
+		} else {
+			if (!(sourceNode.getData() instanceof Member)) {
+				return;
+			}
+
+			member = (Member) sourceNode.getData();
+			moveMember(member, position);
 		}
 	}
 
@@ -558,6 +603,17 @@ public class NavigatorHandler implements ModelChangeListener,
 	}
 
 	/**
+	 * @param member
+	 * @param position
+	 */
+	protected void addMember(Member member, int position) {
+		PlaceMembersOnAxes transform = model
+				.getTransform(PlaceMembersOnAxes.class);
+
+		transform.addMember(member, position);
+	}
+
+	/**
 	 * @param axis
 	 * @param member
 	 */
@@ -596,6 +652,17 @@ public class NavigatorHandler implements ModelChangeListener,
 		PlaceMembersOnAxes transform = getModel().getTransform(
 				PlaceMembersOnAxes.class);
 		transform.addMember(axis, member, position);
+	}
+
+	/**
+	 * @param member
+	 * @param position
+	 */
+	protected void moveMember(Member member, int position) {
+		PlaceMembersOnAxes transform = model
+				.getTransform(PlaceMembersOnAxes.class);
+
+		transform.moveMember(member, position);
 	}
 
 	/**
