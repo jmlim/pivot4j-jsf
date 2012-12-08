@@ -106,6 +106,14 @@ body {
 	background-color: #dddddd;
 }
 
+#cube-list-pane {
+	overflow: visible;
+}
+
+#cube-list-pane label {
+	margin: 0 5px 0 5px;
+}
+
 .ui-draggable-dragging.node-hierarchy {
 	background-image: url('../images/hierarchy.gif');
 	background-repeat: no-repeat;
@@ -175,9 +183,18 @@ body {
 	padding: 8px 5px 0px 5px;	
 }
 
-#mdx-editor-pane .query-info .ui-icon {
+.query-info .ui-icon, .info-panel .ui-icon {
 	float: left;
 	margin-left: 2px;
+}
+
+#content-pane, .info-panel .ui-icon {
+	margin-right: 5px;
+}
+
+#content-pane .info-panel {
+	padding: 10px;
+	font-weight: bold;
 }
 
 .ajax-status {

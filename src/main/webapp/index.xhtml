@@ -80,10 +80,26 @@
 			<f:facet name="header">
 				<h:outputText value="OLAP Navigator" />
 			</f:facet>
+
+			<pe:layoutPane id="cube-list-pane" position="north">
+				<h:form id="cube-list-form">
+					<h:outputLabel value="Cube" for="cube-list" />
+					<h:selectOneMenu id="cube-list"
+						value="#{pivotModelManager.cubeName}">
+						<f:selectItems value="#{dataSourceManager.cubes}" var="cube"
+							itemLabel="#{cube.itemLabel}" itemValue="#{cube.itemValue}" />
+						<p:ajax event="change"
+							listener="#{pivotModelManager.onCubeChange}"
+							update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+					</h:selectOneMenu>
+				</h:form>
+			</pe:layoutPane>
+
 			<pe:layoutPane id="source-tree-pane" position="center">
 				<f:facet name="header">
 					<h:outputText value="Cube Structure" />
 				</f:facet>
+
 				<h:form id="source-tree-form">
 					<p:tree id="cube-navigator" styleClass="navigator"
 						value="#{navigatorHandler.cubeNode}" dynamic="true" cache="true"
@@ -127,6 +143,7 @@
 				<f:facet name="header">
 					<h:outputText value="Pivot Structure" />
 				</f:facet>
+
 				<h:form id="target-tree-form">
 					<p:tree id="target-navigator" styleClass="navigator"
 						value="#{navigatorHandler.targetNode}" dynamic="true" cache="true"
@@ -200,9 +217,13 @@
 						binding="#{pivotGridHandler.pivotGrid}"
 						rendered="#{pivotGridHandler.valid}" />
 
-					<h:outputText
-						value="You need to put at least one level or measure on Columns and Rows for a valid query."
-						styleClass="message-warn" rendered="#{!pivotGridHandler.valid}" />
+					<h:panelGroup styleClass="info-panel" layout="block"
+						rendered="#{!pivotGridHandler.valid}">
+						<h:outputText styleClass="ui-icon ui-icon-info" />
+						<h:outputText
+							value="You need to put at least one level or measure on Columns and Rows for a valid query."
+							styleClass="message-warn" />
+					</h:panelGroup>
 
 					<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
 					<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
@@ -216,12 +237,13 @@
 				<f:facet name="header">
 					<h:outputText value="MDX Query" />
 				</f:facet>
+
 				<h:form id="editor-form">
 					<p:toolbar id="editor-toolbar">
 						<p:toolbarGroup align="left">
 							<p:commandButton value="Run" icon="ui-icon-play"
 								action="#{pivotGridHandler.executeMdx}"
-								update=":grid-form,:editor-form" />
+								update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
 							<p:commandButton value="Reset"
 								icon="ui-icon-arrowreturnthick-1-w" update="mdx-editor" />
 						</p:toolbarGroup>

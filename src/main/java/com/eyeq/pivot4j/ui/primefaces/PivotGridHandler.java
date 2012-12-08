@@ -133,6 +133,10 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	}
 
 	public boolean isValid() {
+		if (!model.isInitialized()) {
+			return false;
+		}
+
 		List<CellSetAxis> axes = model.getCellSet().getAxes();
 		if (axes.size() < 2) {
 			return false;
@@ -143,8 +147,10 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	}
 
 	public void render() {
-		PivotRenderer renderer = createRenderer();
-		renderer.render(model);
+		if (model.isInitialized()) {
+			PivotRenderer renderer = createRenderer();
+			renderer.render(model);
+		}
 	}
 
 	public void executeCommand() {
@@ -187,6 +193,10 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
 		try {
 			model.setMdx(currentMdx);
+
+			if (!model.isInitialized()) {
+				model.initialize();
+			}
 		} catch (Exception e) {
 			FacesContext context = FacesContext.getCurrentInstance();
 

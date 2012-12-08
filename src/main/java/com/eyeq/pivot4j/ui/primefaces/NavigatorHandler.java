@@ -171,9 +171,13 @@ public class NavigatorHandler implements ModelChangeListener,
 	 * @return the cubeNode
 	 */
 	public CubeNode getCubeNode() {
-		if (cubeNode == null && model.isInitialized()) {
-			this.cubeNode = new CubeNode(model.getCube());
-			cubeNode.setNodeFilter(this);
+		if (model.isInitialized()) {
+			if (cubeNode == null) {
+				this.cubeNode = new CubeNode(model.getCube());
+				cubeNode.setNodeFilter(this);
+			}
+		} else {
+			this.cubeNode = null;
 		}
 
 		return cubeNode;
@@ -196,24 +200,28 @@ public class NavigatorHandler implements ModelChangeListener,
 	 * @return the cubeNode
 	 */
 	public TreeNode getTargetNode() {
-		if (targetNode == null && model.isInitialized()) {
-			this.targetNode = new DefaultTreeNode();
+		if (model.isInitialized()) {
+			if (targetNode == null) {
+				this.targetNode = new DefaultTreeNode();
 
-			DefaultTreeNode columns = new DefaultTreeNode();
-			columns.setExpanded(true);
-			columns.setType("columns");
-			columns.setData(Axis.COLUMNS);
-			columns.setParent(targetNode);
+				DefaultTreeNode columns = new DefaultTreeNode();
+				columns.setExpanded(true);
+				columns.setType("columns");
+				columns.setData(Axis.COLUMNS);
+				columns.setParent(targetNode);
 
-			configureAxis(columns, Axis.COLUMNS);
+				configureAxis(columns, Axis.COLUMNS);
 
-			DefaultTreeNode rows = new DefaultTreeNode();
-			rows.setExpanded(true);
-			rows.setType("rows");
-			rows.setData(Axis.ROWS);
-			rows.setParent(targetNode);
+				DefaultTreeNode rows = new DefaultTreeNode();
+				rows.setExpanded(true);
+				rows.setType("rows");
+				rows.setData(Axis.ROWS);
+				rows.setParent(targetNode);
 
-			configureAxis(rows, Axis.ROWS);
+				configureAxis(rows, Axis.ROWS);
+			}
+		} else {
+			this.targetNode = null;
 		}
 
 		return targetNode;

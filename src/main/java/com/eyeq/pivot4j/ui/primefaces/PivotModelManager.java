@@ -8,6 +8,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class PivotModelManager {
 
 	private String sessionId;
 
-	private String initialMdx = "select Union(Union(Crossjoin({[Gender].[All Gender]}, {[Measures].[Unit Sales], [Measures].[Store Cost], [Measures].[Store Sales]}), Crossjoin({[Gender].[F]}, {[Measures].[Unit Sales], [Measures].[Store Cost], [Measures].[Store Sales]})), Crossjoin({[Gender].[M]}, {[Measures].[Unit Sales], [Measures].[Store Cost], [Measures].[Store Sales]})) ON COLUMNS, Hierarchize(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Crossjoin({[Promotion Media].[All Media]}, {([Product].[All Products], [Marital Status].[All Marital Status])}), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Drink], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Baked Goods], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Baking Goods], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, Union(Crossjoin({[Product].[Food].[Baking Goods].[Baking Goods]}, {[Marital Status].[All Marital Status]}), Crossjoin({[Product].[Food].[Baking Goods].[Baking Goods]}, [Marital Status].[All Marital Status].Children)))), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Baking Goods].[Jams and Jellies], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Breakfast Foods], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Canned Foods], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Canned Products], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Dairy], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Deli], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Eggs], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Frozen Foods], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Meat], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Produce], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Seafood], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Snack Foods], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Snacks], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Food].[Starchy Foods], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Non-Consumable], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Non-Consumable].[Carousel], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Non-Consumable].[Checkout], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Non-Consumable].[Health and Hygiene], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Non-Consumable].[Household], [Marital Status].[All Marital Status])})), Crossjoin({[Promotion Media].[All Media]}, {([Product].[Non-Consumable].[Periodicals], [Marital Status].[All Marital Status])}))) ON ROWS from [Sales]";
+	private String cubeName;
 
 	@ManagedProperty(value = "#{dataSourceManager}")
 	private DataSourceManager dataSourceManager;
@@ -37,16 +38,9 @@ public class PivotModelManager {
 					.getSession(true);
 
 			this.sessionId = session.getId();
-
-			logger.info("Initializing new pivot model for session : "
-					+ session.getId());
-			logger.info("Initial MDX : " + initialMdx);
 		}
 
 		this.model = new PivotModelImpl(dataSourceManager.getDataSource());
-
-		model.setMdx(initialMdx);
-		model.initialize();
 	}
 
 	@PreDestroy
@@ -69,21 +63,6 @@ public class PivotModelManager {
 	}
 
 	/**
-	 * @return the initialMdx
-	 */
-	public String getInitialMdx() {
-		return initialMdx;
-	}
-
-	/**
-	 * @param initialMdx
-	 *            the initialMdx to set
-	 */
-	public void setInitialMdx(String initialMdx) {
-		this.initialMdx = initialMdx;
-	}
-
-	/**
 	 * @return the dataSourceManager
 	 */
 	public DataSourceManager getDataSourceManager() {
@@ -96,5 +75,43 @@ public class PivotModelManager {
 	 */
 	public void setDataSourceManager(DataSourceManager dataSourceManager) {
 		this.dataSourceManager = dataSourceManager;
+	}
+
+	/**
+	 * @return the cubeName
+	 */
+	public String getCubeName() {
+		return cubeName;
+	}
+
+	/**
+	 * @param cubeName
+	 *            the cubeName to set
+	 */
+	public void setCubeName(String cubeName) {
+		this.cubeName = cubeName;
+	}
+
+	public void onCubeChange() {
+		if (model.isInitialized()) {
+			model.destroy();
+		}
+
+		if (StringUtils.isEmpty(cubeName)) {
+			return;
+		}
+
+		String mdx = String.format(
+				"select {} on COLUMNS, {} on ROWS from [%s]", cubeName);
+
+		model.setMdx(mdx);
+
+		if (logger.isInfoEnabled()) {
+			logger.info("Initializing new pivot model for session : "
+					+ sessionId);
+			logger.info("Initial MDX : " + mdx);
+		}
+
+		model.initialize();
 	}
 }

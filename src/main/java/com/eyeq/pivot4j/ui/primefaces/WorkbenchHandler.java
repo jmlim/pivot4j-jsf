@@ -61,6 +61,14 @@ public class WorkbenchHandler {
 			LayoutOptions childWestOptions = new LayoutOptions();
 			navigatorOptions.setChildOptions(childWestOptions);
 
+			LayoutOptions cubeListOptions = new LayoutOptions();
+			cubeListOptions.addOption("resizable", false);
+			cubeListOptions.addOption("closable", false);
+			cubeListOptions.addOption("slidable", false);
+			cubeListOptions.addOption("size", 38);
+
+			childWestOptions.setNorthOptions(cubeListOptions);
+
 			LayoutOptions targetTreeOptions = new LayoutOptions();
 			targetTreeOptions.addOption("resizable", true);
 			targetTreeOptions.addOption("closable", true);

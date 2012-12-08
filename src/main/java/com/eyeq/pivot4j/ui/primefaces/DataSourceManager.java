@@ -1,12 +1,18 @@
 package com.eyeq.pivot4j.ui.primefaces;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
+import javax.faces.FacesException;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.component.UISelectItem;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.olap4j.OlapDataSource;
+import org.olap4j.metadata.Cube;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,5 +77,32 @@ public class DataSourceManager {
 	 */
 	public OlapDataSource getDataSource() {
 		return dataSource;
+	}
+
+	public List<UISelectItem> getCubes() {
+		try {
+			List<Cube> cubes = dataSource.getConnection().getOlapSchema()
+					.getCubes();
+
+			List<UISelectItem> items = new ArrayList<UISelectItem>(cubes.size());
+
+			UISelectItem defaultItem = new UISelectItem();
+			defaultItem.setItemLabel("---- Please select cube ----");
+			defaultItem.setItemValue("");
+
+			items.add(defaultItem);
+
+			for (Cube cube : cubes) {
+				UISelectItem item = new UISelectItem();
+				item.setItemLabel(cube.getCaption());
+				item.setItemValue(cube.getName());
+
+				items.add(item);
+			}
+
+			return items;
+		} catch (Exception e) {
+			throw new FacesException(e);
+		}
 	}
 }
