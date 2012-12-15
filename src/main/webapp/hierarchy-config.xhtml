@@ -5,11 +5,101 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<p:dialog id="hierarchy-config" header="Hierarchy Configuration"
-		widgetVar="hierarchyConfig" modal="true" height="120" closable="true"
-		resizable="false" styleClass="hierarchy-config">
+		widgetVar="hierarchyConfig" modal="true" width="860" height="470"
+		closable="true" resizable="false" styleClass="hierarchy-config">
 		<h:form id="hierarchy-form">
-			<p:commandButton type="button" value="Close" icon="ui-icon-close"
-				onclick="hierarchyConfig.hide();" />
+			<h:panelGrid columns="4"
+				columnClasses="member-panel,control-panel,member-panel,control-panel"
+				headerClass="info-panel" footerClass="button-bar"
+				rendered="#{!empty memberSelectionHandler.hierarchyName}">
+				<f:facet name="header">
+					<h:panelGroup layout="block">
+						<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-info" />
+						<h:outputText
+							value="Select one or more members and press the 'Add' button, or right click to see more options." />
+					</h:panelGroup>
+				</f:facet>
+
+				<p:panel styleClass="source-panel">
+					<f:facet name="header">
+						<h:outputText value="All Members" />
+					</f:facet>
+
+					<p:tree id="member-tree" styleClass="navigator"
+						value="#{memberSelectionHandler.sourceNode}" dynamic="true"
+						cache="true" var="node" selectionMode="multiple"
+						selection="#{memberSelectionHandler.sourceSelection}">
+						<p:treeNode type="member" icon="ui-icon-member">
+							<h:outputText value="#{node.name}"
+								styleClass="node-member #{node.selected?'selected':''}" />
+						</p:treeNode>
+
+						<p:ajax event="select"
+							listener="#{memberSelectionHandler.onSourceNodeSelected}" />
+					</p:tree>
+				</p:panel>
+
+				<h:panelGroup layout="block">
+					<p:outputPanel autoUpdate="true">
+						<p:commandButton id="button-add" icon="ui-icon-carat-1-e"
+							value="Add" action="#{memberSelectionHandler.add}"
+							binding="#{memberSelectionHandler.buttonAdd}"
+							update="member-tree,selection-tree" />
+						<p:commandButton id="button-remove" icon="ui-icon-carat-1-w"
+							value="Remove" action="#{memberSelectionHandler.remove}"
+							binding="#{memberSelectionHandler.buttonRemove}"
+							update="member-tree,selection-tree" />
+					</p:outputPanel>
+				</h:panelGroup>
+
+				<p:panel styleClass="target-panel">
+					<f:facet name="header">
+						<h:outputText value="Selected Members" />
+					</f:facet>
+
+					<p:tree id="selection-tree" styleClass="navigator"
+						value="#{memberSelectionHandler.targetNode}" dynamic="true"
+						cache="true" var="node" selectionMode="multiple"
+						selection="#{memberSelectionHandler.targetSelection}">
+						<p:treeNode type="member" icon="ui-icon-member">
+							<h:outputText value="#{node.name}"
+								styleClass="node-member #{node.selected?'selected':''}" />
+						</p:treeNode>
+
+						<p:ajax event="select"
+							listener="#{memberSelectionHandler.onTargetNodeSelected}" />
+					</p:tree>
+				</p:panel>
+
+				<h:panelGroup layout="block">
+					<p:outputPanel autoUpdate="true">
+						<p:commandButton id="button-up" icon="ui-icon-carat-1-n"
+							value="Up" action="#{memberSelectionHandler.moveUp}"
+							binding="#{memberSelectionHandler.buttonUp}"
+							update="selection-tree" />
+						<p:commandButton id="button-down" icon="ui-icon-carat-1-s"
+							value="Down" action="#{memberSelectionHandler.moveDown}"
+							binding="#{memberSelectionHandler.buttonDown}"
+							update="selection-tree" />
+					</p:outputPanel>
+				</h:panelGroup>
+
+				<f:facet name="footer">
+					<h:panelGroup layout="block">
+						<p:outputPanel autoUpdate="true">
+							<p:commandButton value="Apply" icon="ui-icon-check"
+								action="#{memberSelectionHandler.apply}"
+								update=":source-tree-form,:target-tree-form,:grid-form,:editor-form"
+								binding="#{memberSelectionHandler.buttonApply}" />
+							<p:commandButton value="Close" icon="ui-icon-close"
+								action="#{memberSelectionHandler.reset}"
+								oncomplete="hierarchyConfig.hide();" />
+						</p:outputPanel>
+					</h:panelGroup>
+				</f:facet>
+			</h:panelGrid>
+
+			<h:inputHidden value="#{memberSelectionHandler.hierarchyName}" />
 		</h:form>
 	</p:dialog>
 </ui:composition>

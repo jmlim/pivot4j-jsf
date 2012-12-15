@@ -62,7 +62,7 @@ public class HierarchyNode extends NavigatorNode<Hierarchy> {
 
 				for (Member member : members) {
 					if (filter == null || !filter.isSelected(member)) {
-						MemberNode node = new MemberNode(this, member);
+						MeasureNode node = new MeasureNode(this, member);
 						node.setNodeFilter(filter);
 
 						children.add(node);

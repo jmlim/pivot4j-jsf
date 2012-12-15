@@ -1,11 +1,6 @@
-/* Default font settings.
-   The font-size percentage is of 16px. (0.75 * 16px = 12px) */
-html { font-size:100.01%; }
-body {
-  font-size: 75%;
-  color: #222;
-  background: #fff;
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+body, td, th, .ui-widget {
+  font-size: 10pt;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .pe-layout-pane-header {
@@ -43,75 +38,72 @@ body {
 	padding-right: 0;
 }
 
-.navigator .ui-icon {
+.ui-treenode-icon.ui-icon {
 	border-radius: 0;
-}
-
-.navigator .ui-treenode-icon {
 	background-position: 0 0;
 }
 
-.navigator .ui-icon-dim {
+.ui-treenode-icon.ui-icon-dim {
 	background-image: url('../images/dimension.gif');
 }
 
-.navigator .ui-icon-hier {
+.ui-treenode-icon.ui-icon-hier {
 	background-image: url('../images/hierarchy.gif');
 }
 
-.navigator .ui-icon-level0 {
+.ui-treenode-icon.ui-icon-level0 {
 	background-image: url('../images/level_0.gif');
 }
 
-.navigator .ui-icon-level1 {
+.ui-treenode-icon.ui-icon-level1 {
 	background-image: url('../images/level_1.gif');
 }
 
-.navigator .ui-icon-level2 {
+.ui-treenode-icon.ui-icon-level2 {
 	background-image: url('../images/level_2.gif');
 }
 
-.navigator .ui-icon-level3 {
+.ui-treenode-icon.ui-icon-level3 {
 	background-image: url('../images/level_3.gif');
 }
 
-.navigator .ui-icon-level4 {
+.ui-treenode-icon.ui-icon-level4 {
 	background-image: url('../images/level_4.gif');
 }
 
-.navigator .ui-icon-level5 {
+.ui-treenode-icon.ui-icon-level5 {
 	background-image: url('../images/level_5.gif');
 }
 
-.navigator .ui-icon-level6 {
+.ui-treenode-icon.ui-icon-level6 {
 	background-image: url('../images/level_6.gif');
 }
 
-.navigator .ui-icon-level7 {
+.ui-treenode-icon.ui-icon-level7 {
 	background-image: url('../images/level_7.gif');
 }
 
-.navigator .ui-icon-level8 {
+.ui-treenode-icon.ui-icon-level8 {
 	background-image: url('../images/level_8.gif');
 }
 
-.navigator .ui-icon-mem {
+.ui-treenode-icon.ui-icon-member {
 	background-image: url('../images/member.gif');
 }
 
-.navigator .ui-icon-measure {
+.ui-treenode-icon.ui-icon-measure {
 	background-image: url('../images/measure.gif');
 }
 
-.navigator .ui-icon-cols {
+.ui-treenode-icon.ui-icon-cols {
 	background-image: url('../images/columns.gif');
 }
 
-.navigator .ui-icon-rows {
+.ui-treenode-icon.ui-icon-rows {
 	background-image: url('../images/rows.gif');
 }
 
-.navigator .ui-icon-filter {
+.ui-treenode-icon.ui-icon-filter {
 	background-image: url('../images/filter.gif');
 }
 
@@ -248,4 +240,48 @@ body {
 .about .about-text {
 	display: block;
 	padding: 10px;
+}
+
+.hierarchy-config .ui-dialog-content {
+	overflow: hidden;
+}
+
+.hierarchy-config .member-panel .ui-panel-content {
+	padding: 5px 0 10px 0;
+	height: 340px;
+}
+
+.hierarchy-config .control-panel {
+	width: 102px;
+}
+
+.hierarchy-config .ui-button {
+	width: 92px;
+	margin: 5px
+}
+
+.hierarchy-config .source-panel .node-member {
+	color: #000000;
+}
+
+.hierarchy-config .source-panel .node-member.selected {
+	color: #d0d0d0;
+}
+
+.hierarchy-config .target-panel .node-member {
+	color: #d0d0d0;
+}
+
+.hierarchy-config .target-panel .node-member.selected {
+	color: #000000;
+}
+
+.ui-dialog .button-bar {
+	text-align: right;
+}
+
+.ui-dialog .info-panel {
+	text-align: left;
+	font-weight: normal;
+	padding: 5px;
 }

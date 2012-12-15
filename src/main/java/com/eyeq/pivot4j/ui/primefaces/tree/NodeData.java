@@ -21,8 +21,10 @@ public class NodeData implements Serializable {
 	 * @param element
 	 */
 	public NodeData(MetadataElement element) {
-		this.id = element.getUniqueName();
-		this.name = element.getCaption();
+		if (element != null) {
+			this.id = element.getUniqueName();
+			this.name = element.getCaption();
+		}
 	}
 
 	/**

@@ -35,7 +35,7 @@ import com.eyeq.pivot4j.transform.PlaceMembersOnAxes;
 import com.eyeq.pivot4j.ui.primefaces.tree.CubeNode;
 import com.eyeq.pivot4j.ui.primefaces.tree.HierarchyNode;
 import com.eyeq.pivot4j.ui.primefaces.tree.LevelNode;
-import com.eyeq.pivot4j.ui.primefaces.tree.MemberNode;
+import com.eyeq.pivot4j.ui.primefaces.tree.MeasureNode;
 import com.eyeq.pivot4j.ui.primefaces.tree.NodeSelectionFilter;
 
 @ManagedBean(name = "navigatorHandler")
@@ -261,7 +261,7 @@ public class NavigatorHandler implements ModelChangeListener,
 				for (Member member : members) {
 					DefaultTreeNode memberNode = new DefaultTreeNode();
 					memberNode.setData(member);
-					memberNode.setType("member");
+					memberNode.setType("measure");
 					memberNode.setParent(hierarchyNode);
 				}
 			} else {
@@ -381,8 +381,8 @@ public class NavigatorHandler implements ModelChangeListener,
 			Level level = node.getElement();
 
 			addLevel(axis, level);
-		} else if (sourceNode instanceof MemberNode) {
-			MemberNode node = (MemberNode) sourceNode;
+		} else if (sourceNode instanceof MeasureNode) {
+			MeasureNode node = (MeasureNode) sourceNode;
 			Member member = node.getElement();
 
 			addMember(axis, member);
@@ -445,8 +445,8 @@ public class NavigatorHandler implements ModelChangeListener,
 			Level level = node.getElement();
 
 			addLevel(axis, level, position);
-		} else if (sourceNode instanceof MemberNode) {
-			MemberNode node = (MemberNode) sourceNode;
+		} else if (sourceNode instanceof MeasureNode) {
+			MeasureNode node = (MeasureNode) sourceNode;
 			Member member = node.getElement();
 
 			if (member.getHierarchy().equals(targetNode.getData())) {
@@ -476,11 +476,11 @@ public class NavigatorHandler implements ModelChangeListener,
 		Member member;
 
 		if (fromNavigator) {
-			if (!(sourceNode instanceof MemberNode)) {
+			if (!(sourceNode instanceof MeasureNode)) {
 				return;
 			}
 
-			member = ((MemberNode) sourceNode).getElement();
+			member = ((MeasureNode) sourceNode).getElement();
 
 			Axis axis = (Axis) targetNode.getParent().getParent().getData();
 			addMember(axis, member, position);

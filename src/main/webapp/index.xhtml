@@ -129,7 +129,7 @@
 								revert="true" />
 						</p:treeNode>
 
-						<p:treeNode type="member" icon="ui-icon-measure">
+						<p:treeNode type="measure" icon="ui-icon-measure">
 							<h:outputText id="member-node" value="#{node.name}"
 								styleClass="node-member" />
 							<!-- workaround for issue #1 -->
@@ -178,11 +178,14 @@
 						</p:treeNode>
 
 						<p:treeNode type="hierarchy" icon="ui-icon-hier">
-							<div onmouseover="console.log('test')">
-								<h:outputText id="hierarchy-node" value="#{node.name}"
+							<div onmouseover="">
+								<h:outputText id="hierarchy-node" value="#{node.caption}"
 									styleClass="node-hierarchy" />
 								<p:commandButton icon="ui-button-icon-only ui-icon-search"
-									onclick="hierarchyConfig.show();" style="display: none;" />
+									action="#{memberSelectionHandler.show}"
+									update=":hierarchy-form" oncomplete="hierarchyConfig.show();">
+									<f:param name="hierarchy" value="#{node.name}" />
+								</p:commandButton>
 							</div>
 							<!-- workaround for issue #1 -->
 							<p:draggable for="hierarchy-node"
@@ -195,15 +198,15 @@
 						</p:treeNode>
 
 						<p:treeNode type="level" icon="ui-icon-level#{node.depth}">
-							<h:outputText id="level-node" value="#{node.name}"
+							<h:outputText id="level-node" value="#{node.caption}"
 								styleClass="node-level" />
 							<!-- workaround for issue #1 -->
 							<p:draggable for="level-node" helper="clone', appendTo: 'body"
 								revert="true" />
 						</p:treeNode>
 
-						<p:treeNode type="member" icon="ui-icon-measure">
-							<h:outputText id="member-node" value="#{node.name}"
+						<p:treeNode type="measure" icon="ui-icon-measure">
+							<h:outputText id="member-node" value="#{node.caption}"
 								styleClass="node-member" />
 							<!-- workaround for issue #1 -->
 							<p:draggable for="member-node" helper="clone', appendTo: 'body"
