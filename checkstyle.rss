@@ -8,8 +8,8 @@
     <language>en-us</language>
     <copyright>&#169;2012 Eyeq MC</copyright>
     <item>
-      <title>File: 17,
-             Errors: 2444,
+      <title>File: 20,
+             Errors: 3082,
              Warnings: 0,
              Infos: 0
       </title>
@@ -38,7 +38,7 @@
                   0
                 </td>
                 <td>
-                  41
+                  83
                 </td>
               </tr>
                           <tr>
@@ -53,6 +53,20 @@
                 </td>
                 <td>
                   64
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.MemberSelectionHandler.java">com/eyeq/pivot4j/ui/primefaces/MemberSelectionHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  435
                 </td>
               </tr>
                           <tr>
@@ -248,7 +262,21 @@
                   0
                 </td>
                 <td>
-                  73
+                  75
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.MeasureNode.java">com/eyeq/pivot4j/ui/primefaces/tree/MeasureNode.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  41
                 </td>
               </tr>
                           <tr>
@@ -263,6 +291,20 @@
                 </td>
                 <td>
                   175
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.SelectionNode.java">com/eyeq/pivot4j/ui/primefaces/tree/SelectionNode.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  118
                 </td>
               </tr>
                       </tbody>
