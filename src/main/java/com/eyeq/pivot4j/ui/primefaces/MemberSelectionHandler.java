@@ -175,7 +175,7 @@ public class MemberSelectionHandler {
 	}
 
 	public void add() {
-		remove(SelectionMode.Single.name());
+		add(SelectionMode.Single.name());
 	}
 
 	/**
