@@ -23,6 +23,7 @@ public class MemberNode extends NavigatorNode<Member> {
 	public MemberNode(TreeNode parent, Member member, MemberSelection selection) {
 		super(member);
 		setParent(parent);
+		setSelectable(true);
 
 		this.selection = selection;
 
@@ -32,11 +33,8 @@ public class MemberNode extends NavigatorNode<Member> {
 			boolean selected = selection.isSelected(member);
 
 			setExpanded(selected && node.getChildCount() > 0);
-			setSelectable(!selected);
 
 			getData().setSelected(selected);
-		} else {
-			setSelectable(true);
 		}
 	}
 

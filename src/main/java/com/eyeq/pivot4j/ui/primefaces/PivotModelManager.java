@@ -13,11 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eyeq.pivot4j.PivotModel;
+import com.eyeq.pivot4j.QueryEvent;
+import com.eyeq.pivot4j.QueryListener;
 import com.eyeq.pivot4j.impl.PivotModelImpl;
+import com.eyeq.pivot4j.query.QueryChangeEvent;
 
 @ManagedBean(name = "pivotModelManager")
 @SessionScoped
-public class PivotModelManager {
+public class PivotModelManager implements QueryListener {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -41,6 +44,8 @@ public class PivotModelManager {
 		}
 
 		this.model = new PivotModelImpl(dataSourceManager.getDataSource());
+
+		model.addQueryListener(this);
 	}
 
 	@PreDestroy
@@ -53,6 +58,7 @@ public class PivotModelManager {
 		}
 
 		model.destroy();
+		model.removeQueryListener(this);
 	}
 
 	/**
@@ -113,5 +119,17 @@ public class PivotModelManager {
 		}
 
 		model.initialize();
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.QueryListener#queryExecuted(com.eyeq.pivot4j.QueryEvent)
+	 */
+	@Override
+	public void queryExecuted(QueryEvent e) {
+		if (model.getCube() == null) {
+			this.cubeName = null;
+		} else {
+			this.cubeName = model.getCube().getName();
+		}
 	}
 }

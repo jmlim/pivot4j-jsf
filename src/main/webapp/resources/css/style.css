@@ -276,6 +276,10 @@ body, td, th, .ui-widget {
 	color: #000000;
 }
 
+.hierarchy-contextmenu {
+	width: 180px;
+}
+
 .ui-dialog .button-bar {
 	text-align: right;
 }
@@ -284,4 +288,12 @@ body, td, th, .ui-widget {
 	text-align: left;
 	font-weight: normal;
 	padding: 5px;
+}
+
+.ui-dialog .button-bar .ui-messages {
+	text-align: left;
+}
+
+.ui-dialog .button-bar .ui-messages div {
+	margin: 5px 0 5px 0 !important;
 }

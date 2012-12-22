@@ -33,7 +33,7 @@ public class SelectionNode extends NavigatorNode<Member> {
 
 		boolean selected = selection.isSelected(node.getReference());
 
-		setSelectable(selected);
+		setSelectable(true);
 		setExpanded(true);
 
 		getData().setSelected(selected);

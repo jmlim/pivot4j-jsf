@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.FacesException;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -174,13 +175,52 @@ public class MemberSelectionHandler {
 	}
 
 	public void add() {
+		remove(SelectionMode.Single.name());
+	}
+
+	/**
+	 * @param modeName
+	 */
+	public void add(String modeName) {
+		SelectionMode mode = null;
+
+		if (modeName != null) {
+			mode = SelectionMode.valueOf(modeName);
+		}
+
 		MemberSelection selection = getSelection();
 
-		for (TreeNode node : sourceSelection) {
-			MemberNode memberNode = (MemberNode) node;
+		if (mode == null) {
+			selection.clear();
+		} else {
+			boolean empty = true;
 
-			Member member = memberNode.getElement();
-			selection.addMember(member);
+			List<Member> members = selection.getMembers();
+
+			for (TreeNode node : sourceSelection) {
+				MemberNode memberNode = (MemberNode) node;
+
+				Member member = memberNode.getElement();
+
+				List<Member> targetMembers = mode.getTargetMembers(member);
+
+				for (Member target : targetMembers) {
+					if (!members.contains(target)) {
+						members.add(target);
+						empty = false;
+					}
+				}
+			}
+
+			if (empty) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Note:",
+								"There are no members to select."));
+				return;
+			}
+
+			this.selection = new MemberSelection(members);
 		}
 
 		this.sourceNode = null;
@@ -195,13 +235,52 @@ public class MemberSelectionHandler {
 	}
 
 	public void remove() {
+		remove(SelectionMode.Single.name());
+	}
+
+	/**
+	 * @param modeName
+	 */
+	public void remove(String modeName) {
+		SelectionMode mode = null;
+
+		if (modeName != null) {
+			mode = SelectionMode.valueOf(modeName);
+		}
+
 		MemberSelection selection = getSelection();
 
-		for (TreeNode node : targetSelection) {
-			SelectionNode memberNode = (SelectionNode) node;
+		if (mode == null) {
+			selection.clear();
+		} else {
+			boolean empty = true;
 
-			Member member = memberNode.getElement();
-			selection.removeMember(member);
+			List<Member> members = selection.getMembers();
+
+			for (TreeNode node : targetSelection) {
+				SelectionNode memberNode = (SelectionNode) node;
+
+				Member member = memberNode.getElement();
+
+				List<Member> targetMembers = mode.getTargetMembers(member);
+
+				for (Member target : targetMembers) {
+					if (members.contains(target)) {
+						members.remove(target);
+						empty = false;
+					}
+				}
+			}
+
+			if (empty) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Note:",
+								"There are no members to remove."));
+				return;
+			}
+
+			this.selection = new MemberSelection(members);
 		}
 
 		this.sourceNode = null;
@@ -226,6 +305,7 @@ public class MemberSelectionHandler {
 		parent.moveUp(node);
 
 		buttonUp.setDisabled(!selection.canMoveUp(member));
+		buttonApply.setDisabled(false);
 	}
 
 	public void moveDown() {
@@ -239,6 +319,7 @@ public class MemberSelectionHandler {
 		parent.moveDown(node);
 
 		buttonUp.setDisabled(!selection.canMoveDown(member));
+		buttonApply.setDisabled(false);
 	}
 
 	public Hierarchy getHierarchy() {

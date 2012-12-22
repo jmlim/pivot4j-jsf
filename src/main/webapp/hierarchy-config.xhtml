@@ -37,6 +37,22 @@
 						<p:ajax event="select"
 							listener="#{memberSelectionHandler.onSourceNodeSelected}" />
 					</p:tree>
+
+					<p:contextMenu id="hierarchy-source-menu"
+						styleClass="hierarchy-contextmenu" for="member-tree">
+						<p:menuitem value="Select member"
+							action="#{memberSelectionHandler.add('Single')}"
+							update="member-tree,selection-tree" icon="ui-icon-plus" />
+						<p:menuitem value="Select siblings"
+							action="#{memberSelectionHandler.add('Sibling')}"
+							update="member-tree,selection-tree" icon="ui-icon-plus" />
+						<p:menuitem value="Select children"
+							action="#{memberSelectionHandler.add('Children')}"
+							update="member-tree,selection-tree" icon="ui-icon-plus" />
+						<p:menuitem value="Select descendants"
+							action="#{memberSelectionHandler.add('Descendants')}"
+							update="member-tree,selection-tree" icon="ui-icon-plus" />
+					</p:contextMenu>
 				</p:panel>
 
 				<h:panelGroup layout="block">
@@ -69,6 +85,22 @@
 						<p:ajax event="select"
 							listener="#{memberSelectionHandler.onTargetNodeSelected}" />
 					</p:tree>
+
+					<p:contextMenu id="hierarchy-target-menu"
+						styleClass="hierarchy-contextmenu" for="selection-tree">
+						<p:menuitem value="Remove member"
+							action="#{memberSelectionHandler.remove('Single')}"
+							update="member-tree,selection-tree" icon="ui-icon-trash" />
+						<p:menuitem value="Remove siblings"
+							action="#{memberSelectionHandler.remove('Sibling')}"
+							update="member-tree,selection-tree" icon="ui-icon-trash" />
+						<p:menuitem value="Remove children"
+							action="#{memberSelectionHandler.remove('Children')}"
+							update="member-tree,selection-tree" icon="ui-icon-trash" />
+						<p:menuitem value="Remove descendants"
+							action="#{memberSelectionHandler.remove('Descendants')}"
+							update="member-tree,selection-tree" icon="ui-icon-trash" />
+					</p:contextMenu>
 				</p:panel>
 
 				<h:panelGroup layout="block">
@@ -86,6 +118,8 @@
 
 				<f:facet name="footer">
 					<h:panelGroup layout="block">
+						<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
 						<p:outputPanel autoUpdate="true">
 							<p:commandButton value="Apply" icon="ui-icon-check"
 								action="#{memberSelectionHandler.apply}"
