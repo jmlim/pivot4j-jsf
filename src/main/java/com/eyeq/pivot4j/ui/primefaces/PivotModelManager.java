@@ -16,7 +16,6 @@ import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.QueryEvent;
 import com.eyeq.pivot4j.QueryListener;
 import com.eyeq.pivot4j.impl.PivotModelImpl;
-import com.eyeq.pivot4j.query.QueryChangeEvent;
 
 @ManagedBean(name = "pivotModelManager")
 @SessionScoped
