@@ -3,6 +3,11 @@ body, td, th, .ui-widget {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+form {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
+
 .pe-layout-pane-header {
 	padding-left: 3px;
 }
@@ -116,6 +121,12 @@ body, td, th, .ui-widget {
 	background-color: #dddddd;
 }
 
+#source-tree-pane .ui-treenode .ui-state-highlight {
+	background: none !important;
+	text-shadow: none !important;
+	color: #d0d0d0;
+}
+
 #cube-list-pane {
 	overflow: visible;
 }
@@ -142,6 +153,11 @@ body, td, th, .ui-widget {
 	background-repeat: no-repeat;
 	background-position: left;
 	padding-left: 18px;
+}
+
+#grid-header-pane {
+	padding: 2px;
+	overflow: hidden;
 }
 
 #content-pane .ui-layout-content {
@@ -177,6 +193,49 @@ body, td, th, .ui-widget {
 	height: 16px;
 	margin-left: 3px;
 	margin-right: 3px;
+	vertical-align: middle;
+}
+
+.filter-panel {
+	width: 100%;
+}
+
+.filter-panel .ui-widget-header {
+	width: 80px;
+	padding: 0 5px 0 5px;
+	text-align: right;
+}
+
+.filter-panel td.filter-items {
+	border: 1px dotted #a8a8a8;
+	padding: 2px;
+}
+
+.filter-panel td.filter-items .ui-droppable {
+	height: 22px;
+}
+
+.filter-panel td.filter-items .filter-items-hover {
+	background-color: #fff895;
+}
+
+.filter-panel .filter-item {
+	border-radius: 5px;
+	background-image: none;
+	margin-right: 2px;
+	padding: 0 5px 2px;
+	white-space: nowrap;
+	width: auto;
+	float: left;
+}
+
+.filter-panel .filter-item a {
+	text-decoration: none;
+}
+
+.filter-panel .filter-item .ui-button {
+	width: 16px;
+	height: 16px;
 	vertical-align: middle;
 }
 
@@ -257,11 +316,10 @@ body, td, th, .ui-widget {
 
 .hierarchy-config .ui-button {
 	width: 92px;
-	margin: 5px
+	margin: 5px;
 }
 
 .hierarchy-config .source-panel .node-member {
-	color: #000000;
 }
 
 .hierarchy-config .source-panel .node-member.selected {
@@ -281,7 +339,13 @@ body, td, th, .ui-widget {
 }
 
 .ui-dialog .button-bar {
+	margin-top: 5px;
 	text-align: right;
+}
+
+.ui-dialog .button-bar .ui-button {
+	width: 92px;
+	margin: 5px 0 5px 5px;
 }
 
 .ui-dialog .info-panel {
@@ -296,4 +360,9 @@ body, td, th, .ui-widget {
 
 .ui-dialog .button-bar .ui-messages div {
 	margin: 5px 0 5px 0 !important;
+}
+
+.filter-dialog .ui-tree-container {
+	margin: 5px 0;
+	height: 280px;
 }

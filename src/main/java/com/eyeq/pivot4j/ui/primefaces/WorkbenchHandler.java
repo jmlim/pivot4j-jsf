@@ -83,6 +83,14 @@ public class WorkbenchHandler {
 			LayoutOptions childCenterOptions = new LayoutOptions();
 			contentOptions.setChildOptions(childCenterOptions);
 
+			LayoutOptions filterOptions = new LayoutOptions();
+			filterOptions.addOption("resizable", false);
+			filterOptions.addOption("closable", true);
+			filterOptions.addOption("slidable", true);
+			filterOptions.addOption("size", 38);
+
+			childCenterOptions.setNorthOptions(filterOptions);
+
 			LayoutOptions editorOptions = new LayoutOptions();
 			editorOptions.addOption("resizable", true);
 			editorOptions.addOption("closable", true);

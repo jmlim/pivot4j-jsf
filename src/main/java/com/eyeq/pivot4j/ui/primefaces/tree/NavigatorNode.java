@@ -22,7 +22,7 @@ public abstract class NavigatorNode<T extends MetadataElement> implements
 
 	private List<TreeNode> children;
 
-	private NodeSelectionFilter nodeFilter;
+	private NodeFilter nodeFilter;
 
 	/**
 	 * @param element
@@ -119,7 +119,7 @@ public abstract class NavigatorNode<T extends MetadataElement> implements
 	/**
 	 * @return the nodeFilter
 	 */
-	public NodeSelectionFilter getNodeFilter() {
+	public NodeFilter getNodeFilter() {
 		return nodeFilter;
 	}
 
@@ -127,7 +127,7 @@ public abstract class NavigatorNode<T extends MetadataElement> implements
 	 * @param nodeFilter
 	 *            the nodeFilter to set
 	 */
-	public void setNodeFilter(NodeSelectionFilter nodeFilter) {
+	public void setNodeFilter(NodeFilter nodeFilter) {
 		this.nodeFilter = nodeFilter;
 	}
 
@@ -148,6 +148,32 @@ public abstract class NavigatorNode<T extends MetadataElement> implements
 			this.children = createChildren();
 		}
 		return children;
+	}
+
+	/**
+	 * @param element
+	 * @param child
+	 * @return
+	 */
+	protected <TC extends MetadataElement> boolean configureChildNode(
+			TC element, NavigatorNode<?> child) {
+		child.setParent(this);
+
+		if (nodeFilter != null) {
+			if (nodeFilter.isVisible(element)) {
+				child.setNodeFilter(nodeFilter);
+				child.setExpanded(nodeFilter.isExpanded(element));
+				child.setSelectable(nodeFilter.isSelectable(element));
+				child.setSelected(nodeFilter.isSelected(element));
+
+				NodeData data = child.getData();
+				data.setSelected(nodeFilter.isActive(element));
+			} else {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	protected abstract List<TreeNode> createChildren();

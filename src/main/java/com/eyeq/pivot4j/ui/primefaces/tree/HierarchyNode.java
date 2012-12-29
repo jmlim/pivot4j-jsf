@@ -15,18 +15,10 @@ import org.primefaces.model.TreeNode;
 public class HierarchyNode extends NavigatorNode<Hierarchy> {
 
 	/**
-	 * @param parent
 	 * @param hierarchy
 	 */
-	public HierarchyNode(TreeNode parent, Hierarchy hierarchy) {
+	public HierarchyNode(Hierarchy hierarchy) {
 		super(hierarchy);
-		setParent(parent);
-
-		try {
-			setExpanded(hierarchy.getDimension().getDimensionType() == Type.MEASURE);
-		} catch (OlapException e) {
-			throw new FacesException();
-		}
 	}
 
 	/**
@@ -50,8 +42,6 @@ public class HierarchyNode extends NavigatorNode<Hierarchy> {
 	 */
 	@Override
 	protected List<TreeNode> createChildren() {
-		NodeSelectionFilter filter = getNodeFilter();
-
 		Hierarchy hierarchy = getElement();
 
 		try {
@@ -61,10 +51,9 @@ public class HierarchyNode extends NavigatorNode<Hierarchy> {
 						members.size());
 
 				for (Member member : members) {
-					if (filter == null || !filter.isSelected(member)) {
-						MeasureNode node = new MeasureNode(this, member);
-						node.setNodeFilter(filter);
+					MeasureNode node = new MeasureNode(this, member);
 
+					if (configureChildNode(member, node)) {
 						children.add(node);
 					}
 				}
@@ -75,10 +64,9 @@ public class HierarchyNode extends NavigatorNode<Hierarchy> {
 				List<TreeNode> children = new ArrayList<TreeNode>(levels.size());
 
 				for (Level level : levels) {
-					if (filter == null || !filter.isSelected(level)) {
-						LevelNode node = new LevelNode(this, level);
-						node.setNodeFilter(filter);
+					LevelNode node = new LevelNode(level);
 
+					if (configureChildNode(level, node)) {
 						children.add(node);
 					}
 				}

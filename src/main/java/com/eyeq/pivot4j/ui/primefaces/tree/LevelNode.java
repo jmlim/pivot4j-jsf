@@ -9,12 +9,10 @@ import org.primefaces.model.TreeNode;
 public class LevelNode extends NavigatorNode<Level> {
 
 	/**
-	 * @param parent
 	 * @param level
 	 */
-	public LevelNode(TreeNode parent, Level level) {
+	public LevelNode(Level level) {
 		super(level);
-		setParent(parent);
 	}
 
 	/**

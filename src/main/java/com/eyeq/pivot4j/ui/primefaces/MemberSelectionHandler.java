@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 import org.olap4j.OlapException;
 import org.olap4j.metadata.Hierarchy;
 import org.olap4j.metadata.Member;
+import org.olap4j.metadata.MetadataElement;
 import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -23,12 +24,13 @@ import org.primefaces.model.TreeNode;
 import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.transform.PlaceMembersOnAxes;
 import com.eyeq.pivot4j.ui.primefaces.tree.MemberNode;
+import com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter;
 import com.eyeq.pivot4j.ui.primefaces.tree.SelectionNode;
 import com.eyeq.pivot4j.util.MemberSelection;
 
 @ManagedBean(name = "memberSelectionHandler")
 @SessionScoped
-public class MemberSelectionHandler {
+public class MemberSelectionHandler implements NodeFilter {
 
 	@ManagedProperty(value = "#{pivotModelManager.model}")
 	private PivotModel model;
@@ -93,11 +95,17 @@ public class MemberSelectionHandler {
 					List<? extends Member> members = hierarchy.getRootMembers();
 
 					for (Member member : members) {
-						MemberNode node = new MemberNode(sourceNode, member,
-								getSelection());
-						node.setSelectable(true);
+						MemberNode node = new MemberNode(member);
+						node.setNodeFilter(this);
 
-						sourceNode.getChildren().add(node);
+						if (isVisible(member)) {
+							node.setExpanded(isExpanded(member));
+							node.setSelectable(isSelectable(member));
+							node.setSelected(isSelected(member));
+							node.getData().setSelected(isActive(member));
+
+							sourceNode.getChildren().add(node);
+						}
 					}
 				} catch (OlapException e) {
 					throw new FacesException(e);
@@ -531,5 +539,53 @@ public class MemberSelectionHandler {
 	 */
 	public void setButtonApply(CommandButton buttonApply) {
 		this.buttonApply = buttonApply;
+	}
+
+	/**
+	 * @param element
+	 * @return
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isSelected(T element) {
+		return false;
+	}
+
+	/**
+	 * @param element
+	 * @return
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isSelectable(T element) {
+		return true;
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isVisible(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isVisible(T element) {
+		Member member = (Member) element;
+
+		try {
+			return !isActive(element) || member.getChildMemberCount() > 0;
+		} catch (OlapException e) {
+			throw new FacesException(e);
+		}
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isActive(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isActive(T element) {
+		return getSelection().isSelected((Member) element);
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isExpanded(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isExpanded(T element) {
+		return getSelection().findChild((Member) element) != null;
 	}
 }

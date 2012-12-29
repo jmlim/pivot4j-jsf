@@ -21,6 +21,7 @@ import org.olap4j.metadata.Dimension.Type;
 import org.olap4j.metadata.Hierarchy;
 import org.olap4j.metadata.Level;
 import org.olap4j.metadata.Member;
+import org.olap4j.metadata.MetadataElement;
 import org.primefaces.event.DragDropEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -36,12 +37,11 @@ import com.eyeq.pivot4j.ui.primefaces.tree.CubeNode;
 import com.eyeq.pivot4j.ui.primefaces.tree.HierarchyNode;
 import com.eyeq.pivot4j.ui.primefaces.tree.LevelNode;
 import com.eyeq.pivot4j.ui.primefaces.tree.MeasureNode;
-import com.eyeq.pivot4j.ui.primefaces.tree.NodeSelectionFilter;
+import com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter;
 
 @ManagedBean(name = "navigatorHandler")
 @RequestScoped
-public class NavigatorHandler implements ModelChangeListener,
-		NodeSelectionFilter {
+public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 
 	@ManagedProperty(value = "#{pivotModelManager.model}")
 	private PivotModel model;
@@ -689,40 +689,6 @@ public class NavigatorHandler implements ModelChangeListener,
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeSelectionFilter#isSelected(org.olap4j.metadata.Dimension)
-	 */
-	@Override
-	public boolean isSelected(Dimension dimension) {
-		return getDimensions(Axis.COLUMNS).contains(dimension)
-				|| getDimensions(Axis.ROWS).contains(dimension);
-	}
-
-	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeSelectionFilter#isSelected(org.olap4j.metadata.Hierarchy)
-	 */
-	@Override
-	public boolean isSelected(Hierarchy hierarchy) {
-		return getHierarchies(Axis.COLUMNS).contains(hierarchy)
-				|| getHierarchies(Axis.ROWS).contains(hierarchy);
-	}
-
-	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeSelectionFilter#isSelected(org.olap4j.metadata.Level)
-	 */
-	@Override
-	public boolean isSelected(Level level) {
-		return getLevels(level.getHierarchy()).contains(level);
-	}
-
-	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeSelectionFilter#isSelected(org.olap4j.metadata.Member)
-	 */
-	@Override
-	public boolean isSelected(Member member) {
-		return getMembers(member.getHierarchy()).contains(member);
-	}
-
-	/**
 	 * @see com.eyeq.pivot4j.ModelChangeListener#modelInitialized(com.eyeq.pivot4j.ModelChangeEvent)
 	 */
 	@Override
@@ -754,5 +720,91 @@ public class NavigatorHandler implements ModelChangeListener,
 		this.hierarchies = null;
 		this.levels = null;
 		this.members = null;
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isSelected(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isSelected(T element) {
+		if (element instanceof Dimension) {
+			Dimension dimension = (Dimension) element;
+			return getDimensions(Axis.COLUMNS).contains(dimension)
+					|| getDimensions(Axis.ROWS).contains(dimension);
+		}
+
+		if (element instanceof Hierarchy) {
+			Hierarchy hierarchy = (Hierarchy) element;
+			return getHierarchies(Axis.COLUMNS).contains(hierarchy)
+					|| getHierarchies(Axis.ROWS).contains(hierarchy);
+		}
+
+		if (element instanceof Level) {
+			Level level = (Level) element;
+			return getLevels(level.getHierarchy()).contains(level);
+		}
+
+		if (element instanceof Member) {
+			Member member = (Member) element;
+			return getMembers(member.getHierarchy()).contains(member);
+		}
+
+		return false;
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isSelectable(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isSelectable(T element) {
+		return false;
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isActive(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isActive(T element) {
+		return false;
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isVisible(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isVisible(T element) {
+		if (element instanceof Member) {
+			return !isSelected(element);
+		}
+
+		if (element instanceof Hierarchy) {
+			return !getHierarchies(Axis.FILTER).contains(element);
+		}
+
+		return true;
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isExpanded(org.olap4j.metadata.MetadataElement)
+	 */
+	@Override
+	public <T extends MetadataElement> boolean isExpanded(T element) {
+		if (element instanceof Dimension) {
+			return true;
+		} else if (element instanceof Hierarchy) {
+			Hierarchy hierarchy = (Hierarchy) element;
+
+			boolean isMeasure;
+
+			try {
+				isMeasure = hierarchy.getDimension().getDimensionType() == Type.MEASURE;
+			} catch (OlapException e) {
+				throw new FacesException();
+			}
+
+			return isMeasure || isSelected(element);
+		}
+
+		return false;
 	}
 }

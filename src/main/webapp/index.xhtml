@@ -108,7 +108,7 @@
 				<h:form id="source-tree-form">
 					<p:tree id="cube-navigator" styleClass="navigator"
 						value="#{navigatorHandler.cubeNode}" dynamic="true" cache="true"
-						var="node">
+						var="node" animate="true">
 						<p:treeNode type="dimension" icon="ui-icon-dim">
 							<h:outputText id="dimension-node" value="#{node.name}"
 								styleClass="node-dimension" />
@@ -152,7 +152,7 @@
 				<h:form id="target-tree-form">
 					<p:tree id="target-navigator" styleClass="navigator"
 						value="#{navigatorHandler.targetNode}" dynamic="true" cache="true"
-						var="node">
+						var="node" animate="true">
 						<p:treeNode type="columns" icon="ui-icon-cols">
 							<h:outputText id="columns-node" value="Columns"
 								styleClass="node-axis" />
@@ -178,15 +178,13 @@
 						</p:treeNode>
 
 						<p:treeNode type="hierarchy" icon="ui-icon-hier">
-							<div onmouseover="">
-								<h:outputText id="hierarchy-node" value="#{node.caption}"
-									styleClass="node-hierarchy" />
-								<p:commandButton icon="ui-button-icon-only ui-icon-search"
-									action="#{memberSelectionHandler.show}"
-									update=":hierarchy-form" oncomplete="hierarchyConfig.show();">
-									<f:param name="hierarchy" value="#{node.name}" />
-								</p:commandButton>
-							</div>
+							<h:outputText id="hierarchy-node" value="#{node.caption}"
+								styleClass="node-hierarchy" />
+							<p:commandButton icon="ui-button-icon-only ui-icon-search"
+								action="#{memberSelectionHandler.show}" update=":hierarchy-form"
+								oncomplete="hierarchyConfig.show();">
+								<f:param name="hierarchy" value="#{node.name}" />
+							</p:commandButton>
 							<!-- workaround for issue #1 -->
 							<p:draggable for="hierarchy-node"
 								helper="clone', appendTo: 'body" revert="true" />
@@ -229,6 +227,66 @@
 				</h:panelGroup>
 			</f:facet>
 
+			<pe:layoutPane id="grid-header-pane" position="north">
+				<h:panelGrid id="filter-panel" styleClass="filter-panel" columns="2"
+					columnClasses="ui-widget-header,filter-items">
+					<h:outputText value="Filter" />
+					<h:panelGroup layout="block">
+						<h:panelGroup id="filter-items" layout="block"
+							binding="#{filterHandler.filterPanel}">
+						</h:panelGroup>
+						<p:droppable for="filter-items"
+							hoverStyleClass="filter-items-hover">
+							<p:ajax listener="#{filterHandler.onDrop}"
+								update=":filter-panel,:filter-form" />
+						</p:droppable>
+
+						<p:growl showDetail="true" sticky="true" />
+					</h:panelGroup>
+				</h:panelGrid>
+
+				<h:panelGroup id="filter-dialog" layout="block">
+					<p:overlayPanel widgetVar="filterDialog" hideEffect="fade"
+						for=":filter-items" dynamic="true" showEvent="none"
+						appendToBody="true" styleClass="ui-dialog filter-dialog"
+						onHide="onFilterDialogClose();">
+						<h:form id="filter-form">
+							<p:tree value="#{filterHandler.filterNode}" dynamic="true"
+								cache="true" var="node" selectionMode="checkbox" animate="true"
+								propagateSelectionUp="false" propagateSelectionDown="false"
+								selection="#{filterHandler.selection}">
+								<p:treeNode type="member" icon="ui-icon-member">
+									<h:outputText value="#{node.name}" styleClass="node-member" />
+								</p:treeNode>
+
+								<p:ajax event="select"
+									listener="#{filterHandler.onNodeSelected}"
+									update=":filter-form:filter-button-bar" />
+								<p:ajax event="unselect"
+									listener="#{filterHandler.onNodeUnselected}"
+									update=":filter-form:filter-button-bar" />
+							</p:tree>
+
+							<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+							<h:panelGroup id="filter-button-bar" styleClass="button-bar"
+								layout="block">
+								<p:commandButton value="Ok" icon="ui-icon-check"
+									binding="#{filterHandler.buttonApply}"
+									action="#{filterHandler.apply}"
+									update=":filter-panel,:source-tree-form,:grid-form,:editor-form"
+									oncomplete="filterDialog.hide();" />
+								<p:button value="Close" icon="ui-icon-close"
+									onclick="filterDialog.hide(); return false;" />
+							</h:panelGroup>
+
+							<p:remoteCommand name="onFilterDialogClose"
+								action="#{filterHandler.onClose}" update=":filter-panel" />
+						</h:form>
+					</p:overlayPanel>
+				</h:panelGroup>
+			</pe:layoutPane>
+
 			<pe:layoutPane id="grid-content-pane" position="center">
 				<h:form id="grid-form">
 					<p:panelGrid id="pivot-grid" styleClass="pivot-grid"
@@ -264,7 +322,7 @@
 						<p:toolbarGroup align="left">
 							<p:commandButton value="Run" icon="ui-icon-play"
 								action="#{pivotGridHandler.executeMdx}"
-								update=":cube-list-form,:source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+								update=":cube-list-form,:source-tree-form,:target-tree-form,:grid-form,:editor-form,:filter-panel" />
 							<p:commandButton value="Reset"
 								icon="ui-icon-arrowreturnthick-1-w" update="mdx-editor" />
 						</p:toolbarGroup>

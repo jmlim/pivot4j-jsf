@@ -28,7 +28,8 @@
 					<p:tree id="member-tree" styleClass="navigator"
 						value="#{memberSelectionHandler.sourceNode}" dynamic="true"
 						cache="true" var="node" selectionMode="multiple"
-						selection="#{memberSelectionHandler.sourceSelection}">
+						selection="#{memberSelectionHandler.sourceSelection}"
+						animate="true">
 						<p:treeNode type="member" icon="ui-icon-member">
 							<h:outputText value="#{node.name}"
 								styleClass="node-member #{node.selected?'selected':''}" />

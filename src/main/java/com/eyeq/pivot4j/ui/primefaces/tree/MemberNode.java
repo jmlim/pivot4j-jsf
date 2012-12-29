@@ -9,33 +9,16 @@ import org.olap4j.OlapException;
 import org.olap4j.metadata.Member;
 import org.primefaces.model.TreeNode;
 
-import com.eyeq.pivot4j.util.MemberSelection;
-
 public class MemberNode extends NavigatorNode<Member> {
-
-	private MemberSelection selection;
 
 	/**
 	 * @param parent
 	 * @param member
 	 * @param selection
+	 * @param updateSelection
 	 */
-	public MemberNode(TreeNode parent, Member member, MemberSelection selection) {
+	public MemberNode(Member member) {
 		super(member);
-		setParent(parent);
-		setSelectable(true);
-
-		this.selection = selection;
-
-		com.eyeq.pivot4j.util.TreeNode<Member> node = selection
-				.findChild(member);
-		if (node != null) {
-			boolean selected = selection.isSelected(member);
-
-			setExpanded(selected && node.getChildCount() > 0);
-
-			getData().setSelected(selected);
-		}
 	}
 
 	/**
@@ -44,13 +27,6 @@ public class MemberNode extends NavigatorNode<Member> {
 	@Override
 	public String getType() {
 		return "member";
-	}
-
-	/**
-	 * @return the selection
-	 */
-	protected MemberSelection getSelection() {
-		return selection;
 	}
 
 	/**
@@ -76,8 +52,11 @@ public class MemberNode extends NavigatorNode<Member> {
 			List<TreeNode> children = new ArrayList<TreeNode>(members.size());
 
 			for (Member member : members) {
-				MemberNode node = new MemberNode(this, member, selection);
-				children.add(node);
+				MemberNode node = new MemberNode(member);
+
+				if (configureChildNode(member, node)) {
+					children.add(node);
+				}
 			}
 
 			return children;

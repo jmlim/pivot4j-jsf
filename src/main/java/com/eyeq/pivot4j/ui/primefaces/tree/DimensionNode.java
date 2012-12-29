@@ -10,12 +10,10 @@ import org.primefaces.model.TreeNode;
 public class DimensionNode extends NavigatorNode<Dimension> {
 
 	/**
-	 * @param parent
 	 * @param dimension
 	 */
-	public DimensionNode(TreeNode parent, Dimension dimension) {
+	public DimensionNode(Dimension dimension) {
 		super(dimension);
-		setParent(parent);
 	}
 
 	/**
@@ -41,18 +39,13 @@ public class DimensionNode extends NavigatorNode<Dimension> {
 	protected List<TreeNode> createChildren() {
 		List<Hierarchy> hierarchies = getElement().getHierarchies();
 
-		NodeSelectionFilter filter = getNodeFilter();
-
 		List<TreeNode> children = new ArrayList<TreeNode>(hierarchies.size());
 		for (Hierarchy hierarchy : hierarchies) {
-			HierarchyNode node = new HierarchyNode(this, hierarchy);
-			node.setNodeFilter(filter);
+			HierarchyNode node = new HierarchyNode(hierarchy);
 
-			if (filter != null) {
-				node.getData().setSelected(filter.isSelected(hierarchy));
+			if (configureChildNode(hierarchy, node)) {
+				children.add(node);
 			}
-
-			children.add(node);
 		}
 
 		return children;

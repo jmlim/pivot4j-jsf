@@ -6,6 +6,7 @@ import java.util.List;
 import org.olap4j.metadata.Cube;
 import org.olap4j.metadata.Dimension;
 import org.olap4j.metadata.Hierarchy;
+import org.olap4j.metadata.MetadataElement;
 import org.primefaces.model.TreeNode;
 
 public class CubeNode extends NavigatorNode<Cube> {
@@ -40,30 +41,23 @@ public class CubeNode extends NavigatorNode<Cube> {
 	protected List<TreeNode> createChildren() {
 		List<Dimension> dimensions = getElement().getDimensions();
 
-		NodeSelectionFilter filter = getNodeFilter();
-
 		List<TreeNode> children = new ArrayList<TreeNode>(dimensions.size());
 		for (Dimension dimension : dimensions) {
+			MetadataElement element;
+
+			NavigatorNode<?> node;
+
 			if (dimension.getHierarchies().size() == 1) {
-				Hierarchy hierarchy = dimension.getDefaultHierarchy();
+				element = dimension.getDefaultHierarchy();
 
-				HierarchyNode node = new HierarchyNode(this, hierarchy);
-				node.setNodeFilter(filter);
-
-				if (filter != null) {
-					node.getData().setSelected(filter.isSelected(hierarchy));
-				}
-
-				children.add(node);
+				node = new HierarchyNode((Hierarchy) element);
 			} else {
-				DimensionNode node = new DimensionNode(this, dimension);
+				element = dimension;
 
-				node.setNodeFilter(filter);
+				node = new DimensionNode(dimension);
+			}
 
-				if (filter != null) {
-					node.getData().setSelected(filter.isSelected(dimension));
-				}
-
+			if (configureChildNode(element, node)) {
 				children.add(node);
 			}
 		}
