@@ -26,15 +26,16 @@ Motivation
 
 Current Status
 
-	It's still in very early stage of development. Schema navigation and query axis configuration  are not implemented 
-	in this release.  
+	It's still in very early stage of development and <<it's not working on Internet Explorer browser yet!>>.
+	Though as the project is progressing rapidly, it's expected to be more or less be comparable with JPivot 
+	in feature-wise soon.
 
 	Below is the screenshot and screencast of the application (Click {{{./images/screenshot.jpeg}here}} for a larger image):
 
 [./images/screenshot-thumb.jpeg] Screenshot of the application
 
 	* And there's also a screencast demonstrating features of the application : 
-	(Link to the YouTube video {{{http://youtu.be/sGMVPVgycBg?hd=1}here}}).
+	(Link to the YouTube video {{{http://www.youtube.com/watch?v=3cUyAKXfmEk&hd=1}here}}).
 
 News
 
