@@ -8,8 +8,8 @@
     <language>en-us</language>
     <copyright>&#169;2012 Eyeq MC</copyright>
     <item>
-      <title>File: 20,
-             Errors: 3082,
+      <title>File: 22,
+             Errors: 3936,
              Warnings: 0,
              Infos: 0
       </title>
@@ -38,7 +38,7 @@
                   0
                 </td>
                 <td>
-                  83
+                  58
                 </td>
               </tr>
                           <tr>
@@ -52,7 +52,7 @@
                   0
                 </td>
                 <td>
-                  64
+                  54
                 </td>
               </tr>
                           <tr>
@@ -66,7 +66,7 @@
                   0
                 </td>
                 <td>
-                  435
+                  589
                 </td>
               </tr>
                           <tr>
@@ -85,20 +85,6 @@
               </tr>
                           <tr>
                 <td>
-                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.NodeSelectionFilter.java">com/eyeq/pivot4j/ui/primefaces/tree/NodeSelectionFilter.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  29
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.NavigatorHandler.java">com/eyeq/pivot4j/ui/primefaces/NavigatorHandler.java</a>
                 </td>
                 <td>
@@ -108,7 +94,7 @@
                   0
                 </td>
                 <td>
-                  825
+                  878
                 </td>
               </tr>
                           <tr>
@@ -136,7 +122,7 @@
                   0
                 </td>
                 <td>
-                  113
+                  120
                 </td>
               </tr>
                           <tr>
@@ -150,7 +136,7 @@
                   0
                 </td>
                 <td>
-                  101
+                  118
                 </td>
               </tr>
                           <tr>
@@ -169,6 +155,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.SelectionMode.java">com/eyeq/pivot4j/ui/primefaces/SelectionMode.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  89
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.DimensionNode.java">com/eyeq/pivot4j/ui/primefaces/tree/DimensionNode.java</a>
                 </td>
                 <td>
@@ -178,7 +178,7 @@
                   0
                 </td>
                 <td>
-                  54
+                  46
                 </td>
               </tr>
                           <tr>
@@ -206,7 +206,7 @@
                   0
                 </td>
                 <td>
-                  84
+                  68
                 </td>
               </tr>
                           <tr>
@@ -220,7 +220,7 @@
                   0
                 </td>
                 <td>
-                  55
+                  51
                 </td>
               </tr>
                           <tr>
@@ -249,6 +249,20 @@
                 </td>
                 <td>
                   350
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter.java">com/eyeq/pivot4j/ui/primefaces/tree/NodeFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  41
                 </td>
               </tr>
                           <tr>
@@ -290,7 +304,7 @@
                   0
                 </td>
                 <td>
-                  175
+                  209
                 </td>
               </tr>
                           <tr>
@@ -305,6 +319,20 @@
                 </td>
                 <td>
                   118
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.FilterHandler.java">com/eyeq/pivot4j/ui/primefaces/FilterHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  551
                 </td>
               </tr>
                       </tbody>
