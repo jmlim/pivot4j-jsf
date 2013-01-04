@@ -243,7 +243,7 @@ form {
 	padding: 0;
 }
 
-#mdx-editor-pane  .CodeMirror-scroll {
+#mdx-editor-pane .CodeMirror-scroll {
 	overflow-y: visible;
 	height: auto;
 }
@@ -306,8 +306,16 @@ form {
 }
 
 .hierarchy-config .member-panel .ui-panel-content {
-	padding: 5px 0 10px 0;
+	padding: 5px 0 5px 0;
 	height: 340px;
+}
+
+.hierarchy-config .ui-tree-container {
+	padding: 0 0 0 0;
+}
+
+.hierarchy-config .ui-tree {
+	height: 100%;
 }
 
 .hierarchy-config .control-panel {

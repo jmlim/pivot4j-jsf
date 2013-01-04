@@ -128,7 +128,7 @@
 								binding="#{memberSelectionHandler.buttonApply}" />
 							<p:commandButton value="Close" icon="ui-icon-close"
 								action="#{memberSelectionHandler.reset}"
-								oncomplete="hierarchyConfig.hide();" />
+								onstart="hierarchyConfig.hide();" />
 						</p:outputPanel>
 					</h:panelGroup>
 				</f:facet>
