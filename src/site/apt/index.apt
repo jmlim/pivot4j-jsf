@@ -24,11 +24,7 @@ Motivation
 	We expect many part of the source code which is written for this sample application would eventually generalized 
 	and introduced to the Pivot4J project itself.  
 
-Current Status
-
-	It's still in very early stage of development and <<it's not working on Internet Explorer browser yet!>>.
-	Though as the project is progressing rapidly, it's expected to be more or less be comparable with JPivot 
-	in feature-wise soon.
+Screenshot
 
 	Below is the screenshot and screencast of the application (Click {{{./images/screenshot.jpeg}here}} for a larger image):
 
@@ -38,6 +34,9 @@ Current Status
 	(Link to the YouTube video {{{http://www.youtube.com/watch?v=3cUyAKXfmEk&hd=1}here}}).
 
 News
+
+	* <<[2013-01-05]>> Now it's working correctly in Internet Explorer(tested with IE8). And also basic drillthrough feature 
+	has been implemented too.
 
 	* <<[2012-12-01]>> Uploaded a new video demonstrating progress on the axis configuration feature.
 
