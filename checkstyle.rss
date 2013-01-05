@@ -6,10 +6,10 @@
     <link>http://mysticfall.github.com/pivot4j-jsf</link>
     <description>Pivot4J JSF - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2012 Eyeq MC</copyright>
+    <copyright>&#169;2012 - 2013 Eyeq MC</copyright>
     <item>
-      <title>File: 22,
-             Errors: 3936,
+      <title>File: 23,
+             Errors: 4271,
              Warnings: 0,
              Infos: 0
       </title>
@@ -27,6 +27,20 @@
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.DrillThroughDataModel.java">com/eyeq/pivot4j/ui/primefaces/DrillThroughDataModel.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  160
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="http://mysticfall.github.com/pivot4j-jsf/checkstyle.html#com.eyeq.pivot4j.ui.primefaces.tree.MemberNode.java">com/eyeq/pivot4j/ui/primefaces/tree/MemberNode.java</a>
@@ -94,7 +108,7 @@
                   0
                 </td>
                 <td>
-                  878
+                  879
                 </td>
               </tr>
                           <tr>
@@ -122,7 +136,7 @@
                   0
                 </td>
                 <td>
-                  120
+                  118
                 </td>
               </tr>
                           <tr>
@@ -136,7 +150,7 @@
                   0
                 </td>
                 <td>
-                  118
+                  117
                 </td>
               </tr>
                           <tr>
@@ -234,7 +248,7 @@
                   0
                 </td>
                 <td>
-                  286
+                  295
                 </td>
               </tr>
                           <tr>
@@ -248,7 +262,7 @@
                   0
                 </td>
                 <td>
-                  350
+                  518
                 </td>
               </tr>
                           <tr>
