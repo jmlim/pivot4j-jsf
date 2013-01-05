@@ -18,8 +18,7 @@
 
 	<pe:layout id="workbench" fullPage="true"
 		options="#{workbenchHandler.layoutOptions}" widgetVar="workbench">
-		<pe:layoutPane id="toolbar-pane" position="north" size="42"
-			resizable="false" closable="false" collapsible="false" gutter="0"
+		<pe:layoutPane id="toolbar-pane" position="north"
 			styleClass="toolbar-area">
 			<h:form id="toolbar-form">
 				<p:toolbar id="toolbar">
@@ -27,40 +26,48 @@
 						<p:commandButton type="button" value="About" icon="ui-icon-info"
 							onclick="about.show();" />
 						<p:separator />
-						<h:outputLabel value="Drilldown : " for="drilldown-mode" />
+						<h:outputLabel value="Drill : " for="drilldown-mode" />
 						<p:selectOneButton id="drilldown-mode" style="display: inline"
-							value="#{pivotGridHandler.drillDownMode}">
+							value="#{pivotGridHandler.drillDownMode}"
+							disabled="#{!pivotModelManager.model.initialized}">
 							<f:selectItem itemLabel="Position" itemValue="position" />
 							<f:selectItem itemLabel="Member" itemValue="member" />
 							<f:selectItem itemLabel="Replace" itemValue="replace" />
-							<p:ajax update=":grid-form,:editor-form" />
+							<p:ajax update=":grid-form" />
 						</p:selectOneButton>
+						<p:selectBooleanButton value="#{pivotGridHandler.drillThrough}"
+							onLabel="Through" offLabel="Through"
+							disabled="#{!pivotModelManager.model.initialized or !pivotModelManager.model.cube.drillThroughEnabled}">
+							<p:ajax update=":grid-form" />
+						</p:selectBooleanButton>
 						<p:separator />
 						<p:selectBooleanButton
 							value="#{pivotGridHandler.showParentMembers}"
 							onLabel="Hide Parent" offLabel="Show Parent"
 							onIcon="ui-icon-arrowthickstop-1-n"
-							offIcon="ui-icon-arrowthickstop-1-n">
-							<p:ajax update=":grid-form,:editor-form" />
+							offIcon="ui-icon-arrowthickstop-1-n"
+							disabled="#{!pivotModelManager.model.initialized}">
+							<p:ajax update=":grid-form" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.hideSpans}"
 							onLabel="Show Spans" offLabel="Hide Spans"
 							onIcon="ui-icon-circlesmall-minus"
-							offIcon="ui-icon-circlesmall-minus">
-							<p:ajax update=":grid-form,:editor-form" />
+							offIcon="ui-icon-circlesmall-minus"
+							disabled="#{!pivotModelManager.model.initialized}">
+							<p:ajax update=":grid-form" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.nonEmpty}"
 							onLabel="Non Empty" offLabel="Non Empty"
 							onIcon="ui-icon-circlesmall-close"
-							offIcon="ui-icon-circlesmall-close">
-							<p:ajax update=":grid-form,:editor-form"
-								listener="#{pivotGridHandler.toggleNonEmpty}" />
+							offIcon="ui-icon-circlesmall-close"
+							disabled="#{!pivotModelManager.model.initialized}">
+							<p:ajax update=":grid-form,:editor-form" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.swapAxes}"
 							onLabel="Swap Axes" offLabel="Swap Axes" onIcon="ui-icon-refresh"
-							offIcon="ui-icon-refresh">
-							<p:ajax update=":grid-form,:editor-form,:target-tree-form"
-								listener="#{pivotGridHandler.toggleSwapAxes}" />
+							offIcon="ui-icon-refresh"
+							disabled="#{!pivotModelManager.model.initialized}">
+							<p:ajax update=":grid-form,:editor-form,:target-tree-form" />
 						</p:selectBooleanButton>
 						<p:separator />
 					</p:toolbarGroup>
@@ -96,7 +103,7 @@
 							itemLabel="#{cube.itemLabel}" itemValue="#{cube.itemValue}" />
 						<p:ajax event="change"
 							listener="#{pivotModelManager.onCubeChange}"
-							update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+							update=":source-tree-form,:target-tree-form,:grid-form,:editor-form,:toolbar-form" />
 					</h:selectOneMenu>
 				</h:form>
 			</pe:layoutPane>
@@ -301,12 +308,6 @@
 							value="You need to put at least one level or measure on Columns and Rows for a valid query."
 							styleClass="message-warn" />
 					</h:panelGroup>
-
-					<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
-					<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
-					<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
-					<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
-					<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
 				</h:form>
 			</pe:layoutPane>
 
@@ -323,7 +324,7 @@
 						<p:toolbarGroup align="left">
 							<p:commandButton value="Run" icon="ui-icon-play"
 								action="#{pivotGridHandler.executeMdx}"
-								update=":cube-list-form,:source-tree-form,:target-tree-form,:grid-form,:editor-form,:filter-panel" />
+								update=":cube-list-form,:source-tree-form,:target-tree-form,:grid-form,:editor-form,:filter-panel,:toolbar-form" />
 							<p:commandButton value="Reset"
 								icon="ui-icon-arrowreturnthick-1-w" update="mdx-editor" />
 						</p:toolbarGroup>
@@ -341,12 +342,6 @@
 						lineWrapping="true" matchBrackets="true" theme="eclipse"
 						widgetVar="mdxEditor" required="true" />
 
-					<h:inputHidden value="#{pivotGridHandler.drillDownMode}" />
-					<h:inputHidden value="#{pivotGridHandler.showParentMembers}" />
-					<h:inputHidden value="#{pivotGridHandler.hideSpans}" />
-					<h:inputHidden value="#{pivotGridHandler.swapAxes}" />
-					<h:inputHidden value="#{pivotGridHandler.nonEmpty}" />
-
 					<p:growl id="editor-growl" showDetail="true" sticky="true" />
 				</h:form>
 			</pe:layoutPane>
@@ -357,6 +352,7 @@
 
 	<ui:include src="about.xhtml" />
 	<ui:include src="hierarchy-config.xhtml" />
+	<ui:include src="drillthrough.xhtml" />
 
 	<p:ajaxStatus styleClass="ajax-status">
 		<f:facet name="start">

@@ -173,6 +173,10 @@ form {
 	text-align: right;
 }
 
+.pivot-grid .value-cell .ui-button {
+	float: right;
+}
+
 .pivot-grid .value-cell.cell-odd {
 	background-color: rgb(242, 245, 249);
 }

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.eyeq</groupId>
@@ -160,7 +161,9 @@
 						<phase>prepare-package</phase>
 						<configuration>
 							<target unless="maven.test.skip">
-								<unzip src="${basedir}/src/main/test-data/derby-foodmart.zip" dest="${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF" overwrite="false" />
+								<unzip src="${basedir}/src/main/test-data/derby-foodmart.zip"
+									dest="${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF"
+									overwrite="false" />
 							</target>
 						</configuration>
 						<goals>
@@ -335,6 +338,11 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.8</version>
 		</dependency>
 	</dependencies>
 

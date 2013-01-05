@@ -1,18 +1,25 @@
 package com.eyeq.pivot4j.ui.primefaces;
 
+import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.olap4j.Cell;
 import org.olap4j.CellSetAxis;
+import org.olap4j.OlapException;
 import org.primefaces.component.panelgrid.PanelGrid;
+import org.primefaces.context.RequestContext;
 
 import com.eyeq.pivot4j.ModelChangeEvent;
 import com.eyeq.pivot4j.ModelChangeListener;
@@ -22,6 +29,7 @@ import com.eyeq.pivot4j.QueryListener;
 import com.eyeq.pivot4j.transform.NonEmpty;
 import com.eyeq.pivot4j.transform.SwapAxes;
 import com.eyeq.pivot4j.ui.PivotRenderer;
+import com.eyeq.pivot4j.ui.command.BasicDrillThroughCommand;
 import com.eyeq.pivot4j.ui.command.CellCommand;
 import com.eyeq.pivot4j.ui.command.CellParameters;
 import com.eyeq.pivot4j.ui.command.DrillDownCommand;
@@ -33,35 +41,54 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	@ManagedProperty(value = "#{pivotModelManager.model}")
 	private PivotModel model;
 
-	private PanelGrid pivotGrid;
-
 	@ManagedProperty(value = "#{navigatorHandler}")
 	private NavigatorHandler navigator;
 
-	private String drillDownMode = DrillDownCommand.MODE_POSITION;
-
-	private boolean showParentMembers = false;
-
-	private boolean hideSpans = false;
-
-	private boolean swapAxes = false;
-
-	private boolean nonEmpty = false;
+	private PrimeFacesPivotRenderer renderer;
 
 	private String currentMdx;
 
 	private Long duration;
 
+	private DrillThroughDataModel drillThroughData;
+
 	@PostConstruct
 	protected void initialize() {
 		model.addQueryListener(this);
 		model.addModelChangeListener(this);
+
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		this.renderer = new PrimeFacesPivotRenderer(context);
+
+		renderer.initialize();
+		renderer.addCommand(new DrillThroughCommandImpl(renderer));
+
+		Map<String, Object> session = context.getExternalContext()
+				.getSessionMap();
+		Serializable state = (Serializable) session.get("rendererState");
+
+		if (state == null) {
+			renderer.setShowDimensionTitle(true);
+			renderer.setShowParentMembers(false);
+			renderer.setHideSpans(false);
+			renderer.setDrillDownMode(DrillDownCommand.MODE_POSITION);
+			renderer.setEnableDrillThrough(false);
+			renderer.setEnableColumnDrillDown(true);
+			renderer.setEnableRowDrillDown(true);
+		} else {
+			renderer.restoreState(state);
+		}
 	}
 
 	@PreDestroy
 	protected void destroy() {
 		model.removeQueryListener(this);
 		model.removeModelChangeListener(this);
+
+		if (drillThroughData != null) {
+			drillThroughData.destroy();
+		}
 	}
 
 	/**
@@ -98,7 +125,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 * @return the pivotGrid
 	 */
 	public PanelGrid getPivotGrid() {
-		return pivotGrid;
+		return renderer.getComponent();
 	}
 
 	/**
@@ -106,7 +133,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 *            the pivotGrid to set
 	 */
 	public void setPivotGrid(PanelGrid pivotGrid) {
-		this.pivotGrid = pivotGrid;
+		renderer.setComponent(pivotGrid);
 	}
 
 	/**
@@ -114,22 +141,6 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 */
 	public Long getDuration() {
 		return duration;
-	}
-
-	protected PivotRenderer createRenderer() {
-		FacesContext context = FacesContext.getCurrentInstance();
-
-		PivotRenderer renderer = new PrimeFacesPivotRenderer(context, pivotGrid);
-		renderer.initialize();
-
-		renderer.setShowDimensionTitle(true);
-		renderer.setShowParentMembers(showParentMembers);
-		renderer.setHideSpans(hideSpans);
-		renderer.setDrillDownMode(drillDownMode);
-		renderer.setEnableColumnDrillDown(true);
-		renderer.setEnableRowDrillDown(true);
-
-		return renderer;
 	}
 
 	public boolean isValid() {
@@ -148,8 +159,15 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
 	public void render() {
 		if (model.isInitialized()) {
-			PivotRenderer renderer = createRenderer();
 			renderer.render(model);
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			Map<String, Object> session = context.getExternalContext()
+					.getSessionMap();
+
+			Serializable state = renderer.bookmarkState();
+			session.put("rendererState", state);
 		}
 	}
 
@@ -181,9 +199,12 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 					.get("hierarchy")));
 		}
 
-		PivotRenderer renderer = createRenderer();
+		if (requestParameters.containsKey("cell")) {
+			parameters.setCellOrdinal(Integer.parseInt(requestParameters
+					.get("cell")));
+		}
 
-		CellCommand command = renderer.getCommand(requestParameters
+		CellCommand<?> command = renderer.getCommand(requestParameters
 				.get("command"));
 		command.execute(model, parameters);
 	}
@@ -227,7 +248,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 * @return the showParentMembers
 	 */
 	public boolean getShowParentMembers() {
-		return showParentMembers;
+		return renderer.getShowParentMembers();
 	}
 
 	/**
@@ -235,14 +256,14 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 *            the showParentMembers to set
 	 */
 	public void setShowParentMembers(boolean showParentMembers) {
-		this.showParentMembers = showParentMembers;
+		renderer.setShowParentMembers(showParentMembers);
 	}
 
 	/**
 	 * @return the hideSpans
 	 */
 	public boolean getHideSpans() {
-		return hideSpans;
+		return renderer.getHideSpans();
 	}
 
 	/**
@@ -250,58 +271,36 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 *            the hideSpans to set
 	 */
 	public void setHideSpans(boolean hideSpans) {
-		this.hideSpans = hideSpans;
+		renderer.setHideSpans(hideSpans);
 	}
 
 	/**
-	 * @return the swapAxes
+	 * @return the drillThrough
 	 */
-	public boolean getSwapAxes() {
-		return swapAxes;
+	public boolean getDrillThrough() {
+		return renderer.getEnableDrillThrough();
 	}
 
 	/**
-	 * @param swapAxes
-	 *            the swapAxes to set
+	 * @param drillThrough
+	 *            the drillThrough to set
 	 */
-	public void setSwapAxes(boolean swapAxes) {
-		this.swapAxes = swapAxes;
+	public void setDrillThrough(boolean drillThrough) {
+		renderer.setEnableDrillThrough(drillThrough);
+
+		resetDrillThrough();
 	}
 
-	/**
-	 * @return the nonEmpty
-	 */
-	public boolean getNonEmpty() {
-		return nonEmpty;
-	}
-
-	/**
-	 * @param nonEmpty
-	 *            the nonEmpty to set
-	 */
-	public void setNonEmpty(boolean nonEmpty) {
-		this.nonEmpty = nonEmpty;
-	}
-
-	public void toggleSwapAxes() {
-		SwapAxes transform = model.getTransform(SwapAxes.class);
-		if (transform.isSwapAxes() != swapAxes) {
-			transform.setSwapAxes(swapAxes);
-		}
-	}
-
-	public void toggleNonEmpty() {
-		NonEmpty transform = model.getTransform(NonEmpty.class);
-		if (transform.isNonEmpty() != nonEmpty) {
-			transform.setNonEmpty(nonEmpty);
-		}
+	public void resetDrillThrough() {
+		setDrillThroughOrdinal(null);
+		setDrillThroughRows(null);
 	}
 
 	/**
 	 * @return the drillDownMode
 	 */
 	public String getDrillDownMode() {
-		return drillDownMode;
+		return renderer.getDrillDownMode();
 	}
 
 	/**
@@ -309,7 +308,136 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 *            the drillDownMode to set
 	 */
 	public void setDrillDownMode(String drillDownMode) {
-		this.drillDownMode = drillDownMode;
+		renderer.setDrillDownMode(drillDownMode);
+	}
+
+	/**
+	 * @return the swapAxes
+	 */
+	public boolean getSwapAxes() {
+		if (!model.isInitialized()) {
+			return false;
+		}
+
+		SwapAxes transform = model.getTransform(SwapAxes.class);
+		return transform.isSwapAxes();
+	}
+
+	/**
+	 * @param swapAxes
+	 *            the swapAxes to set
+	 */
+	public void setSwapAxes(boolean swapAxes) {
+		SwapAxes transform = model.getTransform(SwapAxes.class);
+		transform.setSwapAxes(swapAxes);
+	}
+
+	/**
+	 * @return the nonEmpty
+	 */
+	public boolean getNonEmpty() {
+		if (!model.isInitialized()) {
+			return false;
+		}
+
+		NonEmpty transform = model.getTransform(NonEmpty.class);
+		return transform.isNonEmpty();
+	}
+
+	/**
+	 * @param nonEmpty
+	 *            the nonEmpty to set
+	 */
+	public void setNonEmpty(boolean nonEmpty) {
+		NonEmpty transform = model.getTransform(NonEmpty.class);
+		transform.setNonEmpty(nonEmpty);
+	}
+
+	/**
+	 * @return the drillThroughOrdinal
+	 */
+	protected Integer getDrillThroughOrdinal() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Map<String, Object> session = context.getExternalContext()
+				.getSessionMap();
+
+		return (Integer) session.get("drillThroughOrdinal");
+	}
+
+	/**
+	 * @param drillThroughOrdinal
+	 *            the drillThroughOrdinal to set
+	 */
+	protected void setDrillThroughOrdinal(Integer drillThroughOrdinal) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Map<String, Object> session = context.getExternalContext()
+				.getSessionMap();
+
+		if (drillThroughOrdinal == null) {
+			session.remove("drillThroughOrdinal");
+		} else {
+			session.put("drillThroughOrdinal", drillThroughOrdinal);
+		}
+	}
+
+	/**
+	 * @return the drillThroughRows
+	 */
+	protected Integer getDrillThroughRows() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Map<String, Object> session = context.getExternalContext()
+				.getSessionMap();
+
+		return (Integer) session.get("drillThroughRows");
+	}
+
+	/**
+	 * @param drillThroughRows
+	 *            the drillThroughRows to set
+	 */
+	protected void setDrillThroughRows(Integer drillThroughRows) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Map<String, Object> session = context.getExternalContext()
+				.getSessionMap();
+
+		if (drillThroughRows == null) {
+			session.remove("drillThroughRows");
+		} else {
+			session.put("drillThroughRows", drillThroughRows);
+		}
+	}
+
+	/**
+	 * @return the drillThroughData
+	 */
+	public DrillThroughDataModel getDrillThroughData() {
+		if (drillThroughData == null && model.isInitialized()) {
+			Integer drillThroughOrdinal = getDrillThroughOrdinal();
+			Integer drillThroughRows = getDrillThroughRows();
+
+			if (drillThroughOrdinal == null || drillThroughRows == null) {
+				return null;
+			}
+
+			Cell cell = model.getCellSet().getCell(drillThroughOrdinal);
+
+			ResultSet resultSet;
+
+			try {
+				resultSet = cell.drillThrough();
+			} catch (OlapException e) {
+				throw new FacesException(e);
+			}
+
+			if (resultSet != null) {
+				this.drillThroughData = new DrillThroughDataModel(resultSet);
+
+				drillThroughData.setRowCount(drillThroughRows);
+				drillThroughData.setPageSize(15);
+			}
+		}
+
+		return drillThroughData;
 	}
 
 	/**
@@ -347,5 +475,61 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	@Override
 	public void structureChanged(ModelChangeEvent e) {
 		render();
+	}
+
+	/**
+	 * Workaround to implement lazy rendering due to limitation in Olap4J's API
+	 * :
+	 * 
+	 * @see http://sourceforge.net/p/olap4j/bugs/15/
+	 */
+	class DrillThroughCommandImpl extends BasicDrillThroughCommand {
+
+		/**
+		 * @param renderer
+		 */
+		public DrillThroughCommandImpl(PivotRenderer renderer) {
+			super(renderer);
+		}
+
+		/**
+		 * @see com.eyeq.pivot4j.ui.command.BasicDrillThroughCommand#execute(com.eyeq.pivot4j.PivotModel,
+		 *      com.eyeq.pivot4j.ui.command.CellParameters)
+		 */
+		@Override
+		public ResultSet execute(PivotModel model, CellParameters parameters) {
+			Integer drillThroughRows = null;
+			Integer drillThroughOrdinal = null;
+
+			ResultSet result = super.execute(model, parameters);
+
+			if (result != null) {
+				int totalRows = 0;
+
+				try {
+					while (result.next()) {
+						totalRows++;
+					}
+				} catch (SQLException e) {
+					throw new FacesException(e);
+				} finally {
+					try {
+						result.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				drillThroughRows = totalRows;
+				drillThroughOrdinal = parameters.getCellOrdinal();
+
+				RequestContext context = RequestContext.getCurrentInstance();
+				context.execute("drillThrough();");
+			}
+
+			PivotGridHandler.this.setDrillThroughRows(drillThroughRows);
+			PivotGridHandler.this.setDrillThroughOrdinal(drillThroughOrdinal);
+
+			return result;
+		}
 	}
 }

@@ -42,12 +42,9 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 
 	/**
 	 * @param facesContext
-	 * @param component
 	 */
-	public PrimeFacesPivotRenderer(FacesContext facesContext,
-			PanelGrid component) {
+	public PrimeFacesPivotRenderer(FacesContext facesContext) {
 		this.facesContext = facesContext;
-		this.component = component;
 
 		Application application = facesContext.getApplication();
 		this.expressionFactory = application.getExpressionFactory();
@@ -61,13 +58,20 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 	}
 
 	/**
+	 * @param component
+	 */
+	public void setComponent(PanelGrid component) {
+		this.component = component;
+	}
+
+	/**
 	 * @see com.eyeq.pivot4j.ui.AbstractPivotRenderer#initialize()
 	 */
 	@Override
 	public void initialize() {
 		super.initialize();
 
-		// Map comman mode name to jQuery's predefined icon names. It can be
+		// Map command mode names to jQuery's predefined icon names. It can be
 		// also done by CSS.
 		this.iconMap = new HashMap<String, String>();
 
@@ -82,6 +86,7 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 		iconMap.put("sort-basic-other-down", "ui-icon-triangle-1-s");
 		iconMap.put("sort-basic-current-up", "ui-icon-circle-triangle-n");
 		iconMap.put("sort-basic-current-down", "ui-icon-circle-triangle-s");
+		iconMap.put("drillThrough", "ui-icon-search");
 
 		this.commandIndex = 0;
 	}
@@ -132,7 +137,7 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 	 *      java.util.List)
 	 */
 	@Override
-	public void startCell(RenderContext context, List<CellCommand> commands) {
+	public void startCell(RenderContext context, List<CellCommand<?>> commands) {
 		this.column = new Column();
 
 		String id = "col-" + column.hashCode();
@@ -174,7 +179,7 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 			column.setStyle("padding-left: " + padding + "px");
 		}
 
-		for (CellCommand command : commands) {
+		for (CellCommand<?> command : commands) {
 			CellParameters parameters = command.createParameters(context);
 
 			CommandButton button = new CommandButton();
@@ -226,6 +231,11 @@ public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
 			hierarchyParam.setName("hierarchy");
 			hierarchyParam.setValue(parameters.getHierarchyOrdinal());
 			button.getChildren().add(hierarchyParam);
+
+			UIParameter cellParam = new UIParameter();
+			hierarchyParam.setName("cell");
+			hierarchyParam.setValue(parameters.getCellOrdinal());
+			button.getChildren().add(cellParam);
 
 			column.getChildren().add(button);
 		}

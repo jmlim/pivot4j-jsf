@@ -98,10 +98,6 @@ public class PivotModelManager implements QueryListener {
 	}
 
 	public void onCubeChange() {
-		if (model.isInitialized()) {
-			model.destroy();
-		}
-
 		if (StringUtils.isEmpty(cubeName)) {
 			return;
 		}
@@ -117,7 +113,9 @@ public class PivotModelManager implements QueryListener {
 			logger.info("Initial MDX : " + mdx);
 		}
 
-		model.initialize();
+		if (!model.isInitialized()) {
+			model.initialize();
+		}
 	}
 
 	/**

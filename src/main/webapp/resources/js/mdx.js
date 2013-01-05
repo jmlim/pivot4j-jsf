@@ -150,7 +150,7 @@ CodeMirror.defineMode("mdx", function(config, parserConfig) {
         "returning reverse revoke rollback row rows rowid rowlabel rownum rows run " +
         "savepoint schema segment select separate session set share snapshot some space split sql start statement " +
         "storage subtype successful synonym " +
-        "tabauth table tables tablespace task terminate then to trigger truncate type " +
+        "tabauth table tables tablespace task terminate then to trigger truncate " +
         "union unique unlimited unrecoverable unusable update use using " +
         "validate value values variable view views " +
         "when whenever where while with work";
@@ -202,7 +202,7 @@ CodeMirror.defineMode("mdx", function(config, parserConfig) {
         "recsep recsepchar release repfooter repheader " +
         "serveroutput shiftinout show showmode size spool sqlblanklines sqlcase sqlcode sqlcontinue sqlnumber " +
         "sqlpluscompatibility sqlprefix sqlprompt sqlterminator suffix " +
-        "tab term termout time timing trimout trimspool ttitle " +
+        "tab term termout timing trimout trimspool ttitle " +
         "underline " +
         "verify version " +
         "wrap";

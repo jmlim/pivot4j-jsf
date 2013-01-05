@@ -717,6 +717,7 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 		this.cubeNode = null;
 		this.targetNode = null;
 
+		this.dimensions = null;
 		this.hierarchies = null;
 		this.levels = null;
 		this.members = null;

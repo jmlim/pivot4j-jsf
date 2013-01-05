@@ -96,7 +96,6 @@ public class WorkbenchHandler {
 			editorOptions.addOption("closable", true);
 			editorOptions.addOption("slidable", true);
 			editorOptions.addOption("size", 180);
-			editorOptions.addOption("contentSelector", "CodeMirror-scroll");
 
 			childCenterOptions.setSouthOptions(editorOptions);
 		}
