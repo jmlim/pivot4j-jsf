@@ -70,6 +70,19 @@
 							<p:ajax update=":grid-form,:editor-form,:target-tree-form" />
 						</p:selectBooleanButton>
 						<p:separator />
+						<p:menuButton value="Export"
+							disabled="#{!pivotModelManager.model.initialized}">
+							<p:menuitem value="Microsoft Excel(.xls)"
+								action="#{pivotExportHandler.exportExcel}" icon="ui-icon-disk"
+								ajax="false">
+								<f:param name="format" value="HSSF" />
+							</p:menuitem>
+							<p:menuitem value="Microsoft Excel(.xlsx)"
+								action="#{pivotExportHandler.exportExcel}" icon="ui-icon-disk"
+								ajax="false">
+								<f:param name="format" value="SXSSF" />
+							</p:menuitem>
+						</p:menuButton>
 					</p:toolbarGroup>
 
 					<p:toolbarGroup align="right">
