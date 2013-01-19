@@ -28,7 +28,7 @@ import com.eyeq.pivot4j.QueryEvent;
 import com.eyeq.pivot4j.QueryListener;
 import com.eyeq.pivot4j.transform.NonEmpty;
 import com.eyeq.pivot4j.transform.SwapAxes;
-import com.eyeq.pivot4j.ui.PivotRenderer;
+import com.eyeq.pivot4j.ui.PivotUIRenderer;
 import com.eyeq.pivot4j.ui.command.BasicDrillThroughCommand;
 import com.eyeq.pivot4j.ui.command.CellCommand;
 import com.eyeq.pivot4j.ui.command.CellParameters;
@@ -488,7 +488,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 		/**
 		 * @param renderer
 		 */
-		public DrillThroughCommandImpl(PivotRenderer renderer) {
+		public DrillThroughCommandImpl(PivotUIRenderer renderer) {
 			super(renderer);
 		}
 

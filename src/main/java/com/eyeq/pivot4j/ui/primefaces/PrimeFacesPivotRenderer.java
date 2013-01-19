@@ -17,12 +17,12 @@ import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.row.Row;
 
-import com.eyeq.pivot4j.ui.AbstractPivotRenderer;
+import com.eyeq.pivot4j.ui.AbstractPivotUIRenderer;
 import com.eyeq.pivot4j.ui.RenderContext;
 import com.eyeq.pivot4j.ui.command.CellCommand;
 import com.eyeq.pivot4j.ui.command.CellParameters;
 
-public class PrimeFacesPivotRenderer extends AbstractPivotRenderer {
+public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 
 	private Map<String, String> iconMap;
 
