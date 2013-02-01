@@ -272,13 +272,7 @@
 		<dependency>
 			<groupId>org.olap4j</groupId>
 			<artifactId>olap4j</artifactId>
-			<version>1.0.1.539</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javacup</groupId>
-					<artifactId>javacup</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javacup</groupId>
@@ -327,7 +321,7 @@
 		<dependency>
 			<groupId>pentaho</groupId>
 			<artifactId>mondrian</artifactId>
-			<version>3.4.9</version>
+			<version>3.5.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
