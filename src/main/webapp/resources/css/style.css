@@ -378,3 +378,11 @@ form {
 	margin: 5px 0;
 	height: 280px;
 }
+
+td.field-name, th.field-name {
+	padding-right: 10px;
+}
+
+span.unit {
+	margin-left: 5px;
+}

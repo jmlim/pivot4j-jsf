@@ -82,6 +82,8 @@
 								ajax="false">
 								<f:param name="format" value="SXSSF" />
 							</p:menuitem>
+							<p:menuitem value="PDF(.pdf)" icon="ui-icon-print"
+								onclick="exportConfig.show();" />
 						</p:menuButton>
 					</p:toolbarGroup>
 
@@ -365,6 +367,7 @@
 
 	<ui:include src="about.xhtml" />
 	<ui:include src="hierarchy-config.xhtml" />
+	<ui:include src="export-config.xhtml" />
 	<ui:include src="drillthrough.xhtml" />
 
 	<p:ajaxStatus styleClass="ajax-status">
