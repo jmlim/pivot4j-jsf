@@ -3,7 +3,7 @@
 
 	<groupId>com.eyeq</groupId>
 	<artifactId>pivot4j-jsf</artifactId>
-	<version>0.6</version>
+	<version>0.7-SNAPSHOT</version>
 	<name>Pivot4J JSF</name>
 	<description>Pivot4J JSF is a sample application built with PrimeFaces to show basic usage of Pivot4J library.</description>
 	<url>http://mysticfall.github.com/pivot4j-jsf</url>
