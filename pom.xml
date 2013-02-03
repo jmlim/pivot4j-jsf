@@ -82,31 +82,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>site-maven-plugin</artifactId>
-				<version>0.7</version>
-				<configuration>
-					<message>Building site for ${project.version}</message>
-					<server>github</server>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<phase>site-deploy</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<skipDeploy>true</skipDeploy>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
@@ -267,7 +242,7 @@
 		<dependency>
 			<groupId>com.eyeq</groupId>
 			<artifactId>pivot4j</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
+			<version>0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.olap4j</groupId>
@@ -344,7 +319,7 @@
 		<repository>
 			<id>dev.eyeq.co.kr</id>
 			<name>dev.eyeq.co.kr-snapshot</name>
-			<url>http://dev.eyeq.co.kr/artifactory/libs-snapshot</url>
+			<url>http://dev.eyeq.co.kr/artifactory/libs-release</url>
 		</repository>
 		<repository>
 			<id>pentaho</id>
