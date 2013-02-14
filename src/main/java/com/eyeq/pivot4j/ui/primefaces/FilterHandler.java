@@ -2,6 +2,7 @@ package com.eyeq.pivot4j.ui.primefaces;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -12,6 +13,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIParameter;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
@@ -377,28 +379,34 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 		ExpressionFactory factory = context.getApplication()
 				.getExpressionFactory();
 
-		String showExpression = String.format("#{filterHandler.show('%s')}",
-				hierarchy.getName());
-
 		link.setActionExpression(factory.createMethodExpression(
-				context.getELContext(), showExpression, Void.class,
+				context.getELContext(), "#{filterHandler.show}", Void.class,
 				new Class<?>[] { String.class }));
 		link.setUpdate(":filter-form");
 		link.setOncomplete("filterDialog.show();");
 
-		panel.getChildren().add(link);
+		UIParameter parameter = new UIParameter();
+		parameter.setName("hierarchy");
+		parameter.setValue(hierarchy.getName());
 
-		String removeExpression = String.format(
-				"#{filterHandler.removeHierarchy('%s')}", hierarchy.getName());
+		link.getChildren().add(parameter);
+
+		panel.getChildren().add(link);
 
 		CommandButton closeButton = new CommandButton();
 		closeButton.setId(id + "-button");
 		closeButton.setIcon("ui-icon-close");
 		closeButton.setActionExpression(factory.createMethodExpression(
-				context.getELContext(), removeExpression, Void.class,
-				new Class<?>[] { String.class }));
+				context.getELContext(), "#{filterHandler.removeHierarchy}",
+				Void.class, new Class<?>[] { String.class }));
 		closeButton
 				.setUpdate(":filter-panel,:source-tree-form,:grid-form,:editor-form");
+
+		UIParameter parameter2 = new UIParameter();
+		parameter2.setName("hierarchy");
+		parameter2.setValue(hierarchy.getName());
+
+		link.getChildren().add(parameter);
 
 		panel.getChildren().add(closeButton);
 
@@ -415,6 +423,16 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 		return ":filter-item-"
 				+ hierarchyName.replaceAll("[\\[\\]]", "")
 						.replaceAll("[\\s\\.]", "_").toLowerCase();
+	}
+
+	public void show() {
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		Map<String, String> parameters = context.getExternalContext()
+				.getRequestParameterMap();
+
+		String hierarchyName = parameters.get("hierarchy");
+		show(hierarchyName);
 	}
 
 	/**
@@ -444,6 +462,16 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 		transform.setSlicer(getHierarchy(), members);
 
 		configureFilter();
+	}
+
+	public void removeHierarchy() {
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		Map<String, String> parameters = context.getExternalContext()
+				.getRequestParameterMap();
+
+		String hierarchyName = parameters.get("hierarchy");
+		removeHierarchy(hierarchyName);
 	}
 
 	/**
