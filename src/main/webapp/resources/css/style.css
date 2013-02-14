@@ -260,6 +260,10 @@ form {
 	padding: 8px 5px 0px 5px;	
 }
 
+#mdx-editor-pane .ui-layout-north {
+	overflow: hidden;
+}
+
 #mdx-editor-pane .ui-toolbar {
 	border: none;
 }
