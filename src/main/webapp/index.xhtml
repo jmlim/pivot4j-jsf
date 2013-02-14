@@ -61,13 +61,15 @@
 							onIcon="ui-icon-circlesmall-close"
 							offIcon="ui-icon-circlesmall-close"
 							disabled="#{!pivotModelManager.model.initialized}">
-							<p:ajax update=":grid-form,:editor-form" />
+							<p:ajax
+								update=":grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.swapAxes}"
 							onLabel="Swap Axes" offLabel="Swap Axes" onIcon="ui-icon-refresh"
 							offIcon="ui-icon-refresh"
 							disabled="#{!pivotModelManager.model.initialized}">
-							<p:ajax update=":grid-form,:editor-form,:target-tree-form" />
+							<p:ajax
+								update=":grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar,:target-tree-form" />
 						</p:selectBooleanButton>
 						<p:separator />
 						<p:menuButton value="Export"
@@ -118,7 +120,7 @@
 							itemLabel="#{cube.itemLabel}" itemValue="#{cube.itemValue}" />
 						<p:ajax event="change"
 							listener="#{pivotModelManager.onCubeChange}"
-							update=":source-tree-form,:target-tree-form,:grid-form,:editor-form,:toolbar-form" />
+							update=":source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar,:toolbar-form" />
 					</h:selectOneMenu>
 				</h:form>
 			</pe:layoutPane>
@@ -163,7 +165,7 @@
 					<p:droppable for="cube-navigator"
 						hoverStyleClass="drop-target-node">
 						<p:ajax listener="#{navigatorHandler.onDrop}"
-							update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+							update=":source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar" />
 					</p:droppable>
 				</h:form>
 			</pe:layoutPane>
@@ -182,7 +184,7 @@
 							<p:droppable for="columns-node"
 								hoverStyleClass="drop-target-node">
 								<p:ajax listener="#{navigatorHandler.onDropOnAxis}"
-									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar" />
 							</p:droppable>
 						</p:treeNode>
 
@@ -190,7 +192,7 @@
 							<h:outputText id="rows-node" value="Rows" styleClass="node-axis" />
 							<p:droppable for="rows-node" hoverStyleClass="drop-target-node">
 								<p:ajax listener="#{navigatorHandler.onDropOnAxis}"
-									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar" />
 							</p:droppable>
 						</p:treeNode>
 
@@ -214,7 +216,7 @@
 							<p:droppable for="hierarchy-node"
 								hoverStyleClass="drop-target-node">
 								<p:ajax listener="#{navigatorHandler.onDropOnHierarchy}"
-									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar" />
 							</p:droppable>
 						</p:treeNode>
 
@@ -234,7 +236,7 @@
 								revert="true" />
 							<p:droppable for="member-node" hoverStyleClass="drop-target-node">
 								<p:ajax listener="#{navigatorHandler.onDropOnMember}"
-									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form" />
+									update=":source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar" />
 							</p:droppable>
 						</p:treeNode>
 					</p:tree>
@@ -297,7 +299,7 @@
 								<p:commandButton value="Ok" icon="ui-icon-check"
 									binding="#{filterHandler.buttonApply}"
 									action="#{filterHandler.apply}"
-									update=":filter-panel,:source-tree-form,:grid-form,:editor-form"
+									update=":filter-panel,:source-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar"
 									oncomplete="filterDialog.hide();" />
 								<p:button value="Close" icon="ui-icon-close"
 									onclick="filterDialog.hide(); return false;" />
@@ -335,27 +337,34 @@
 				</f:facet>
 
 				<h:form id="editor-form">
-					<p:toolbar id="editor-toolbar">
-						<p:toolbarGroup align="left">
-							<p:commandButton value="Run" icon="ui-icon-play"
-								action="#{pivotGridHandler.executeMdx}"
-								update=":cube-list-form,:source-tree-form,:target-tree-form,:grid-form,:editor-form,:filter-panel,:toolbar-form" />
-							<p:commandButton value="Reset"
-								icon="ui-icon-arrowreturnthick-1-w" update="mdx-editor" />
-						</p:toolbarGroup>
-						<p:toolbarGroup align="right" styleClass="query-info"
-							rendered="#{!empty pivotGridHandler.duration}">
-							<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-clock" />
-							<h:outputText value="Query execution time : " />
-							<h:outputText value="#{pivotGridHandler.duration}">
-								<f:convertNumber pattern="###,### msec" />
-							</h:outputText>
-						</p:toolbarGroup>
-					</p:toolbar>
-					<pe:codeMirror id="mdx-editor" mode="text/x-mdx"
-						value="#{pivotGridHandler.currentMdx}" lineNumbers="true"
-						lineWrapping="true" matchBrackets="true" theme="eclipse"
-						widgetVar="mdxEditor" required="true" />
+					<pe:layoutPane id="mdx-editor-toolbar" position="north">
+						<p:toolbar id="editor-toolbar">
+							<p:toolbarGroup align="left">
+								<p:commandButton value="Run" icon="ui-icon-play"
+									action="#{pivotGridHandler.executeMdx}"
+									update=":cube-list-form,:source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar,:filter-panel,:toolbar-form" />
+								<p:commandButton value="Reset"
+									icon="ui-icon-arrowreturnthick-1-w"
+									action="#{pivotGridHandler.reset}"
+									update=":editor-form:mdx-editor" />
+							</p:toolbarGroup>
+							<p:toolbarGroup align="right" styleClass="query-info"
+								rendered="#{!empty pivotGridHandler.duration}">
+								<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-clock" />
+								<h:outputText value="Query execution time : " />
+								<h:outputText value="#{pivotGridHandler.duration}">
+									<f:convertNumber pattern="###,### msec" />
+								</h:outputText>
+							</p:toolbarGroup>
+						</p:toolbar>
+					</pe:layoutPane>
+
+					<pe:layoutPane id="mdx-editor-content" position="center">
+						<pe:codeMirror id="mdx-editor" mode="text/x-mdx"
+							value="#{pivotGridHandler.currentMdx}" lineNumbers="true"
+							lineWrapping="true" matchBrackets="true" theme="eclipse"
+							widgetVar="mdxEditor" required="true" />
+					</pe:layoutPane>
 
 					<p:growl id="editor-growl" showDetail="true" sticky="true" />
 				</h:form>

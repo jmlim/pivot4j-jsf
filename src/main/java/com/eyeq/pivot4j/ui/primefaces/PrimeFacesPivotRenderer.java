@@ -205,7 +205,7 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 							"#{pivotGridHandler.executeCommand}", Void.class,
 							new Class<?>[0]);
 			button.setActionExpression(expression);
-			button.setUpdate(":grid-form,:editor-form,:source-tree-form,:target-tree-form");
+			button.setUpdate(":grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar,:source-tree-form,:target-tree-form");
 
 			UIParameter commandParam = new UIParameter();
 			commandParam.setName("command");

@@ -243,6 +243,10 @@ form {
 	vertical-align: middle;
 }
 
+#mdx-editor-pane {
+	padding-bottom: 6px;
+}
+
 #mdx-editor-pane .pe-layout-pane-content {
 	padding: 0;
 }
@@ -254,6 +258,10 @@ form {
 
 #mdx-editor-pane .query-info {
 	padding: 8px 5px 0px 5px;	
+}
+
+#mdx-editor-pane .ui-toolbar {
+	border: none;
 }
 
 .ui-icon-title {

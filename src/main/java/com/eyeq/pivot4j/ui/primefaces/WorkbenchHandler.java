@@ -98,6 +98,23 @@ public class WorkbenchHandler {
 			editorOptions.addOption("size", 180);
 
 			childCenterOptions.setSouthOptions(editorOptions);
+
+			LayoutOptions editorToolBarOptions = new LayoutOptions();
+			editorToolBarOptions.addOption("resizable", false);
+			editorToolBarOptions.addOption("closable", false);
+			editorToolBarOptions.addOption("slidable", false);
+			editorToolBarOptions.addOption("size", 38);
+
+			editorOptions.setNorthOptions(editorToolBarOptions);
+
+			LayoutOptions editorContentOptions = new LayoutOptions();
+			editorContentOptions.addOption("resizable", false);
+			editorContentOptions.addOption("closable", false);
+			editorContentOptions.addOption("slidable", false);
+			editorContentOptions.addOption("spacing_open", 0);
+			editorContentOptions.addOption("spacing_closed", 0);
+
+			editorOptions.setChildOptions(editorContentOptions);
 		}
 
 		return layoutOptions;

@@ -14,6 +14,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.olap4j.Axis;
 import org.olap4j.OlapException;
 import org.olap4j.metadata.Dimension;
@@ -307,7 +308,13 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 	 * @param e
 	 */
 	public void onDrop(DragDropEvent e) {
-		List<Integer> path = getNodePath(e.getDragId());
+		String dragId = e.getDragId();
+
+		if (StringUtils.isEmpty(dragId)) {
+			return;
+		}
+
+		List<Integer> path = getNodePath(dragId);
 
 		boolean fromNavigator = isSourceNode(e.getDragId());
 		if (fromNavigator) {
