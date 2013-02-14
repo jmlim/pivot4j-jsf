@@ -183,7 +183,18 @@ public class MemberSelectionHandler implements NodeFilter {
 	}
 
 	public void add() {
-		add(SelectionMode.Single.name());
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		Map<String, String> parameters = context.getExternalContext()
+				.getRequestParameterMap();
+
+		String modeName = parameters.get("mode");
+
+		if (modeName == null) {
+			modeName = SelectionMode.Single.name();
+		}
+
+		add(modeName);
 	}
 
 	/**
@@ -243,7 +254,18 @@ public class MemberSelectionHandler implements NodeFilter {
 	}
 
 	public void remove() {
-		remove(SelectionMode.Single.name());
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		Map<String, String> parameters = context.getExternalContext()
+				.getRequestParameterMap();
+
+		String modeName = parameters.get("mode");
+
+		if (modeName == null) {
+			modeName = SelectionMode.Single.name();
+		}
+
+		remove(modeName);
 	}
 
 	/**

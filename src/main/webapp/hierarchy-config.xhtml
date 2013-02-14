@@ -42,17 +42,25 @@
 					<p:contextMenu id="hierarchy-source-menu"
 						styleClass="hierarchy-contextmenu" for="member-tree">
 						<p:menuitem value="Select member"
-							action="#{memberSelectionHandler.add('Single')}"
-							update="member-tree,selection-tree" icon="ui-icon-plus" />
+							action="#{memberSelectionHandler.add}"
+							update="member-tree,selection-tree" icon="ui-icon-plus">
+							<f:param name="mode" value="Single" />
+						</p:menuitem>
 						<p:menuitem value="Select siblings"
-							action="#{memberSelectionHandler.add('Sibling')}"
-							update="member-tree,selection-tree" icon="ui-icon-plus" />
+							action="#{memberSelectionHandler.add}"
+							update="member-tree,selection-tree" icon="ui-icon-plus">
+							<f:param name="mode" value="Sibling" />
+						</p:menuitem>
 						<p:menuitem value="Select children"
-							action="#{memberSelectionHandler.add('Children')}"
-							update="member-tree,selection-tree" icon="ui-icon-plus" />
+							action="#{memberSelectionHandler.add}"
+							update="member-tree,selection-tree" icon="ui-icon-plus">
+							<f:param name="mode" value="Children" />
+						</p:menuitem>
 						<p:menuitem value="Select descendants"
-							action="#{memberSelectionHandler.add('Descendants')}"
-							update="member-tree,selection-tree" icon="ui-icon-plus" />
+							action="#{memberSelectionHandler.add}"
+							update="member-tree,selection-tree" icon="ui-icon-plus">
+							<f:param name="mode" value="Descendants" />
+						</p:menuitem>
 					</p:contextMenu>
 				</p:panel>
 
@@ -90,17 +98,25 @@
 					<p:contextMenu id="hierarchy-target-menu"
 						styleClass="hierarchy-contextmenu" for="selection-tree">
 						<p:menuitem value="Remove member"
-							action="#{memberSelectionHandler.remove('Single')}"
-							update="member-tree,selection-tree" icon="ui-icon-trash" />
+							action="#{memberSelectionHandler.remove}"
+							update="member-tree,selection-tree" icon="ui-icon-trash">
+							<f:param name="mode" value="Single" />
+						</p:menuitem>
 						<p:menuitem value="Remove siblings"
-							action="#{memberSelectionHandler.remove('Sibling')}"
-							update="member-tree,selection-tree" icon="ui-icon-trash" />
+							action="#{memberSelectionHandler.remove}"
+							update="member-tree,selection-tree" icon="ui-icon-trash">
+							<f:param name="mode" value="Sibling" />
+						</p:menuitem>
 						<p:menuitem value="Remove children"
-							action="#{memberSelectionHandler.remove('Children')}"
-							update="member-tree,selection-tree" icon="ui-icon-trash" />
+							action="#{memberSelectionHandler.remove}"
+							update="member-tree,selection-tree" icon="ui-icon-trash">
+							<f:param name="mode" value="Children" />
+						</p:menuitem>
 						<p:menuitem value="Remove descendants"
-							action="#{memberSelectionHandler.remove('Descendants')}"
-							update="member-tree,selection-tree" icon="ui-icon-trash" />
+							action="#{memberSelectionHandler.remove}"
+							update="member-tree,selection-tree" icon="ui-icon-trash">
+							<f:param name="mode" value="Descendants" />
+						</p:menuitem>
 					</p:contextMenu>
 				</p:panel>
 
