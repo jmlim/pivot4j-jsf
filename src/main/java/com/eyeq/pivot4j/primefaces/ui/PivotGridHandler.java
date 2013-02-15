@@ -1,4 +1,4 @@
-package com.eyeq.pivot4j.ui.primefaces;
+package com.eyeq.pivot4j.primefaces.ui;
 
 import java.io.Serializable;
 import java.sql.ResultSet;

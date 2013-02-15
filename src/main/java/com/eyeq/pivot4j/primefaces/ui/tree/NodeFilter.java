@@ -1,4 +1,4 @@
-package com.eyeq.pivot4j.ui.primefaces.tree;
+package com.eyeq.pivot4j.primefaces.ui.tree;
 
 import org.olap4j.metadata.MetadataElement;
 

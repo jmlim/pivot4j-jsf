@@ -1,4 +1,4 @@
-package com.eyeq.pivot4j.ui.primefaces.tree;
+package com.eyeq.pivot4j.primefaces.ui.tree;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +18,7 @@ public class LevelNode extends NavigatorNode<Level> {
 	/**
 	 * @param level
 	 * @return
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NavigatorNode#createData(org.olap4j.metadata.MetadataElement)
+	 * @see com.eyeq.pivot4j.primefaces.ui.tree.NavigatorNode#createData(org.olap4j.metadata.MetadataElement)
 	 */
 	@Override
 	protected NodeData createData(Level level) {
@@ -42,7 +42,7 @@ public class LevelNode extends NavigatorNode<Level> {
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NavigatorNode#createChildren()
+	 * @see com.eyeq.pivot4j.primefaces.ui.tree.NavigatorNode#createChildren()
 	 */
 	@Override
 	protected List<TreeNode> createChildren() {

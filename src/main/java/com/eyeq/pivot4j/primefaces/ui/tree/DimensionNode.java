@@ -1,4 +1,4 @@
-package com.eyeq.pivot4j.ui.primefaces.tree;
+package com.eyeq.pivot4j.primefaces.ui.tree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class DimensionNode extends NavigatorNode<Dimension> {
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NavigatorNode#createChildren()
+	 * @see com.eyeq.pivot4j.primefaces.ui.tree.NavigatorNode#createChildren()
 	 */
 	@Override
 	protected List<TreeNode> createChildren() {

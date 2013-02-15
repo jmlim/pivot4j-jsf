@@ -1,4 +1,4 @@
-package com.eyeq.pivot4j.ui.primefaces;
+package com.eyeq.pivot4j.primefaces.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,15 +30,15 @@ import org.primefaces.model.TreeNode;
 import com.eyeq.pivot4j.ModelChangeEvent;
 import com.eyeq.pivot4j.ModelChangeListener;
 import com.eyeq.pivot4j.PivotModel;
+import com.eyeq.pivot4j.primefaces.ui.tree.CubeNode;
+import com.eyeq.pivot4j.primefaces.ui.tree.HierarchyNode;
+import com.eyeq.pivot4j.primefaces.ui.tree.LevelNode;
+import com.eyeq.pivot4j.primefaces.ui.tree.MeasureNode;
+import com.eyeq.pivot4j.primefaces.ui.tree.NodeFilter;
 import com.eyeq.pivot4j.transform.ChangeSlicer;
 import com.eyeq.pivot4j.transform.PlaceHierarchiesOnAxes;
 import com.eyeq.pivot4j.transform.PlaceLevelsOnAxes;
 import com.eyeq.pivot4j.transform.PlaceMembersOnAxes;
-import com.eyeq.pivot4j.ui.primefaces.tree.CubeNode;
-import com.eyeq.pivot4j.ui.primefaces.tree.HierarchyNode;
-import com.eyeq.pivot4j.ui.primefaces.tree.LevelNode;
-import com.eyeq.pivot4j.ui.primefaces.tree.MeasureNode;
-import com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter;
 
 @ManagedBean(name = "navigatorHandler")
 @RequestScoped
@@ -731,7 +731,7 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isSelected(org.olap4j.metadata.MetadataElement)
+	 * @see com.eyeq.pivot4j.primefaces.ui.tree.NodeFilter#isSelected(org.olap4j.metadata.MetadataElement)
 	 */
 	@Override
 	public <T extends MetadataElement> boolean isSelected(T element) {
@@ -761,7 +761,7 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isSelectable(org.olap4j.metadata.MetadataElement)
+	 * @see com.eyeq.pivot4j.primefaces.ui.tree.NodeFilter#isSelectable(org.olap4j.metadata.MetadataElement)
 	 */
 	@Override
 	public <T extends MetadataElement> boolean isSelectable(T element) {
@@ -769,7 +769,7 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isActive(org.olap4j.metadata.MetadataElement)
+	 * @see com.eyeq.pivot4j.primefaces.ui.tree.NodeFilter#isActive(org.olap4j.metadata.MetadataElement)
 	 */
 	@Override
 	public <T extends MetadataElement> boolean isActive(T element) {
@@ -777,7 +777,7 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isVisible(org.olap4j.metadata.MetadataElement)
+	 * @see com.eyeq.pivot4j.primefaces.ui.tree.NodeFilter#isVisible(org.olap4j.metadata.MetadataElement)
 	 */
 	@Override
 	public <T extends MetadataElement> boolean isVisible(T element) {
@@ -793,7 +793,7 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 	}
 
 	/**
-	 * @see com.eyeq.pivot4j.ui.primefaces.tree.NodeFilter#isExpanded(org.olap4j.metadata.MetadataElement)
+	 * @see com.eyeq.pivot4j.primefaces.ui.tree.NodeFilter#isExpanded(org.olap4j.metadata.MetadataElement)
 	 */
 	@Override
 	public <T extends MetadataElement> boolean isExpanded(T element) {
