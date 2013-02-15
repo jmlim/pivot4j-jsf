@@ -130,6 +130,7 @@
 				<configuration>
 					<warName>pivot4j</warName>
 					<archiveClasses>true</archiveClasses>
+					<attachClasses>true</attachClasses>
 				</configuration>
 			</plugin>
 			<plugin>
