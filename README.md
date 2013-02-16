@@ -7,4 +7,4 @@ It is built with PrimeFaces and can be deployed on Servlet 2.5 compatible contai
 Project Page
 =======
 
-Please visit the Pivot4J homepage at http://mysticfall.github.com/pivot4j
+For more information, please visit the Pivot4J homepage at http://mysticfall.github.com/pivot4j/example.html
