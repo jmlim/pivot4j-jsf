@@ -124,7 +124,8 @@ form {
 #source-tree-pane .ui-treenode .ui-state-highlight {
 	background: none !important;
 	text-shadow: none !important;
-	color: #d0d0d0;
+	color: inherit !important;
+	text-decoration: underline;
 }
 
 #cube-list-pane {
