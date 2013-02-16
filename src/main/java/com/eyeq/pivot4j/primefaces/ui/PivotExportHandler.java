@@ -20,6 +20,7 @@ import javax.print.attribute.standard.OrientationRequested;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.export.fop.FopExporter;
 import com.eyeq.pivot4j.export.poi.ExcelExporter;
 import com.eyeq.pivot4j.export.poi.Format;
@@ -27,6 +28,9 @@ import com.eyeq.pivot4j.export.poi.Format;
 @ManagedBean(name = "pivotExportHandler")
 @RequestScoped
 public class PivotExportHandler {
+
+	@ManagedProperty(value = "#{pivotStateManager.model}")
+	private PivotModel model;
 
 	@ManagedProperty(value = "#{pivotGridHandler}")
 	private PivotGridHandler gridHandler;
@@ -86,9 +90,24 @@ public class PivotExportHandler {
 	}
 
 	/**
+	 * @return the model
+	 */
+	public PivotModel getModel() {
+		return model;
+	}
+
+	/**
+	 * @param model
+	 *            the model to set
+	 */
+	public void setModel(PivotModel model) {
+		this.model = model;
+	}
+
+	/**
 	 * @return the showHeader
 	 */
-	public boolean isShowHeader() {
+	public boolean getShowHeader() {
 		return showHeader;
 	}
 
@@ -118,7 +137,7 @@ public class PivotExportHandler {
 	/**
 	 * @return the showFooter
 	 */
-	public boolean isShowFooter() {
+	public boolean getShowFooter() {
 		return showFooter;
 	}
 
@@ -289,8 +308,7 @@ public class PivotExportHandler {
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		String disposition = String.format("attachment; filename=\"%s.%s\"",
-				gridHandler.getModel().getCube().getName(),
-				format.getExtension());
+				model.getCube().getName(), format.getExtension());
 
 		ExternalContext externalContext = context.getExternalContext();
 		externalContext.setResponseHeader("Content-Disposition", disposition);
@@ -307,7 +325,7 @@ public class PivotExportHandler {
 			exporter.setOutputStream(out);
 			exporter.initialize();
 
-			exporter.render(gridHandler.getModel());
+			exporter.render(model);
 		} finally {
 			out.flush();
 			IOUtils.closeQuietly(out);
@@ -352,7 +370,7 @@ public class PivotExportHandler {
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		String disposition = String.format("attachment; filename=\"%s.%s\"",
-				gridHandler.getModel().getCube().getName(), ".pdf");
+				model.getCube().getName(), ".pdf");
 
 		ExternalContext externalContext = context.getExternalContext();
 		externalContext.setResponseHeader("Content-Disposition", disposition);
@@ -368,7 +386,7 @@ public class PivotExportHandler {
 			exporter.setOutputStream(out);
 			exporter.initialize();
 
-			exporter.render(gridHandler.getModel());
+			exporter.render(model);
 		} finally {
 			out.flush();
 			IOUtils.closeQuietly(out);

@@ -5,17 +5,16 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<p:dialog id="drillthrough-dialog" header="Drill Through Result"
-		widgetVar="drillThroughDialog" modal="true" width="860" height="470"
+		widgetVar="drillThroughDialog" modal="true" width="860" height="430"
 		closable="true" resizable="true" styleClass="drillthrough"
-		visible="#{!empty pivotGridHandler.drillThroughData}">
+		visible="#{drillThroughData.dataAvailable}">
 		<h:form id="drillthrough-form">
 			<p:dataTable id="drillthrough-grid" var="row"
-				widgetVar="drillThroughGrid"
-				value="#{pivotGridHandler.drillThroughData}" lazy="true"
+				widgetVar="drillThroughGrid" value="#{drillThroughData}" lazy="true"
 				paginator="true" first="0" rows="15"
-				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
-				<p:columns value="#{pivotGridHandler.drillThroughData.columns}"
-					var="column">
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				rendered="#{drillThroughData.dataAvailable}">
+				<p:columns value="#{drillThroughData.columns}" var="column">
 					<f:facet name="header">
 						<h:outputText value="#{column.label}" />
 					</f:facet>
@@ -33,14 +32,7 @@
 		<f:facet name="footer">
 			<h:panelGroup layout="block" styleClass="button-bar">
 				<h:form id="drillthrough-cform">
-					<p:commandButton value="Export" icon="ui-icon-disk" ajax="false">
-						<p:dataExporter type="xls"
-							target=":drillthrough-form:drillthrough-grid"
-							fileName="drillthrough" />
-					</p:commandButton>
-
-					<p:commandButton value="Close"
-						action="#{pivotGridHandler.resetDrillThrough}"
+					<p:commandButton value="Close" action="#{drillThroughData.reset}"
 						update=":drillthrough-dialog" icon="ui-icon-close" />
 				</h:form>
 			</h:panelGroup>

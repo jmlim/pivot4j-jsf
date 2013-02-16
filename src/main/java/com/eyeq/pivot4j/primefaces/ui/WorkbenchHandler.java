@@ -1,40 +1,19 @@
 package com.eyeq.pivot4j.primefaces.ui;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 
 import org.primefaces.extensions.model.layout.LayoutOptions;
 
-import com.eyeq.pivot4j.PivotModel;
-
-@ManagedBean
+@ManagedBean(name = "workbenchHandler")
 @RequestScoped
 public class WorkbenchHandler {
-
-	@ManagedProperty(value = "#{pivotModelManager.model}")
-	private PivotModel model;
 
 	private boolean editorPaneVisible = false;
 
 	private boolean navigatorPaneVisible = true;
 
 	private LayoutOptions layoutOptions;
-
-	/**
-	 * @return the model
-	 */
-	public PivotModel getModel() {
-		return model;
-	}
-
-	/**
-	 * @param model
-	 *            the model to set
-	 */
-	public void setModel(PivotModel model) {
-		this.model = model;
-	}
 
 	/**
 	 * @return the layoutOptions

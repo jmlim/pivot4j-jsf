@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<p:dialog id="hierarchy-config" header="Hierarchy Configuration"
-		widgetVar="hierarchyConfig" modal="true" width="860" height="470"
+		widgetVar="hierarchyConfig" modal="true" width="860" height="455"
 		closable="true" resizable="false" styleClass="hierarchy-config">
 		<h:form id="hierarchy-form">
 			<h:panelGrid columns="4"
@@ -35,45 +35,47 @@
 								styleClass="node-member #{node.selected?'selected':''}" />
 						</p:treeNode>
 
-						<p:ajax event="select"
+						<p:ajax event="select" update=":hierarchy-form:source-ctrl-panel"
 							listener="#{memberSelectionHandler.onSourceNodeSelected}" />
 					</p:tree>
 
 					<p:contextMenu id="hierarchy-source-menu"
 						styleClass="hierarchy-contextmenu" for="member-tree">
 						<p:menuitem value="Select member"
-							action="#{memberSelectionHandler.add}"
-							update="member-tree,selection-tree" icon="ui-icon-plus">
+							action="#{memberSelectionHandler.add}" update="hierarchy-form"
+							icon="ui-icon-plus">
 							<f:param name="mode" value="Single" />
 						</p:menuitem>
 						<p:menuitem value="Select siblings"
-							action="#{memberSelectionHandler.add}"
-							update="member-tree,selection-tree" icon="ui-icon-plus">
+							action="#{memberSelectionHandler.add}" update="hierarchy-form"
+							icon="ui-icon-plus">
 							<f:param name="mode" value="Sibling" />
 						</p:menuitem>
 						<p:menuitem value="Select children"
-							action="#{memberSelectionHandler.add}"
-							update="member-tree,selection-tree" icon="ui-icon-plus">
+							action="#{memberSelectionHandler.add}" update="hierarchy-form"
+							icon="ui-icon-plus">
 							<f:param name="mode" value="Children" />
 						</p:menuitem>
 						<p:menuitem value="Select descendants"
-							action="#{memberSelectionHandler.add}"
-							update="member-tree,selection-tree" icon="ui-icon-plus">
+							action="#{memberSelectionHandler.add}" update="hierarchy-form"
+							icon="ui-icon-plus">
 							<f:param name="mode" value="Descendants" />
 						</p:menuitem>
 					</p:contextMenu>
 				</p:panel>
 
 				<h:panelGroup layout="block">
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel id="source-ctrl-panel">
 						<p:commandButton id="button-add" icon="ui-icon-carat-1-e"
 							value="Add" action="#{memberSelectionHandler.add}"
 							binding="#{memberSelectionHandler.buttonAdd}"
-							update="member-tree,selection-tree" />
+							update="hierarchy-form"
+							disabled="#{!memberSelectionHandler.addButtonEnabled}" />
 						<p:commandButton id="button-remove" icon="ui-icon-carat-1-w"
 							value="Remove" action="#{memberSelectionHandler.remove}"
 							binding="#{memberSelectionHandler.buttonRemove}"
-							update="member-tree,selection-tree" />
+							update="hierarchy-form"
+							disabled="#{!memberSelectionHandler.removeButtonEnabled}" />
 					</p:outputPanel>
 				</h:panelGroup>
 
@@ -92,55 +94,58 @@
 						</p:treeNode>
 
 						<p:ajax event="select"
+							update=":hierarchy-form:source-ctrl-panel,:hierarchy-form:target-ctrl-panel"
 							listener="#{memberSelectionHandler.onTargetNodeSelected}" />
 					</p:tree>
 
 					<p:contextMenu id="hierarchy-target-menu"
 						styleClass="hierarchy-contextmenu" for="selection-tree">
 						<p:menuitem value="Remove member"
-							action="#{memberSelectionHandler.remove}"
-							update="member-tree,selection-tree" icon="ui-icon-trash">
+							action="#{memberSelectionHandler.remove}" update="hierarchy-form"
+							icon="ui-icon-trash">
 							<f:param name="mode" value="Single" />
 						</p:menuitem>
 						<p:menuitem value="Remove siblings"
-							action="#{memberSelectionHandler.remove}"
-							update="member-tree,selection-tree" icon="ui-icon-trash">
+							action="#{memberSelectionHandler.remove}" update="hierarchy-form"
+							icon="ui-icon-trash">
 							<f:param name="mode" value="Sibling" />
 						</p:menuitem>
 						<p:menuitem value="Remove children"
-							action="#{memberSelectionHandler.remove}"
-							update="member-tree,selection-tree" icon="ui-icon-trash">
+							action="#{memberSelectionHandler.remove}" update="hierarchy-form"
+							icon="ui-icon-trash">
 							<f:param name="mode" value="Children" />
 						</p:menuitem>
 						<p:menuitem value="Remove descendants"
-							action="#{memberSelectionHandler.remove}"
-							update="member-tree,selection-tree" icon="ui-icon-trash">
+							action="#{memberSelectionHandler.remove}" update="hierarchy-form"
+							icon="ui-icon-trash">
 							<f:param name="mode" value="Descendants" />
 						</p:menuitem>
 					</p:contextMenu>
 				</p:panel>
 
 				<h:panelGroup layout="block">
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel id="target-ctrl-panel">
 						<p:commandButton id="button-up" icon="ui-icon-carat-1-n"
 							value="Up" action="#{memberSelectionHandler.moveUp}"
 							binding="#{memberSelectionHandler.buttonUp}"
-							update="selection-tree" />
+							update="selection-tree,target-ctrl-panel,:hierarchy-form:button-bar"
+							disabled="#{!memberSelectionHandler.upButtonEnabled}" />
 						<p:commandButton id="button-down" icon="ui-icon-carat-1-s"
 							value="Down" action="#{memberSelectionHandler.moveDown}"
 							binding="#{memberSelectionHandler.buttonDown}"
-							update="selection-tree" />
+							update="selection-tree,target-ctrl-panel,:hierarchy-form:button-bar"
+							disabled="#{!memberSelectionHandler.downButtonEnabled}" />
 					</p:outputPanel>
 				</h:panelGroup>
 
 				<f:facet name="footer">
 					<h:panelGroup layout="block">
-						<p:messages showDetail="true" autoUpdate="true" closable="true" />
+						<p:messages showDetail="true" closable="true" />
 
-						<p:outputPanel autoUpdate="true">
+						<p:outputPanel id="button-bar">
 							<p:commandButton value="Apply" icon="ui-icon-check"
 								action="#{memberSelectionHandler.apply}"
-								update=":source-tree-form,:target-tree-form,:grid-form,:editor-form"
+								update="hierarchy-form,:source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor"
 								binding="#{memberSelectionHandler.buttonApply}" />
 							<p:commandButton value="Close" icon="ui-icon-close"
 								action="#{memberSelectionHandler.reset}"

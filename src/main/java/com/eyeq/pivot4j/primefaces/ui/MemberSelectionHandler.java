@@ -9,7 +9,7 @@ import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.olap4j.OlapException;
@@ -29,10 +29,10 @@ import com.eyeq.pivot4j.transform.PlaceMembersOnAxes;
 import com.eyeq.pivot4j.util.MemberSelection;
 
 @ManagedBean(name = "memberSelectionHandler")
-@SessionScoped
+@ViewScoped
 public class MemberSelectionHandler implements NodeFilter {
 
-	@ManagedProperty(value = "#{pivotModelManager.model}")
+	@ManagedProperty(value = "#{pivotStateManager.model}")
 	private PivotModel model;
 
 	private TreeNode sourceNode;
@@ -248,8 +248,8 @@ public class MemberSelectionHandler implements NodeFilter {
 		this.sourceSelection = null;
 		this.targetSelection = null;
 
-		buttonAdd.setDisabled(true);
-		buttonRemove.setDisabled(true);
+		updateButtonStatus();
+
 		buttonApply.setDisabled(false);
 	}
 
@@ -319,8 +319,8 @@ public class MemberSelectionHandler implements NodeFilter {
 		this.sourceSelection = null;
 		this.targetSelection = null;
 
-		buttonAdd.setDisabled(true);
-		buttonRemove.setDisabled(true);
+		updateButtonStatus();
+
 		buttonApply.setDisabled(false);
 	}
 
@@ -334,7 +334,8 @@ public class MemberSelectionHandler implements NodeFilter {
 		SelectionNode parent = (SelectionNode) node.getParent();
 		parent.moveUp(node);
 
-		buttonUp.setDisabled(!selection.canMoveUp(member));
+		updateButtonStatus();
+
 		buttonApply.setDisabled(false);
 	}
 
@@ -348,7 +349,8 @@ public class MemberSelectionHandler implements NodeFilter {
 		SelectionNode parent = (SelectionNode) node.getParent();
 		parent.moveDown(node);
 
-		buttonUp.setDisabled(!selection.canMoveDown(member));
+		updateButtonStatus();
+
 		buttonApply.setDisabled(false);
 	}
 
@@ -379,13 +381,10 @@ public class MemberSelectionHandler implements NodeFilter {
 		return selection;
 	}
 
-	/**
-	 * @param e
-	 */
-	public void onSourceNodeSelected(NodeSelectEvent e) {
+	public boolean isAddButtonEnabled() {
 		boolean canAdd;
 
-		if (sourceSelection == null) {
+		if (sourceSelection == null || sourceSelection.length == 0) {
 			canAdd = false;
 		} else {
 			canAdd = true;
@@ -398,21 +397,14 @@ public class MemberSelectionHandler implements NodeFilter {
 			}
 		}
 
-		buttonAdd.setDisabled(!canAdd);
+		return canAdd;
 	}
 
-	/**
-	 * @param e
-	 */
-	public void onTargetNodeSelected(NodeSelectEvent e) {
+	public boolean isRemoveButtonEnabled() {
 		boolean canRemove;
-		boolean canMoveUp;
-		boolean canMoveDown;
 
-		if (targetSelection == null) {
+		if (targetSelection == null || targetSelection.length == 0) {
 			canRemove = false;
-			canMoveUp = false;
-			canMoveDown = false;
 		} else {
 			canRemove = true;
 
@@ -422,25 +414,66 @@ public class MemberSelectionHandler implements NodeFilter {
 					break;
 				}
 			}
-
-			if (targetSelection.length == 1) {
-				SelectionNode node = (SelectionNode) e.getTreeNode();
-
-				Member member = node.getElement();
-
-				MemberSelection selection = getSelection();
-
-				canMoveUp = selection.canMoveUp(member);
-				canMoveDown = selection.canMoveDown(member);
-			} else {
-				canMoveUp = false;
-				canMoveDown = false;
-			}
 		}
 
-		buttonRemove.setDisabled(!canRemove);
-		buttonUp.setDisabled(!canMoveUp);
-		buttonDown.setDisabled(!canMoveDown);
+		return canRemove;
+	}
+
+	public boolean isUpButtonEnabled() {
+		boolean canMoveUp;
+
+		if (targetSelection == null || targetSelection.length != 1) {
+			canMoveUp = false;
+		} else {
+			SelectionNode node = (SelectionNode) targetSelection[0];
+
+			Member member = node.getElement();
+
+			MemberSelection selection = getSelection();
+
+			canMoveUp = selection.canMoveUp(member);
+		}
+
+		return canMoveUp;
+	}
+
+	public boolean isDownButtonEnabled() {
+		boolean canMoveDown;
+
+		if (targetSelection == null || targetSelection.length != 1) {
+			canMoveDown = false;
+		} else {
+			SelectionNode node = (SelectionNode) targetSelection[0];
+
+			Member member = node.getElement();
+
+			MemberSelection selection = getSelection();
+
+			canMoveDown = selection.canMoveDown(member);
+		}
+
+		return canMoveDown;
+	}
+
+	/**
+	 * @param e
+	 */
+	public void onSourceNodeSelected(NodeSelectEvent e) {
+		updateButtonStatus();
+	}
+
+	/**
+	 * @param e
+	 */
+	public void onTargetNodeSelected(NodeSelectEvent e) {
+		updateButtonStatus();
+	}
+
+	protected void updateButtonStatus() {
+		buttonAdd.setDisabled(!isAddButtonEnabled());
+		buttonRemove.setDisabled(!isRemoveButtonEnabled());
+		buttonUp.setDisabled(!isUpButtonEnabled());
+		buttonDown.setDisabled(!isDownButtonEnabled());
 	}
 
 	/**

@@ -44,7 +44,7 @@ import com.eyeq.pivot4j.transform.PlaceMembersOnAxes;
 @RequestScoped
 public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 
-	@ManagedProperty(value = "#{pivotModelManager.model}")
+	@ManagedProperty(value = "#{pivotStateManager.model}")
 	private PivotModel model;
 
 	private CubeNode cubeNode;
@@ -61,12 +61,16 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 
 	@PostConstruct
 	protected void initialize() {
-		model.addModelChangeListener(this);
+		if (model != null) {
+			model.addModelChangeListener(this);
+		}
 	}
 
 	@PreDestroy
 	protected void destroy() {
-		model.removeModelChangeListener(this);
+		if (model != null) {
+			model.removeModelChangeListener(this);
+		}
 	}
 
 	/**
@@ -172,7 +176,7 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 	 * @return the cubeNode
 	 */
 	public CubeNode getCubeNode() {
-		if (model.isInitialized()) {
+		if (model != null && model.isInitialized()) {
 			if (cubeNode == null) {
 				this.cubeNode = new CubeNode(model.getCube());
 				cubeNode.setNodeFilter(this);
@@ -201,7 +205,7 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 	 * @return the cubeNode
 	 */
 	public TreeNode getTargetNode() {
-		if (model.isInitialized()) {
+		if (model != null && model.isInitialized()) {
 			if (targetNode == null) {
 				this.targetNode = new DefaultTreeNode();
 

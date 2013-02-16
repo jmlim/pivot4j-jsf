@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<p:dialog id="export-config" header="PDF Export"
-		widgetVar="exportConfig" modal="true" width="660" height="425"
+		widgetVar="exportConfig" modal="true" width="655" height="398"
 		closable="true" resizable="false" styleClass="export-config">
 		<h:form id="export-form">
 			<p:fieldset legend="Content Settings">
@@ -78,15 +78,13 @@
 				</h:panelGrid>
 			</p:fieldset>
 
-			<h:panelGroup styleClass="button-bar" layout="block">
-				<p:messages showDetail="true" autoUpdate="true" closable="true" />
+			<h:panelGroup id="button-bar" styleClass="button-bar" layout="block">
+				<p:messages showDetail="true" closable="true" />
 
-				<p:outputPanel autoUpdate="true">
-					<p:commandButton value="Apply" icon="ui-icon-check"
-						action="#{pivotExportHandler.exportPdf}" ajax="false" />
-					<p:commandButton value="Close" icon="ui-icon-close"
-						onclick="exportConfig.hide();" />
-				</p:outputPanel>
+				<p:commandButton value="Apply" icon="ui-icon-check"
+					action="#{pivotExportHandler.exportPdf}" ajax="false" />
+				<p:commandButton value="Close" icon="ui-icon-close"
+					onclick="exportConfig.hide();" />
 			</h:panelGroup>
 		</h:form>
 	</p:dialog>

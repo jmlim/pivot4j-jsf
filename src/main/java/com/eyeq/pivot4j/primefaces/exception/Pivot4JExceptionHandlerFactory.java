@@ -1,4 +1,4 @@
-package com.eyeq.pivot4j.primefaces.ui;
+package com.eyeq.pivot4j.primefaces.exception;
 
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerFactory;

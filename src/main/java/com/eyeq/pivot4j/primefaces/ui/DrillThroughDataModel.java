@@ -9,51 +9,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PreDestroy;
 import javax.faces.FacesException;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
-import org.apache.commons.lang.NullArgumentException;
+import org.olap4j.Cell;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
+@ManagedBean(name = "drillThroughData")
+@ViewScoped
 public class DrillThroughDataModel extends LazyDataModel<Map<String, Object>> {
 
 	private static final long serialVersionUID = 2554173601960871316L;
 
 	private static final String ROW_KEY = "_id";
 
-	private transient ResultSet resultSet;
+	private Cell cell;
 
 	private List<DataColumn> columns;
 
-	/**
-	 * @param resultSet
-	 */
-	public DrillThroughDataModel(ResultSet resultSet) {
-		if (resultSet == null) {
-			throw new NullArgumentException("resultSet");
-		}
-
-		this.resultSet = resultSet;
-	}
-
 	public List<DataColumn> getColumns() {
-		if (columns == null) {
-			try {
-				ResultSetMetaData metadata = resultSet.getMetaData();
-
-				int count = metadata.getColumnCount();
-
-				this.columns = new ArrayList<DataColumn>(count);
-
-				columns.add(new DataColumn("#", ROW_KEY));
-
-				for (int i = 1; i <= count; i++) {
-					columns.add(new DataColumn(metadata.getColumnLabel(i),
-							metadata.getColumnName(i)));
-				}
-			} catch (SQLException e) {
-				throw new FacesException(e);
-			}
+		if (!isDataAvailable()) {
+			return Collections.emptyList();
 		}
 
 		return columns;
@@ -76,10 +55,15 @@ public class DrillThroughDataModel extends LazyDataModel<Map<String, Object>> {
 		List<Map<String, Object>> data = new ArrayList<Map<String, Object>>(
 				pageSize);
 
+		ResultSet rs = null;
+
 		try {
+			rs = cell.drillThrough();
+
 			int rowIndex = 0;
+
 			while (rowIndex < first) {
-				if (!resultSet.next()) {
+				if (!rs.next()) {
 					return Collections.emptyList();
 				}
 
@@ -89,7 +73,7 @@ public class DrillThroughDataModel extends LazyDataModel<Map<String, Object>> {
 			List<DataColumn> columns = getColumns();
 
 			for (int i = 0; i < pageSize; i++) {
-				if (resultSet.next()) {
+				if (rs.next()) {
 					Map<String, Object> row = new HashMap<String, Object>(
 							columns.size() + 1);
 
@@ -98,7 +82,7 @@ public class DrillThroughDataModel extends LazyDataModel<Map<String, Object>> {
 							row.put(ROW_KEY, rowIndex + i + 1);
 						} else {
 							row.put(column.getName(),
-									resultSet.getObject(column.getName()));
+									rs.getObject(column.getName()));
 						}
 					}
 
@@ -109,17 +93,72 @@ public class DrillThroughDataModel extends LazyDataModel<Map<String, Object>> {
 			}
 		} catch (SQLException e) {
 			throw new FacesException(e);
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
 		}
 
 		return data;
 	}
 
-	public void destroy() {
+	/**
+	 * @param resultSet
+	 * @param rowCount
+	 */
+	public void initialize(Cell cell) {
+		reset();
+
+		int rowCount = 0;
+
+		ResultSet rs = null;
+
 		try {
-			resultSet.close();
+			rs = cell.drillThrough();
+
+			ResultSetMetaData metadata = rs.getMetaData();
+
+			int count = metadata.getColumnCount();
+
+			this.columns = new ArrayList<DataColumn>(count);
+
+			columns.add(new DataColumn("#", ROW_KEY));
+
+			for (int i = 1; i <= count; i++) {
+				columns.add(new DataColumn(metadata.getColumnLabel(i), metadata
+						.getColumnName(i)));
+			}
+
+			while (rs.next()) {
+				rowCount++;
+			}
+
+			setRowCount(rowCount);
 		} catch (SQLException e) {
 			throw new FacesException(e);
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
 		}
+
+		this.cell = cell;
+	}
+
+	public boolean isDataAvailable() {
+		return cell != null;
+	}
+
+	@PreDestroy
+	public void reset() {
+		this.columns = null;
+		this.cell = null;
 	}
 
 	public static class DataColumn {

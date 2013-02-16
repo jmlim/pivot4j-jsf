@@ -46,7 +46,7 @@ import com.eyeq.pivot4j.util.MemberSelection;
 @RequestScoped
 public class FilterHandler implements ModelChangeListener, NodeFilter {
 
-	@ManagedProperty(value = "#{pivotModelManager.model}")
+	@ManagedProperty(value = "#{pivotStateManager.model}")
 	private PivotModel model;
 
 	@ManagedProperty(value = "#{navigatorHandler}")
@@ -64,12 +64,16 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 
 	@PostConstruct
 	protected void initialize() {
-		model.addModelChangeListener(this);
+		if (model != null) {
+			model.addModelChangeListener(this);
+		}
 	}
 
 	@PreDestroy
 	protected void destroy() {
-		model.removeModelChangeListener(this);
+		if (model != null) {
+			model.removeModelChangeListener(this);
+		}
 	}
 
 	/**
@@ -122,7 +126,7 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 	 * @return the filterNode
 	 */
 	public TreeNode getFilterNode() {
-		if (model.isInitialized()) {
+		if (model != null && model.isInitialized()) {
 			Hierarchy hierarchy = getHierarchy();
 
 			if (filterNode == null && hierarchy != null) {
@@ -340,7 +344,7 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 	 * @param parent
 	 */
 	protected void configureFilter() {
-		if (filterPanel != null) {
+		if (model != null && filterPanel != null) {
 			filterPanel.getChildren().clear();
 
 			if (model.isInitialized()) {
@@ -381,7 +385,7 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 
 		link.setActionExpression(factory.createMethodExpression(
 				context.getELContext(), "#{filterHandler.show}", Void.class,
-				new Class<?>[] { String.class }));
+				new Class<?>[0]));
 		link.setUpdate(":filter-form");
 		link.setOncomplete("filterDialog.show();");
 
@@ -398,7 +402,7 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 		closeButton.setIcon("ui-icon-close");
 		closeButton.setActionExpression(factory.createMethodExpression(
 				context.getELContext(), "#{filterHandler.removeHierarchy}",
-				Void.class, new Class<?>[] { String.class }));
+				Void.class, new Class<?>[0]));
 		closeButton
 				.setUpdate(":filter-panel,:source-tree-form,:grid-form,:editor-form");
 

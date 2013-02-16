@@ -1,4 +1,4 @@
-package com.eyeq.pivot4j.primefaces.ui;
+package com.eyeq.pivot4j.primefaces.exception;
 
 import java.util.Iterator;
 

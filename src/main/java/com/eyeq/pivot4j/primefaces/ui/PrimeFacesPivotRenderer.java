@@ -1,5 +1,6 @@
 package com.eyeq.pivot4j.primefaces.ui;
 
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +13,18 @@ import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
 
+import org.olap4j.Cell;
 import org.primefaces.component.column.Column;
 import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.row.Row;
+import org.primefaces.context.RequestContext;
 
+import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.ui.AbstractPivotUIRenderer;
+import com.eyeq.pivot4j.ui.PivotUIRenderer;
 import com.eyeq.pivot4j.ui.RenderContext;
+import com.eyeq.pivot4j.ui.command.BasicDrillThroughCommand;
 import com.eyeq.pivot4j.ui.command.CellCommand;
 import com.eyeq.pivot4j.ui.command.CellParameters;
 
@@ -89,6 +95,16 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 		iconMap.put("drillThrough", "ui-icon-search");
 
 		this.commandIndex = 0;
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.AbstractPivotUIRenderer#registerCommands()
+	 */
+	@Override
+	protected void registerCommands() {
+		super.registerCommands();
+
+		addCommand(new DrillThroughCommandImpl(this));
 	}
 
 	/**
@@ -292,5 +308,41 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 	@Override
 	public void endTable(RenderContext context) {
 		this.commandIndex = 0;
+	}
+
+	/**
+	 * Workaround to implement lazy rendering due to limitation in Olap4J's API
+	 * :
+	 * 
+	 * @see http://sourceforge.net/p/olap4j/bugs/15/
+	 */
+	class DrillThroughCommandImpl extends BasicDrillThroughCommand {
+
+		/**
+		 * @param renderer
+		 */
+		public DrillThroughCommandImpl(PivotUIRenderer renderer) {
+			super(renderer);
+		}
+
+		/**
+		 * @see com.eyeq.pivot4j.ui.command.BasicDrillThroughCommand#execute(com.eyeq.pivot4j.PivotModel,
+		 *      com.eyeq.pivot4j.ui.command.CellParameters)
+		 */
+		@Override
+		public ResultSet execute(PivotModel model, CellParameters parameters) {
+			Cell cell = model.getCellSet().getCell(parameters.getCellOrdinal());
+
+			DrillThroughDataModel data = facesContext.getApplication()
+					.evaluateExpressionGet(facesContext, "#{drillThroughData}",
+							DrillThroughDataModel.class);
+			data.initialize(cell);
+			data.setPageSize(15);
+
+			RequestContext context = RequestContext.getCurrentInstance();
+			context.execute("drillThrough();");
+
+			return null;
+		}
 	}
 }

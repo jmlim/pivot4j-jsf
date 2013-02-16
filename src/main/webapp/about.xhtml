@@ -5,10 +5,11 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<p:dialog id="about-dialog" header="About This Application"
-		widgetVar="about" modal="true" height="120" closable="true"
+		widgetVar="about" modal="true" height="105" closable="true"
 		resizable="false" styleClass="about">
 		<h:form id="about-form">
-			<h:graphicImage value="/resources/images/pivot4j.png"
+			<h:graphicImage
+				value="#{settings.resourcePrefix}/resources/images/logo.png"
 				alt="Pivot4J Logo" styleClass="logo" />
 			<h:outputText value="Welcome to Pivot4J JSF Sample Application!"
 				styleClass="about-title" />

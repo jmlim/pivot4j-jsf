@@ -1,35 +1,37 @@
 package com.eyeq.pivot4j.primefaces.ui;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.component.UISelectItem;
 import javax.faces.context.FacesContext;
 
-import org.olap4j.Cell;
+import org.apache.commons.lang.StringUtils;
 import org.olap4j.CellSetAxis;
+import org.olap4j.OlapDataSource;
 import org.olap4j.OlapException;
+import org.olap4j.metadata.Cube;
+import org.olap4j.metadata.Schema;
 import org.primefaces.component.panelgrid.PanelGrid;
-import org.primefaces.context.RequestContext;
 
 import com.eyeq.pivot4j.ModelChangeEvent;
 import com.eyeq.pivot4j.ModelChangeListener;
 import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.QueryEvent;
 import com.eyeq.pivot4j.QueryListener;
+import com.eyeq.pivot4j.impl.PivotModelImpl;
+import com.eyeq.pivot4j.primefaces.datasource.ConnectionMetadata;
 import com.eyeq.pivot4j.transform.NonEmpty;
 import com.eyeq.pivot4j.transform.SwapAxes;
-import com.eyeq.pivot4j.ui.PivotUIRenderer;
-import com.eyeq.pivot4j.ui.command.BasicDrillThroughCommand;
 import com.eyeq.pivot4j.ui.command.CellCommand;
 import com.eyeq.pivot4j.ui.command.CellParameters;
 import com.eyeq.pivot4j.ui.command.DrillDownCommand;
@@ -38,35 +40,49 @@ import com.eyeq.pivot4j.ui.command.DrillDownCommand;
 @RequestScoped
 public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
-	@ManagedProperty(value = "#{pivotModelManager.model}")
-	private PivotModel model;
+	@ManagedProperty(value = "#{pivotStateManager}")
+	private PivotStateManager stateManager;
 
 	@ManagedProperty(value = "#{navigatorHandler}")
 	private NavigatorHandler navigator;
 
+	private PivotModel model;
+
 	private PrimeFacesPivotRenderer renderer;
+
+	private List<UISelectItem> cubeItems;
+
+	private String cubeName;
 
 	private String currentMdx;
 
 	private Long duration;
 
-	private DrillThroughDataModel drillThroughData;
-
 	@PostConstruct
 	protected void initialize() {
-		model.addQueryListener(this);
-		model.addModelChangeListener(this);
+		this.model = stateManager.getModel();
+
+		if (model != null) {
+			model.addQueryListener(this);
+			model.addModelChangeListener(this);
+
+			ConnectionMetadata connectionInfo = stateManager
+					.getConnectionInfo();
+
+			if (!model.isInitialized() && connectionInfo != null) {
+				this.cubeName = connectionInfo.getCubeName();
+
+				onCubeChange();
+			}
+		}
 
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		this.renderer = new PrimeFacesPivotRenderer(context);
 
 		renderer.initialize();
-		renderer.addCommand(new DrillThroughCommandImpl(renderer));
 
-		Map<String, Object> session = context.getExternalContext()
-				.getSessionMap();
-		Serializable state = (Serializable) session.get("rendererState");
+		Serializable state = stateManager.getRendererState();
 
 		if (state == null) {
 			renderer.setShowDimensionTitle(true);
@@ -83,27 +99,40 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
 	@PreDestroy
 	protected void destroy() {
-		model.removeQueryListener(this);
-		model.removeModelChangeListener(this);
-
-		if (drillThroughData != null) {
-			drillThroughData.destroy();
+		if (model != null) {
+			model.removeQueryListener(this);
+			model.removeModelChangeListener(this);
 		}
 	}
 
 	/**
-	 * @return the model
+	 * @return the stateManager
 	 */
-	public PivotModel getModel() {
-		return model;
+	public PivotStateManager getStateManager() {
+		return stateManager;
 	}
 
 	/**
-	 * @param model
-	 *            the model to set
+	 * @param stateManager
+	 *            the stateManager to set
 	 */
-	public void setModel(PivotModel model) {
-		this.model = model;
+	public void setStateManager(PivotStateManager stateManager) {
+		this.stateManager = stateManager;
+	}
+
+	/**
+	 * @return the cubeName
+	 */
+	public String getCubeName() {
+		return cubeName;
+	}
+
+	/**
+	 * @param cubeName
+	 *            the cubeName to set
+	 */
+	public void setCubeName(String cubeName) {
+		this.cubeName = cubeName;
 	}
 
 	/**
@@ -143,8 +172,56 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 		return duration;
 	}
 
+	public List<UISelectItem> getCubes() throws OlapException, SQLException {
+		if (cubeItems == null) {
+			this.cubeItems = new ArrayList<UISelectItem>();
+
+			UISelectItem defaultItem = new UISelectItem();
+			defaultItem.setItemLabel("---- Please select a cube ----");
+			defaultItem.setItemValue("");
+
+			cubeItems.add(defaultItem);
+
+			if (model != null) {
+				OlapDataSource dataSource = ((PivotModelImpl) model)
+						.getDataSource();
+
+				Schema schema = dataSource.getConnection().getOlapSchema();
+
+				List<Cube> cubes = schema.getCubes();
+
+				for (Cube cube : cubes) {
+					UISelectItem item = new UISelectItem();
+					item.setItemLabel(cube.getCaption());
+					item.setItemValue(cube.getName());
+
+					cubeItems.add(item);
+				}
+			}
+		}
+
+		return cubeItems;
+	}
+
+	public void onCubeChange() {
+		if (StringUtils.isEmpty(cubeName)) {
+			if (model.isInitialized()) {
+				model.destroy();
+			}
+		} else {
+			String mdx = String.format(
+					"select {} on COLUMNS, {} on ROWS from [%s]", cubeName);
+
+			model.setMdx(mdx);
+
+			if (!model.isInitialized()) {
+				model.initialize();
+			}
+		}
+	}
+
 	public boolean isValid() {
-		if (!model.isInitialized()) {
+		if (model == null || !model.isInitialized()) {
 			return false;
 		}
 
@@ -158,16 +235,10 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	}
 
 	public void render() {
-		if (model.isInitialized()) {
+		if (model != null && model.isInitialized()) {
 			renderer.render(model);
 
-			FacesContext context = FacesContext.getCurrentInstance();
-
-			Map<String, Object> session = context.getExternalContext()
-					.getSessionMap();
-
-			Serializable state = renderer.bookmarkState();
-			session.put("rendererState", state);
+			stateManager.setRendererState(renderer.bookmarkState());
 		}
 	}
 
@@ -234,6 +305,10 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 * @return the currentMdx
 	 */
 	public String getCurrentMdx() {
+		if (model == null) {
+			return null;
+		}
+
 		return model.getCurrentMdx();
 	}
 
@@ -287,13 +362,6 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 */
 	public void setDrillThrough(boolean drillThrough) {
 		renderer.setEnableDrillThrough(drillThrough);
-
-		resetDrillThrough();
-	}
-
-	public void resetDrillThrough() {
-		setDrillThroughOrdinal(null);
-		setDrillThroughRows(null);
 	}
 
 	/**
@@ -315,7 +383,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 * @return the swapAxes
 	 */
 	public boolean getSwapAxes() {
-		if (!model.isInitialized()) {
+		if (model == null || !model.isInitialized()) {
 			return false;
 		}
 
@@ -336,7 +404,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 * @return the nonEmpty
 	 */
 	public boolean getNonEmpty() {
-		if (!model.isInitialized()) {
+		if (model == null || !model.isInitialized()) {
 			return false;
 		}
 
@@ -351,44 +419,6 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	public void setNonEmpty(boolean nonEmpty) {
 		NonEmpty transform = model.getTransform(NonEmpty.class);
 		transform.setNonEmpty(nonEmpty);
-	}
-
-	/**
-	 * @return the drillThroughOrdinal
-	 */
-	protected Integer getDrillThroughOrdinal() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		Map<String, Object> session = context.getExternalContext()
-				.getSessionMap();
-
-		return (Integer) session.get("drillThroughOrdinal");
-	}
-
-	/**
-	 * @param drillThroughOrdinal
-	 *            the drillThroughOrdinal to set
-	 */
-	protected void setDrillThroughOrdinal(Integer drillThroughOrdinal) {
-		FacesContext context = FacesContext.getCurrentInstance();
-		Map<String, Object> session = context.getExternalContext()
-				.getSessionMap();
-
-		if (drillThroughOrdinal == null) {
-			session.remove("drillThroughOrdinal");
-		} else {
-			session.put("drillThroughOrdinal", drillThroughOrdinal);
-		}
-	}
-
-	/**
-	 * @return the drillThroughRows
-	 */
-	protected Integer getDrillThroughRows() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		Map<String, Object> session = context.getExternalContext()
-				.getSessionMap();
-
-		return (Integer) session.get("drillThroughRows");
 	}
 
 	/**
@@ -408,44 +438,17 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	}
 
 	/**
-	 * @return the drillThroughData
-	 */
-	public DrillThroughDataModel getDrillThroughData() {
-		if (drillThroughData == null && model.isInitialized()) {
-			Integer drillThroughOrdinal = getDrillThroughOrdinal();
-			Integer drillThroughRows = getDrillThroughRows();
-
-			if (drillThroughOrdinal == null || drillThroughRows == null) {
-				return null;
-			}
-
-			Cell cell = model.getCellSet().getCell(drillThroughOrdinal);
-
-			ResultSet resultSet;
-
-			try {
-				resultSet = cell.drillThrough();
-			} catch (OlapException e) {
-				throw new FacesException(e);
-			}
-
-			if (resultSet != null) {
-				this.drillThroughData = new DrillThroughDataModel(resultSet);
-
-				drillThroughData.setRowCount(drillThroughRows);
-				drillThroughData.setPageSize(15);
-			}
-		}
-
-		return drillThroughData;
-	}
-
-	/**
 	 * @see com.eyeq.pivot4j.QueryListener#queryExecuted(com.eyeq.pivot4j.QueryEvent)
 	 */
 	@Override
 	public void queryExecuted(QueryEvent e) {
 		this.duration = e.getDuration();
+
+		if (model.getCube() == null) {
+			this.cubeName = null;
+		} else {
+			this.cubeName = model.getCube().getName();
+		}
 	}
 
 	/**
@@ -475,61 +478,5 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	@Override
 	public void structureChanged(ModelChangeEvent e) {
 		render();
-	}
-
-	/**
-	 * Workaround to implement lazy rendering due to limitation in Olap4J's API
-	 * :
-	 * 
-	 * @see http://sourceforge.net/p/olap4j/bugs/15/
-	 */
-	class DrillThroughCommandImpl extends BasicDrillThroughCommand {
-
-		/**
-		 * @param renderer
-		 */
-		public DrillThroughCommandImpl(PivotUIRenderer renderer) {
-			super(renderer);
-		}
-
-		/**
-		 * @see com.eyeq.pivot4j.ui.command.BasicDrillThroughCommand#execute(com.eyeq.pivot4j.PivotModel,
-		 *      com.eyeq.pivot4j.ui.command.CellParameters)
-		 */
-		@Override
-		public ResultSet execute(PivotModel model, CellParameters parameters) {
-			Integer drillThroughRows = null;
-			Integer drillThroughOrdinal = null;
-
-			ResultSet result = super.execute(model, parameters);
-
-			if (result != null) {
-				int totalRows = 0;
-
-				try {
-					while (result.next()) {
-						totalRows++;
-					}
-				} catch (SQLException e) {
-					throw new FacesException(e);
-				} finally {
-					try {
-						result.close();
-					} catch (SQLException e) {
-					}
-				}
-
-				drillThroughRows = totalRows;
-				drillThroughOrdinal = parameters.getCellOrdinal();
-
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("drillThrough();");
-			}
-
-			PivotGridHandler.this.setDrillThroughRows(drillThroughRows);
-			PivotGridHandler.this.setDrillThroughOrdinal(drillThroughOrdinal);
-
-			return result;
-		}
 	}
 }
