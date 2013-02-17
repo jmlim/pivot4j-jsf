@@ -69,10 +69,14 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 			ConnectionMetadata connectionInfo = stateManager
 					.getConnectionInfo();
 
-			if (!model.isInitialized() && connectionInfo != null) {
-				this.cubeName = connectionInfo.getCubeName();
+			if (connectionInfo != null) {
+				if (!model.isInitialized() || cubeName == null) {
+					this.cubeName = connectionInfo.getCubeName();
 
-				onCubeChange();
+					if (!model.isInitialized()) {
+						onCubeChange();
+					}
+				}
 			}
 		}
 

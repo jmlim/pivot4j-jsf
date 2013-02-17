@@ -347,7 +347,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<jsfVersion>MyFaces-2.1.9</jsfVersion>
+				<jsfVersion>MyFaces-2.1.10</jsfVersion>
 				<primefacesVersion>PrimeFaces-4.0-SNAPSHOT</primefacesVersion>
 			</properties>
 			<dependencies>
