@@ -15,9 +15,12 @@
 
 	<link type="text/css" rel="stylesheet"
 		href="#{contextPath}#{settings.resourcePrefix}/resources/css/style.css" />
+	<link rel="shortcut icon"
+		href="#{contextPath}#{settings.resourcePrefix}/resources/images/logo16.png" />
 
 	<script type="text/javascript"
 		src="#{contextPath}#{settings.resourcePrefix}/resources/js/mdx.js"></script>
+	<h:outputScript library="primefaces" name="printer/printer.js" />
 </h:head>
 
 <f:metadata>
@@ -32,10 +35,10 @@
 			<h:form id="toolbar-form">
 				<p:toolbar id="toolbar">
 					<p:toolbarGroup align="left">
-						<p:commandButton type="button" value="About" icon="ui-icon-info"
-							onclick="about.show();" />
+						<p:commandButton value="About" type="button" icon="ui-icon-info"
+							onclick="about.show(); return false;" />
 						<p:separator />
-						<h:outputLabel value="Drill : " for="drilldown-mode" />
+						<p:outputLabel value="Drill : " for="drilldown-mode" />
 						<p:selectOneButton id="drilldown-mode" style="display: inline"
 							value="#{pivotGridHandler.drillDownMode}"
 							disabled="#{!pivotGridHandler.valid}">
@@ -94,6 +97,10 @@
 							<p:menuitem value="PDF(.pdf)" icon="ui-icon-print"
 								onclick="exportConfig.show();" />
 						</p:menuButton>
+						<p:separator />
+						<p:commandButton value="Print" type="button" icon="ui-icon-print"
+							disabled="#{!pivotGridHandler.valid}"
+							onclick="$('table.pivot-grid:first').jqprint();" />
 					</p:toolbarGroup>
 
 					<p:toolbarGroup align="right">
@@ -121,7 +128,7 @@
 
 			<pe:layoutPane id="cube-list-pane" position="north">
 				<h:form id="cube-list-form">
-					<h:outputLabel styleClass="cube-list-label" value="Cube"
+					<p:outputLabel styleClass="cube-list-label" value="Cube"
 						for="cube-list" />
 					<p:selectOneMenu id="cube-list"
 						value="#{pivotGridHandler.cubeName}">

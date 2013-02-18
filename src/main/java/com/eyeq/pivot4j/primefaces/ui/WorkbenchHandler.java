@@ -25,7 +25,7 @@ public class WorkbenchHandler {
 			LayoutOptions toolbarOptions = new LayoutOptions();
 			toolbarOptions.addOption("resizable", false);
 			toolbarOptions.addOption("closable", false);
-			toolbarOptions.addOption("size", 42);
+			toolbarOptions.addOption("size", 36);
 
 			layoutOptions.setNorthOptions(toolbarOptions);
 

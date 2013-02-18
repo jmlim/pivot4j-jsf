@@ -4,13 +4,13 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-	<p:dialog id="hierarchy-config" header="Hierarchy Configuration"
-		widgetVar="hierarchyConfig" modal="true" width="860" height="455"
-		closable="true" resizable="false" styleClass="hierarchy-config">
-		<h:form id="hierarchy-form">
-			<h:panelGrid columns="4"
+	<h:form id="hierarchy-form">
+		<p:dialog id="hierarchy-config" header="Hierarchy Configuration"
+			widgetVar="hierarchyConfig" modal="true" width="860" height="435"
+			closable="true" resizable="false" styleClass="hierarchy-config">
+			<h:panelGrid id="hierarchy-config-grid" columns="4"
 				columnClasses="member-panel,control-panel,member-panel,control-panel"
-				headerClass="info-panel" footerClass="button-bar"
+				headerClass="info-panel"
 				rendered="#{!empty memberSelectionHandler.hierarchyName}">
 				<f:facet name="header">
 					<h:panelGroup layout="block">
@@ -42,23 +42,23 @@
 					<p:contextMenu id="hierarchy-source-menu"
 						styleClass="hierarchy-contextmenu" for="member-tree">
 						<p:menuitem value="Select member"
-							action="#{memberSelectionHandler.add}" update="hierarchy-form"
-							icon="ui-icon-plus">
+							action="#{memberSelectionHandler.add}"
+							update="hierarchy-config-grid,button-bar" icon="ui-icon-plus">
 							<f:param name="mode" value="Single" />
 						</p:menuitem>
 						<p:menuitem value="Select siblings"
-							action="#{memberSelectionHandler.add}" update="hierarchy-form"
-							icon="ui-icon-plus">
+							action="#{memberSelectionHandler.add}"
+							update="hierarchy-config-grid,button-bar" icon="ui-icon-plus">
 							<f:param name="mode" value="Sibling" />
 						</p:menuitem>
 						<p:menuitem value="Select children"
-							action="#{memberSelectionHandler.add}" update="hierarchy-form"
-							icon="ui-icon-plus">
+							action="#{memberSelectionHandler.add}"
+							update="hierarchy-config-grid,button-bar" icon="ui-icon-plus">
 							<f:param name="mode" value="Children" />
 						</p:menuitem>
 						<p:menuitem value="Select descendants"
-							action="#{memberSelectionHandler.add}" update="hierarchy-form"
-							icon="ui-icon-plus">
+							action="#{memberSelectionHandler.add}"
+							update="hierarchy-config-grid,button-bar" icon="ui-icon-plus">
 							<f:param name="mode" value="Descendants" />
 						</p:menuitem>
 					</p:contextMenu>
@@ -69,12 +69,12 @@
 						<p:commandButton id="button-add" icon="ui-icon-carat-1-e"
 							value="Add" action="#{memberSelectionHandler.add}"
 							binding="#{memberSelectionHandler.buttonAdd}"
-							update="hierarchy-form"
+							update="hierarchy-config-grid,button-bar"
 							disabled="#{!memberSelectionHandler.addButtonEnabled}" />
 						<p:commandButton id="button-remove" icon="ui-icon-carat-1-w"
 							value="Remove" action="#{memberSelectionHandler.remove}"
 							binding="#{memberSelectionHandler.buttonRemove}"
-							update="hierarchy-form"
+							update="hierarchy-config-grid,button-bar"
 							disabled="#{!memberSelectionHandler.removeButtonEnabled}" />
 					</p:outputPanel>
 				</h:panelGroup>
@@ -101,23 +101,23 @@
 					<p:contextMenu id="hierarchy-target-menu"
 						styleClass="hierarchy-contextmenu" for="selection-tree">
 						<p:menuitem value="Remove member"
-							action="#{memberSelectionHandler.remove}" update="hierarchy-form"
-							icon="ui-icon-trash">
+							action="#{memberSelectionHandler.remove}"
+							update="hierarchy-config-grid,button-bar" icon="ui-icon-trash">
 							<f:param name="mode" value="Single" />
 						</p:menuitem>
 						<p:menuitem value="Remove siblings"
-							action="#{memberSelectionHandler.remove}" update="hierarchy-form"
-							icon="ui-icon-trash">
+							action="#{memberSelectionHandler.remove}"
+							update="hierarchy-config-grid,button-bar" icon="ui-icon-trash">
 							<f:param name="mode" value="Sibling" />
 						</p:menuitem>
 						<p:menuitem value="Remove children"
-							action="#{memberSelectionHandler.remove}" update="hierarchy-form"
-							icon="ui-icon-trash">
+							action="#{memberSelectionHandler.remove}"
+							update="hierarchy-config-grid,button-bar" icon="ui-icon-trash">
 							<f:param name="mode" value="Children" />
 						</p:menuitem>
 						<p:menuitem value="Remove descendants"
-							action="#{memberSelectionHandler.remove}" update="hierarchy-form"
-							icon="ui-icon-trash">
+							action="#{memberSelectionHandler.remove}"
+							update="hierarchy-config-grid,button-bar" icon="ui-icon-trash">
 							<f:param name="mode" value="Descendants" />
 						</p:menuitem>
 					</p:contextMenu>
@@ -137,25 +137,24 @@
 							disabled="#{!memberSelectionHandler.downButtonEnabled}" />
 					</p:outputPanel>
 				</h:panelGroup>
-
-				<f:facet name="footer">
-					<h:panelGroup layout="block">
-						<p:messages showDetail="true" closable="true" />
-
-						<p:outputPanel id="button-bar">
-							<p:commandButton value="Apply" icon="ui-icon-check"
-								action="#{memberSelectionHandler.apply}"
-								update="hierarchy-form,:source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor"
-								binding="#{memberSelectionHandler.buttonApply}" />
-							<p:commandButton value="Close" icon="ui-icon-close"
-								action="#{memberSelectionHandler.reset}"
-								onstart="hierarchyConfig.hide();" />
-						</p:outputPanel>
-					</h:panelGroup>
-				</f:facet>
 			</h:panelGrid>
 
+			<p:messages showDetail="true" closable="true" />
+
 			<h:inputHidden value="#{memberSelectionHandler.hierarchyName}" />
-		</h:form>
-	</p:dialog>
+
+			<f:facet name="footer">
+				<p:outputPanel id="button-bar" layout="block"
+					styleClass="button-bar">
+					<p:commandButton value="Apply" icon="ui-icon-check"
+						action="#{memberSelectionHandler.apply}"
+						update="hierarchy-config-grid,:source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor"
+						binding="#{memberSelectionHandler.buttonApply}" />
+					<p:commandButton value="Close" icon="ui-icon-close"
+						action="#{memberSelectionHandler.reset}"
+						onstart="hierarchyConfig.hide();" />
+				</p:outputPanel>
+			</f:facet>
+		</p:dialog>
+	</h:form>
 </ui:composition>

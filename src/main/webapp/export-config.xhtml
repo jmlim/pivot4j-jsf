@@ -4,25 +4,25 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-	<p:dialog id="export-config" header="PDF Export"
-		widgetVar="exportConfig" modal="true" width="655" height="398"
-		closable="true" resizable="false" styleClass="export-config">
-		<h:form id="export-form">
+	<h:form id="export-form">
+		<p:dialog id="export-config" header="PDF Export"
+			widgetVar="exportConfig" modal="true" width="655" height="398"
+			closable="true" resizable="false" styleClass="export-config">
 			<p:fieldset legend="Content Settings">
 				<h:panelGrid columns="2" columnClasses="field-name,field-input">
-					<h:outputLabel value="Show Header" for="input-show-header" />
+					<p:outputLabel value="Show Header" for="input-show-header" />
 					<p:selectBooleanCheckbox id="input-show-header"
 						value="#{pivotExportHandler.showHeader}">
 						<p:ajax event="change"
 							update="input-header-text,input-header-fsize" />
 					</p:selectBooleanCheckbox>
 
-					<h:outputLabel value="Header Text" for="input-header-text" />
-					<h:inputText id="input-header-text"
+					<p:outputLabel value="Header Text" for="input-header-text" />
+					<p:inputText id="input-header-text"
 						value="#{pivotExportHandler.headerText}" size="60" maxlength="100"
 						disabled="#{!pivotExportHandler.showHeader}" />
 
-					<h:outputLabel value="Header Font Size" for="input-header-fsize" />
+					<p:outputLabel value="Header Font Size" for="input-header-fsize" />
 					<h:panelGroup>
 						<p:spinner id="input-header-fsize"
 							value="#{pivotExportHandler.headerFontSize}" min="1" max="100"
@@ -30,19 +30,19 @@
 						<h:outputText value="pt" styleClass="unit" />
 					</h:panelGroup>
 
-					<h:outputLabel value="Show Footer" for="input-show-footer" />
+					<p:outputLabel value="Show Footer" for="input-show-footer" />
 					<p:selectBooleanCheckbox id="input-show-footer"
 						value="#{pivotExportHandler.showFooter}">
 						<p:ajax event="change"
 							update="input-footer-text,input-footer-fsize" />
 					</p:selectBooleanCheckbox>
 
-					<h:outputLabel value="Footer Text" for="input-footer-text" />
-					<h:inputText id="input-footer-text"
+					<p:outputLabel value="Footer Text" for="input-footer-text" />
+					<p:inputText id="input-footer-text"
 						value="#{pivotExportHandler.footerText}" size="60" maxlength="100"
 						disabled="#{!pivotExportHandler.showFooter}" />
 
-					<h:outputLabel value="Footer Font Size" for="input-footer-fsize" />
+					<p:outputLabel value="Footer Font Size" for="input-footer-fsize" />
 					<h:panelGroup>
 						<p:spinner id="input-footer-fsize"
 							value="#{pivotExportHandler.footerFontSize}" min="1" max="100"
@@ -50,7 +50,7 @@
 						<h:outputText value="pt" styleClass="unit" />
 					</h:panelGroup>
 
-					<h:outputLabel value="Default Font Size" for="input-fsize" />
+					<p:outputLabel value="Default Font Size" for="input-fsize" />
 					<h:panelGroup>
 						<p:spinner id="input-fsize" value="#{pivotExportHandler.fontSize}"
 							min="1" max="100" />
@@ -64,13 +64,13 @@
 
 			<p:fieldset legend="Page Settings">
 				<h:panelGrid columns="2" columnClasses="field-name,field-input">
-					<h:outputLabel value="Page Orientation" for="input-orientation" />
+					<p:outputLabel value="Page Orientation" for="input-orientation" />
 					<p:selectOneRadio id="input-orientation"
 						value="#{pivotExportHandler.orientation}">
 						<f:selectItems value="#{pivotExportHandler.orientations}" />
 					</p:selectOneRadio>
 
-					<h:outputLabel value="Page Size" for="input-paper-size" />
+					<p:outputLabel value="Page Size" for="input-paper-size" />
 					<p:selectOneMenu id="input-paper-size"
 						value="#{pivotExportHandler.paperSize}">
 						<f:selectItems value="#{pivotExportHandler.paperSizes}" />
@@ -78,14 +78,16 @@
 				</h:panelGrid>
 			</p:fieldset>
 
-			<h:panelGroup id="button-bar" styleClass="button-bar" layout="block">
-				<p:messages showDetail="true" closable="true" />
+			<f:facet name="footer">
+				<h:panelGroup id="button-bar" styleClass="button-bar" layout="block">
+					<p:messages showDetail="true" closable="true" />
 
-				<p:commandButton value="Apply" icon="ui-icon-check"
-					action="#{pivotExportHandler.exportPdf}" ajax="false" />
-				<p:commandButton value="Close" icon="ui-icon-close"
-					onclick="exportConfig.hide();" />
-			</h:panelGroup>
-		</h:form>
-	</p:dialog>
+					<p:commandButton value="Apply" icon="ui-icon-check"
+						action="#{pivotExportHandler.exportPdf}" ajax="false" />
+					<p:commandButton value="Close" icon="ui-icon-close"
+						onclick="exportConfig.hide();" />
+				</h:panelGroup>
+			</f:facet>
+		</p:dialog>
+	</h:form>
 </ui:composition>

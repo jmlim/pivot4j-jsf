@@ -10,6 +10,11 @@ form {
 
 .pe-layout-pane-header {
 	padding-left: 3px;
+	border-width: 1px;
+}
+
+#navigator-pane .pe-layout-pane-content .pe-layout-pane-header {
+	border-width: 0;
 }
 
 #source-tree-pane .pe-layout-pane-header {
@@ -41,6 +46,12 @@ form {
 
 #navigator-pane .ui-layout-content {
 	padding-right: 0;
+}
+
+#toolbar-form .ui-icon-info {
+	background-image: url('../images/logo16.png');
+	background-position: 0 center;
+	border-radius: 0 0 0 0;
 }
 
 .ui-treenode-icon.ui-icon {
@@ -314,10 +325,6 @@ form {
 	margin: 5px 15px 5px 5px;
 }
 
-.about button {
-	float: right;
-}
-
 .about .about-text {
 	display: block;
 	padding: 10px;
@@ -369,7 +376,6 @@ form {
 }
 
 .ui-dialog .button-bar {
-	margin-top: 5px;
 	text-align: right;
 }
 
@@ -403,4 +409,10 @@ td.field-name, th.field-name {
 
 span.unit {
 	margin-left: 5px;
+}
+
+@media print {
+	.ui-button {
+		display: none !important;
+	}
 }

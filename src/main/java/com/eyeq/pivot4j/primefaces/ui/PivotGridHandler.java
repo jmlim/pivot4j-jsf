@@ -57,7 +57,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	private String currentMdx;
 
 	private Long duration;
-
+	
 	@PostConstruct
 	protected void initialize() {
 		this.model = stateManager.getModel();
@@ -66,14 +66,16 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 			model.addQueryListener(this);
 			model.addModelChangeListener(this);
 
-			ConnectionMetadata connectionInfo = stateManager
-					.getConnectionInfo();
+			if (model.isInitialized()) {
+				this.cubeName = model.getCube().getName();
+			} else {
+				ConnectionMetadata connectionInfo = stateManager
+						.getConnectionInfo();
 
-			if (connectionInfo != null) {
-				if (!model.isInitialized() || cubeName == null) {
-					this.cubeName = connectionInfo.getCubeName();
-
+				if (connectionInfo != null) {
 					if (!model.isInitialized()) {
+						this.cubeName = connectionInfo.getCubeName();
+
 						onCubeChange();
 					}
 				}
