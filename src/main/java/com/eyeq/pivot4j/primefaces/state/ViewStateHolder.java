@@ -46,7 +46,7 @@ public class ViewStateHolder {
 
 	private long keepAliveInterval = 1 * MINUTE;
 
-	private long expires = 2 * MINUTE;
+	private long expires = 5 * MINUTE;
 
 	private String sessionId;
 
