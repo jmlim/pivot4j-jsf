@@ -370,7 +370,7 @@ public class PivotExportHandler {
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		String disposition = String.format("attachment; filename=\"%s.%s\"",
-				model.getCube().getName(), ".pdf");
+				model.getCube().getName(), "pdf");
 
 		ExternalContext externalContext = context.getExternalContext();
 		externalContext.setResponseHeader("Content-Disposition", disposition);
