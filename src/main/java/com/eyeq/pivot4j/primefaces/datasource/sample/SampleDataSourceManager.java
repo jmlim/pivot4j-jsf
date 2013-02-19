@@ -1,6 +1,8 @@
 package com.eyeq.pivot4j.primefaces.datasource.sample;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
@@ -10,6 +12,8 @@ import com.eyeq.pivot4j.datasource.SimpleOlapDataSource;
 import com.eyeq.pivot4j.primefaces.datasource.AbstractDataSourceManager;
 import com.eyeq.pivot4j.primefaces.datasource.ConnectionMetadata;
 
+@ManagedBean(name = "dataSourceManager")
+@ApplicationScoped
 public class SampleDataSourceManager extends AbstractDataSourceManager {
 
 	private OlapDataSource dataSource;
