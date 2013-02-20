@@ -411,7 +411,9 @@
 
 	<h:form id="poll-form">
 		<p:poll interval="#{viewStateHolder.keepAliveInterval}"
-			listener="#{pivotStateManager.keepAlive}" />
+			listener="#{pivotStateManager.keepAlive}" process="@form">
+			<f:param name="skipRender" value="true" />
+		</p:poll>
 	</h:form>
 </h:body>
 </html>

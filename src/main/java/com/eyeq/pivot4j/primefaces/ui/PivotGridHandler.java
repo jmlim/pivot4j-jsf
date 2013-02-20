@@ -57,7 +57,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	private String currentMdx;
 
 	private Long duration;
-	
+
 	@PostConstruct
 	protected void initialize() {
 		this.model = stateManager.getModel();
@@ -242,6 +242,15 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
 	public void render() {
 		if (model != null && model.isInitialized()) {
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			Map<String, String> parameters = context.getExternalContext()
+					.getRequestParameterMap();
+
+			if ("true".equals(parameters.get("skipRender"))) {
+				return;
+			}
+
 			renderer.render(model);
 
 			stateManager.setRendererState(renderer.bookmarkState());
