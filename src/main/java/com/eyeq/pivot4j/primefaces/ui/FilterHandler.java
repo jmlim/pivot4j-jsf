@@ -404,7 +404,7 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 				context.getELContext(), "#{filterHandler.removeHierarchy}",
 				Void.class, new Class<?>[0]));
 		closeButton
-				.setUpdate(":filter-panel,:source-tree-form,:grid-form,:editor-form");
+				.setUpdate(":filter-panel,:source-tree-form,:grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar");
 
 		UIParameter parameter2 = new UIParameter();
 		parameter2.setName("hierarchy");
