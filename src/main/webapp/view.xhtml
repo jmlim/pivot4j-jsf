@@ -38,51 +38,60 @@
 						<p:commandButton value="About" type="button" icon="ui-icon-info"
 							onclick="about.show(); return false;" />
 						<p:separator />
-						<p:outputLabel value="Drill : " for="drilldown-mode" />
+						<p:outputLabel value="Drill : " for="drilldown-mode"
+							rendered="#{!pivotStateManager.readOnly}"
+							disabled="#{!pivotGridHandler.valid}" />
 						<p:selectOneButton id="drilldown-mode" style="display: inline"
 							value="#{pivotGridHandler.drillDownMode}"
-							disabled="#{!pivotGridHandler.valid}">
+							disabled="#{!pivotGridHandler.valid}"
+							rendered="#{!pivotStateManager.readOnly}">
 							<f:selectItem itemLabel="Position" itemValue="position" />
 							<f:selectItem itemLabel="Member" itemValue="member" />
 							<f:selectItem itemLabel="Replace" itemValue="replace" />
-							<p:ajax update=":grid-form" />
+							<p:ajax update=":grid-form"
+								rendered="#{!pivotStateManager.readOnly}" />
 						</p:selectOneButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.drillThrough}"
 							onLabel="Through" offLabel="Through"
-							disabled="#{!pivotGridHandler.valid or !pivotStateManager.model.cube.drillThroughEnabled}">
+							disabled="#{!pivotGridHandler.valid or !pivotStateManager.model.cube.drillThroughEnabled}"
+							rendered="#{!pivotStateManager.readOnly}">
 							<p:ajax update=":grid-form" />
 						</p:selectBooleanButton>
-						<p:separator />
+						<p:separator rendered="#{!pivotStateManager.readOnly}" />
 						<p:selectBooleanButton
 							value="#{pivotGridHandler.showParentMembers}"
 							onLabel="Hide Parent" offLabel="Show Parent"
 							onIcon="ui-icon-arrowthickstop-1-n"
 							offIcon="ui-icon-arrowthickstop-1-n"
-							disabled="#{!pivotGridHandler.valid}">
+							disabled="#{!pivotGridHandler.valid}"
+							rendered="#{!pivotStateManager.readOnly}">
 							<p:ajax update=":grid-form" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.hideSpans}"
 							onLabel="Show Spans" offLabel="Hide Spans"
 							onIcon="ui-icon-circlesmall-minus"
 							offIcon="ui-icon-circlesmall-minus"
-							disabled="#{!pivotGridHandler.valid}">
+							disabled="#{!pivotGridHandler.valid}"
+							rendered="#{!pivotStateManager.readOnly}">
 							<p:ajax update=":grid-form" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.nonEmpty}"
 							onLabel="Non Empty" offLabel="Non Empty"
 							onIcon="ui-icon-circlesmall-close"
 							offIcon="ui-icon-circlesmall-close"
-							disabled="#{!pivotGridHandler.valid}">
+							disabled="#{!pivotGridHandler.valid}"
+							rendered="#{!pivotStateManager.readOnly}">
 							<p:ajax
 								update=":grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar" />
 						</p:selectBooleanButton>
 						<p:selectBooleanButton value="#{pivotGridHandler.swapAxes}"
 							onLabel="Swap Axes" offLabel="Swap Axes" onIcon="ui-icon-refresh"
-							offIcon="ui-icon-refresh" disabled="#{!pivotGridHandler.valid}">
+							offIcon="ui-icon-refresh" disabled="#{!pivotGridHandler.valid}"
+							rendered="#{!pivotStateManager.readOnly}">
 							<p:ajax
 								update=":grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar,:target-tree-form" />
 						</p:selectBooleanButton>
-						<p:separator />
+						<p:separator rendered="#{!pivotStateManager.readOnly}" />
 						<p:menuButton value="Export" disabled="#{!pivotGridHandler.valid}">
 							<p:menuitem value="Microsoft Excel(.xls)"
 								action="#{pivotExportHandler.exportExcel}" icon="ui-icon-disk"
@@ -118,7 +127,8 @@
 			</h:form>
 		</pe:layoutPane>
 
-		<pe:layoutPane id="navigator-pane" position="west">
+		<pe:layoutPane id="navigator-pane" position="west"
+			rendered="#{!pivotStateManager.readOnly}">
 			<f:facet name="header">
 				<h:panelGroup layout="block">
 					<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-search" />
@@ -263,11 +273,15 @@
 			<f:facet name="header">
 				<h:panelGroup layout="block">
 					<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-calculator" />
-					<h:outputText value="Query Result" />
+					<h:outputText value="Query Result"
+						rendered="#{!pivotStateManager.readOnly}" />
+					<h:outputText value="#{pivotGridHandler.cubeName}"
+						rendered="#{pivotStateManager.readOnly}" />
 				</h:panelGroup>
 			</f:facet>
 
-			<pe:layoutPane id="grid-header-pane" position="north">
+			<pe:layoutPane id="grid-header-pane" position="north"
+				rendered="#{!pivotStateManager.readOnly}">
 				<h:panelGrid id="filter-panel" styleClass="filter-panel" columns="2"
 					columnClasses="ui-widget-header,filter-items">
 					<h:outputText value="Filter" />
@@ -285,7 +299,8 @@
 					</h:panelGroup>
 				</h:panelGrid>
 
-				<h:panelGroup id="filter-dialog" layout="block">
+				<h:panelGroup id="filter-dialog" layout="block"
+					rendered="#{!pivotStateManager.readOnly}">
 					<p:overlayPanel widgetVar="filterDialog" hideEffect="fade"
 						for=":filter-items" dynamic="true" showEvent="none"
 						appendToBody="true" styleClass="ui-dialog filter-dialog"
@@ -352,7 +367,8 @@
 				</f:facet>
 
 				<h:form id="editor-form">
-					<pe:layoutPane id="mdx-editor-toolbar" position="north">
+					<pe:layoutPane id="mdx-editor-toolbar" position="north"
+						rendered="#{!pivotStateManager.readOnly}">
 						<p:toolbar id="editor-toolbar">
 							<p:toolbarGroup align="left">
 								<p:commandButton value="Run" icon="ui-icon-play"
@@ -379,7 +395,8 @@
 							value="#{pivotGridHandler.currentMdx}" lineNumbers="true"
 							lineWrapping="true" matchBrackets="true"
 							theme="#{settings.codeMirrorTheme}" widgetVar="mdxEditor"
-							required="true" label="MDX" />
+							required="true" label="MDX"
+							readOnly="#{pivotStateManager.readOnly}" />
 					</pe:layoutPane>
 
 					<p:growl id="editor-growl" showDetail="true" sticky="true" />

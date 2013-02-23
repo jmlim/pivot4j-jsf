@@ -1,6 +1,7 @@
 package com.eyeq.pivot4j.primefaces.ui;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 
 import org.primefaces.extensions.model.layout.LayoutOptions;
@@ -8,6 +9,9 @@ import org.primefaces.extensions.model.layout.LayoutOptions;
 @ManagedBean(name = "workbenchHandler")
 @RequestScoped
 public class WorkbenchHandler {
+
+	@ManagedProperty(value = "#{pivotStateManager}")
+	private PivotStateManager stateManager;
 
 	private boolean editorPaneVisible = false;
 
@@ -73,6 +77,7 @@ public class WorkbenchHandler {
 			LayoutOptions editorOptions = new LayoutOptions();
 			editorOptions.addOption("resizable", true);
 			editorOptions.addOption("closable", true);
+			editorOptions.addOption("initClosed", stateManager.isReadOnly());
 			editorOptions.addOption("slidable", true);
 			editorOptions.addOption("size", 180);
 
@@ -127,5 +132,20 @@ public class WorkbenchHandler {
 	 */
 	public void setNavigatorPaneVisible(boolean navigatorPaneVisible) {
 		this.navigatorPaneVisible = navigatorPaneVisible;
+	}
+
+	/**
+	 * @return the stateManager
+	 */
+	public PivotStateManager getStateManager() {
+		return stateManager;
+	}
+
+	/**
+	 * @param stateManager
+	 *            the stateManager to set
+	 */
+	public void setStateManager(PivotStateManager stateManager) {
+		this.stateManager = stateManager;
 	}
 }

@@ -130,6 +130,18 @@ public class PivotStateManager {
 	}
 
 	/**
+	 * @return the readOnly
+	 */
+	public boolean isReadOnly() {
+		ViewState state = getState();
+		if (state == null) {
+			return true;
+		}
+
+		return state.isReadOnly();
+	}
+
+	/**
 	 * @return the dataSourceManager
 	 */
 	public DataSourceManager getDataSourceManager() {

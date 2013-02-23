@@ -12,6 +12,8 @@ public class ViewState {
 
 	private String id;
 
+	private boolean readOnly = false;
+
 	private Date lastActive = new Date();
 
 	private ConnectionMetadata connectionInfo;
@@ -76,6 +78,21 @@ public class ViewState {
 	 */
 	public void setConnectionInfo(ConnectionMetadata connectionInfo) {
 		this.connectionInfo = connectionInfo;
+	}
+
+	/**
+	 * @return the readOnly
+	 */
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	/**
+	 * @param readOnly
+	 *            the readOnly to set
+	 */
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 
 	/**

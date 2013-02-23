@@ -96,11 +96,15 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 			renderer.setHideSpans(false);
 			renderer.setDrillDownMode(DrillDownCommand.MODE_POSITION);
 			renderer.setEnableDrillThrough(false);
-			renderer.setEnableColumnDrillDown(true);
-			renderer.setEnableRowDrillDown(true);
 		} else {
 			renderer.restoreState(state);
 		}
+
+		boolean readOnly = stateManager.isReadOnly();
+
+		renderer.setEnableColumnDrillDown(!readOnly);
+		renderer.setEnableRowDrillDown(!readOnly);
+		renderer.setEnableSort(!readOnly);
 	}
 
 	@PreDestroy
