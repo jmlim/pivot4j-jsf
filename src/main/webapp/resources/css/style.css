@@ -129,7 +129,8 @@ form {
 }
 
 .navigator.drop-target-node {
-	background-color: #dddddd;
+	border: 1px solid red !important;
+	border-radius: 10px;
 }
 
 #source-tree-pane .ui-treenode .ui-state-highlight {
@@ -237,7 +238,7 @@ form {
 }
 
 .filter-panel td.filter-items .filter-items-hover {
-	background-color: #fff895;
+	border: 1px solid red;
 }
 
 .filter-panel .filter-item {
