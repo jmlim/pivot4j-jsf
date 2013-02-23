@@ -52,8 +52,10 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 	public PrimeFacesPivotRenderer(FacesContext facesContext) {
 		this.facesContext = facesContext;
 
-		Application application = facesContext.getApplication();
-		this.expressionFactory = application.getExpressionFactory();
+		if (facesContext != null) {
+			Application application = facesContext.getApplication();
+			this.expressionFactory = application.getExpressionFactory();
+		}
 	}
 
 	/**
@@ -195,65 +197,67 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 			column.setStyle("padding-left: " + padding + "px");
 		}
 
-		for (CellCommand<?> command : commands) {
-			CellParameters parameters = command.createParameters(context);
+		if (expressionFactory != null) {
+			for (CellCommand<?> command : commands) {
+				CellParameters parameters = command.createParameters(context);
 
-			CommandButton button = new CommandButton();
+				CommandButton button = new CommandButton();
 
-			// JSF requires an unique id for command components.
-			button.setId("btn-" + commandIndex++);
+				// JSF requires an unique id for command components.
+				button.setId("btn-" + commandIndex++);
 
-			button.setTitle(command.getDescription());
+				button.setTitle(command.getDescription());
 
-			String icon = null;
+				String icon = null;
 
-			String mode = command.getMode(context);
-			if (mode == null) {
-				icon = iconMap.get(command.getName());
-			} else {
-				icon = iconMap.get(command.getName() + "-" + mode);
+				String mode = command.getMode(context);
+				if (mode == null) {
+					icon = iconMap.get(command.getName());
+				} else {
+					icon = iconMap.get(command.getName() + "-" + mode);
+				}
+
+				button.setIcon(icon);
+
+				MethodExpression expression = expressionFactory
+						.createMethodExpression(facesContext.getELContext(),
+								"#{pivotGridHandler.executeCommand}",
+								Void.class, new Class<?>[0]);
+				button.setActionExpression(expression);
+				button.setUpdate(":grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar,:source-tree-form,:target-tree-form");
+
+				UIParameter commandParam = new UIParameter();
+				commandParam.setName("command");
+				commandParam.setValue(command.getName());
+				button.getChildren().add(commandParam);
+
+				UIParameter axisParam = new UIParameter();
+				axisParam.setName("axis");
+				axisParam.setValue(parameters.getAxisOrdinal());
+				button.getChildren().add(axisParam);
+
+				UIParameter positionParam = new UIParameter();
+				positionParam.setName("position");
+				positionParam.setValue(parameters.getPositionOrdinal());
+				button.getChildren().add(positionParam);
+
+				UIParameter memberParam = new UIParameter();
+				memberParam.setName("member");
+				memberParam.setValue(parameters.getMemberOrdinal());
+				button.getChildren().add(memberParam);
+
+				UIParameter hierarchyParam = new UIParameter();
+				hierarchyParam.setName("hierarchy");
+				hierarchyParam.setValue(parameters.getHierarchyOrdinal());
+				button.getChildren().add(hierarchyParam);
+
+				UIParameter cellParam = new UIParameter();
+				hierarchyParam.setName("cell");
+				hierarchyParam.setValue(parameters.getCellOrdinal());
+				button.getChildren().add(cellParam);
+
+				column.getChildren().add(button);
 			}
-
-			button.setIcon(icon);
-
-			MethodExpression expression = expressionFactory
-					.createMethodExpression(facesContext.getELContext(),
-							"#{pivotGridHandler.executeCommand}", Void.class,
-							new Class<?>[0]);
-			button.setActionExpression(expression);
-			button.setUpdate(":grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar,:source-tree-form,:target-tree-form");
-
-			UIParameter commandParam = new UIParameter();
-			commandParam.setName("command");
-			commandParam.setValue(command.getName());
-			button.getChildren().add(commandParam);
-
-			UIParameter axisParam = new UIParameter();
-			axisParam.setName("axis");
-			axisParam.setValue(parameters.getAxisOrdinal());
-			button.getChildren().add(axisParam);
-
-			UIParameter positionParam = new UIParameter();
-			positionParam.setName("position");
-			positionParam.setValue(parameters.getPositionOrdinal());
-			button.getChildren().add(positionParam);
-
-			UIParameter memberParam = new UIParameter();
-			memberParam.setName("member");
-			memberParam.setValue(parameters.getMemberOrdinal());
-			button.getChildren().add(memberParam);
-
-			UIParameter hierarchyParam = new UIParameter();
-			hierarchyParam.setName("hierarchy");
-			hierarchyParam.setValue(parameters.getHierarchyOrdinal());
-			button.getChildren().add(hierarchyParam);
-
-			UIParameter cellParam = new UIParameter();
-			hierarchyParam.setName("cell");
-			hierarchyParam.setValue(parameters.getCellOrdinal());
-			button.getChildren().add(cellParam);
-
-			column.getChildren().add(button);
 		}
 	}
 

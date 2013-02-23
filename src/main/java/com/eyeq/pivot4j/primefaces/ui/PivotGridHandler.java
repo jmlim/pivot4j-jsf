@@ -86,8 +86,6 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
 		this.renderer = new PrimeFacesPivotRenderer(context);
 
-		renderer.initialize();
-
 		Serializable state = stateManager.getRendererState();
 
 		if (state == null) {
@@ -96,6 +94,8 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 			renderer.setHideSpans(false);
 			renderer.setDrillDownMode(DrillDownCommand.MODE_POSITION);
 			renderer.setEnableDrillThrough(false);
+
+			renderer.initialize();
 		} else {
 			renderer.restoreState(state);
 		}
@@ -257,7 +257,7 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
 			renderer.render(model);
 
-			stateManager.setRendererState(renderer.bookmarkState());
+			stateManager.setRendererState(renderer.saveState());
 		}
 	}
 
