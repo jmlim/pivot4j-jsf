@@ -2,6 +2,7 @@ package com.eyeq.pivot4j.primefaces.ui;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -232,10 +233,18 @@ public class MemberSelectionHandler implements NodeFilter {
 			}
 
 			if (empty) {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				ResourceBundle bundle = context.getApplication()
+						.getResourceBundle(context, "msg");
+
+				String title = bundle.getString("warn.no_members.title");
+				String message = bundle
+						.getString("warn.no_members.select.message");
 				FacesContext.getCurrentInstance().addMessage(
 						null,
-						new FacesMessage(FacesMessage.SEVERITY_WARN, "Note:",
-								"There are no members to select."));
+						new FacesMessage(FacesMessage.SEVERITY_WARN, title,
+								message));
 				return;
 			}
 
@@ -303,10 +312,18 @@ public class MemberSelectionHandler implements NodeFilter {
 			}
 
 			if (empty) {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				ResourceBundle bundle = context.getApplication()
+						.getResourceBundle(context, "msg");
+
+				String title = bundle.getString("warn.no_members.title");
+				String message = bundle
+						.getString("warn.no_members.remove.message");
 				FacesContext.getCurrentInstance().addMessage(
 						null,
-						new FacesMessage(FacesMessage.SEVERITY_WARN, "Note:",
-								"There are no members to remove."));
+						new FacesMessage(FacesMessage.SEVERITY_WARN, title,
+								message));
 				return;
 			}
 

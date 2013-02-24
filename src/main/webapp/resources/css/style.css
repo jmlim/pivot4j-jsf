@@ -412,6 +412,10 @@ span.unit {
 	margin-left: 5px;
 }
 
+.ui-menu {
+	width: 180px !important;
+}
+
 @media print {
 	.ui-button {
 		display: none !important;

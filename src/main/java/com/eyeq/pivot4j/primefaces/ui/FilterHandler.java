@@ -3,6 +3,7 @@ package com.eyeq.pivot4j.primefaces.ui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -321,10 +322,14 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 			}
 
 			if (navigator.isSelected(hierarchy)) {
-				String title = "Unable to filter hierarchy.";
-				String message = "The specified hierarchy is already preresent on one of the axes.";
-
 				FacesContext context = FacesContext.getCurrentInstance();
+
+				ResourceBundle bundle = context.getApplication()
+						.getResourceBundle(context, "msg");
+
+				String title = bundle.getString("error.filter.title");
+				String message = bundle.getString("error.filter.message");
+
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_WARN, title, message));
 				return;

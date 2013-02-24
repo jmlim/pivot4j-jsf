@@ -25,6 +25,8 @@ public class Settings extends AbstractMap<String, String> {
 
 	public static final String RESOURCE_PREFIX = "resourcePrefix";
 
+	public static final String LOCALE_ATTRIBUTE_NAME = "localeAttributeName";
+
 	public static final String CODE_MIRROR_THEME = "codeMirrorTheme";
 
 	public static final String VIEW_PARAMETER_NAME = "viewParameterName";

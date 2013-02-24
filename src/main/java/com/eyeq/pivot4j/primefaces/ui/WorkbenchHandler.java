@@ -1,8 +1,12 @@
 package com.eyeq.pivot4j.primefaces.ui;
 
+import java.util.Locale;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import org.primefaces.extensions.model.layout.LayoutOptions;
 
@@ -10,14 +14,16 @@ import org.primefaces.extensions.model.layout.LayoutOptions;
 @RequestScoped
 public class WorkbenchHandler {
 
-	@ManagedProperty(value = "#{pivotStateManager}")
-	private PivotStateManager stateManager;
+	@ManagedProperty(value = "#{settings}")
+	private Settings settings;
 
 	private boolean editorPaneVisible = false;
 
 	private boolean navigatorPaneVisible = true;
 
 	private LayoutOptions layoutOptions;
+
+	private Locale locale;
 
 	/**
 	 * @return the layoutOptions
@@ -77,7 +83,6 @@ public class WorkbenchHandler {
 			LayoutOptions editorOptions = new LayoutOptions();
 			editorOptions.addOption("resizable", true);
 			editorOptions.addOption("closable", true);
-			editorOptions.addOption("initClosed", stateManager.isReadOnly());
 			editorOptions.addOption("slidable", true);
 			editorOptions.addOption("size", 180);
 
@@ -102,6 +107,45 @@ public class WorkbenchHandler {
 		}
 
 		return layoutOptions;
+	}
+
+	/**
+	 * @return
+	 */
+	public Locale getLocale() {
+		if (locale == null) {
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			HttpSession session = (HttpSession) context.getExternalContext()
+					.getSession(false);
+
+			if (session != null) {
+				String key = settings.get(Settings.LOCALE_ATTRIBUTE_NAME);
+
+				if (key != null) {
+					Object value = session.getAttribute(key);
+					if (value instanceof Locale) {
+						this.locale = (Locale) value;
+					} else if (value != null) {
+						String[] args = value.toString().split("_");
+
+						if (args.length == 1) {
+							this.locale = new Locale(args[0]);
+						} else if (args.length == 2) {
+							this.locale = new Locale(args[0], args[1]);
+						} else if (args.length == 3) {
+							this.locale = new Locale(args[0], args[1], args[2]);
+						}
+					}
+				}
+			}
+
+			if (locale == null) {
+				this.locale = context.getViewRoot().getLocale();
+			}
+		}
+
+		return locale;
 	}
 
 	/**
@@ -135,17 +179,17 @@ public class WorkbenchHandler {
 	}
 
 	/**
-	 * @return the stateManager
+	 * @return the settings
 	 */
-	public PivotStateManager getStateManager() {
-		return stateManager;
+	public Settings getSettings() {
+		return settings;
 	}
 
 	/**
-	 * @param stateManager
-	 *            the stateManager to set
+	 * @param settings
+	 *            the settings to set
 	 */
-	public void setStateManager(PivotStateManager stateManager) {
-		this.stateManager = stateManager;
+	public void setSettings(Settings settings) {
+		this.settings = settings;
 	}
 }

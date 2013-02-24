@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -184,10 +185,17 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 
 	public List<UISelectItem> getCubes() throws OlapException, SQLException {
 		if (cubeItems == null) {
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			ResourceBundle bundle = context.getApplication().getResourceBundle(
+					context, "msg");
+
+			String defaultLabel = bundle.getString("message.cube_list.default");
+
 			this.cubeItems = new ArrayList<UISelectItem>();
 
 			UISelectItem defaultItem = new UISelectItem();
-			defaultItem.setItemLabel("---- Please select a cube ----");
+			defaultItem.setItemLabel(defaultLabel);
 			defaultItem.setItemValue("");
 
 			cubeItems.add(defaultItem);
@@ -311,10 +319,13 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 		} catch (Exception e) {
 			FacesContext context = FacesContext.getCurrentInstance();
 
-			String msg = "Failed to execute the MDX query.";
+			ResourceBundle bundle = context.getApplication().getResourceBundle(
+					context, "msg");
+
+			String title = bundle.getString("error.execute.title");
 
 			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, msg, e.getMessage()));
+					FacesMessage.SEVERITY_ERROR, title, e.getMessage()));
 
 			model.setMdx(oldMdx);
 		}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -523,12 +524,16 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 			List<Hierarchy> hiersInAxis = getHierarchies(ax);
 
 			if (hiersInAxis.contains(hierarchy)) {
-				String title = "Unable to add hierarchy.";
-				String message = String
-						.format("The selected hierarchy already exists in the '%s' axis.",
-								ax.name());
-
 				FacesContext context = FacesContext.getCurrentInstance();
+
+				ResourceBundle bundle = context.getApplication()
+						.getResourceBundle(context, "msg");
+
+				String title = bundle.getString("warn.hierarchy.exists.title");
+				String message = String.format(
+						bundle.getString("warn.hierarchy.exists.message"),
+						ax.name());
+
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_WARN, title, message));
 				return;
@@ -586,12 +591,16 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 			List<Hierarchy> hiersInAxis = getHierarchies(ax);
 
 			if (hiersInAxis.contains(hierarchy)) {
-				String title = "Unable to add level.";
-				String message = String
-						.format("Hierarchy of the selected level already exists in the '%s' axis.",
-								ax.name());
-
 				FacesContext context = FacesContext.getCurrentInstance();
+
+				ResourceBundle bundle = context.getApplication()
+						.getResourceBundle(context, "msg");
+
+				String title = bundle.getString("warn.level.exists.title");
+				String message = String.format(
+						bundle.getString("warn.level.exists.message"),
+						ax.name());
+
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_WARN, title, message));
 				return;
@@ -648,12 +657,16 @@ public class NavigatorHandler implements ModelChangeListener, NodeFilter {
 			List<Hierarchy> hiersInAxis = getHierarchies(ax);
 
 			if (hiersInAxis.contains(hierarchy)) {
-				String title = "Unable to add member.";
-				String message = String
-						.format("Hierarchy of the selected member already exists in the '%s' axis.",
-								ax.name());
-
 				FacesContext context = FacesContext.getCurrentInstance();
+
+				ResourceBundle bundle = context.getApplication()
+						.getResourceBundle(context, "msg");
+
+				String title = bundle.getString("warn.member.exists.title");
+				String message = String.format(
+						bundle.getString("warn.member.exists.message"),
+						ax.name());
+
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_WARN, title, message));
 				return;

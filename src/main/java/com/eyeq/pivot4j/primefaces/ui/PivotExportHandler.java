@@ -6,6 +6,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -221,11 +223,25 @@ public class PivotExportHandler {
 	 */
 	public List<SelectItem> getOrientations() {
 		if (orientations == null) {
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			ResourceBundle bundle = context.getApplication().getResourceBundle(
+					context, "msg");
+
 			this.orientations = new ArrayList<SelectItem>();
 
 			for (Orientation orientation : Orientation.values()) {
-				orientations
-						.add(new SelectItem(orientation, orientation.name()));
+				String label;
+
+				try {
+					label = bundle
+							.getString("label.pdf_export.page.orientation."
+									+ orientation.name().toLowerCase());
+				} catch (MissingResourceException e) {
+					label = orientation.name();
+				}
+
+				orientations.add(new SelectItem(orientation, label));
 			}
 		}
 

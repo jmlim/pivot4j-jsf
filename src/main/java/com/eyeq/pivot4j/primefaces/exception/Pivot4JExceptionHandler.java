@@ -1,6 +1,7 @@
 package com.eyeq.pivot4j.primefaces.exception;
 
 import java.util.Iterator;
+import java.util.ResourceBundle;
 
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
@@ -46,12 +47,16 @@ public class Pivot4JExceptionHandler extends ExceptionHandlerWrapper {
 			ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event
 					.getSource();
 
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+
+			ResourceBundle bundle = facesContext.getApplication()
+					.getResourceBundle(facesContext, "msg");
+
 			Throwable t = context.getException();
 
-			String title = "Unhandled exception has occurred";
-			String message = "Please see the log for more details : " + t;
+			String title = bundle.getString("error.unhandled.title");
+			String message = bundle.getString("error.unhandled.message") + t;
 
-			FacesContext facesContext = FacesContext.getCurrentInstance();
 			if (logger.isErrorEnabled()) {
 				logger.error(title, t);
 			}

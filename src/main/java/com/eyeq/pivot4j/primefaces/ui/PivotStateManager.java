@@ -76,8 +76,7 @@ public class PivotStateManager {
 
 			if (dataSource == null) {
 				if (log.isWarnEnabled()) {
-					log.warn("Unable to create Creating a new view state : "
-							+ viewId);
+					log.warn("Unable to create a new view state : " + viewId);
 				}
 
 				NavigationHandler navigationHandler = context.getApplication()
