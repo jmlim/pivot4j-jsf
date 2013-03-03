@@ -117,6 +117,13 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	}
 
 	/**
+	 * @return the renderer
+	 */
+	public PrimeFacesPivotRenderer getRenderer() {
+		return renderer;
+	}
+
+	/**
 	 * @return the stateManager
 	 */
 	public PivotStateManager getStateManager() {
@@ -427,7 +434,13 @@ public class PivotGridHandler implements QueryListener, ModelChangeListener {
 	 */
 	public void setSwapAxes(boolean swapAxes) {
 		SwapAxes transform = model.getTransform(SwapAxes.class);
+
+		boolean current = transform.isSwapAxes();
 		transform.setSwapAxes(swapAxes);
+
+		if (current != swapAxes) {
+			renderer.swapAxes();
+		}
 	}
 
 	/**

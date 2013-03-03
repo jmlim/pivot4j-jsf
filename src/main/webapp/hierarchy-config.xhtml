@@ -8,7 +8,7 @@
 		<p:dialog id="hierarchy-config"
 			header="#{msg['title.hierarchy_config']}" widgetVar="hierarchyConfig"
 			modal="true" width="860" height="435" closable="true"
-			resizable="false" styleClass="hierarchy-config">
+			resizable="false" dynamic="true" styleClass="hierarchy-config">
 			<h:panelGrid id="hierarchy-config-grid" columns="4"
 				columnClasses="member-panel,control-panel,member-panel,control-panel"
 				headerClass="info-panel"
@@ -158,6 +158,11 @@
 			<f:facet name="footer">
 				<p:outputPanel id="button-bar" layout="block"
 					styleClass="button-bar">
+					<p:commandButton value="#{msg['button.ok']}" icon="ui-icon-check"
+						action="#{memberSelectionHandler.apply}"
+						update="hierarchy-config-grid,:source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor"
+						onsuccess="hierarchyConfig.hide();"
+						binding="#{memberSelectionHandler.buttonOk}" />
 					<p:commandButton value="#{msg['button.apply']}"
 						icon="ui-icon-check" action="#{memberSelectionHandler.apply}"
 						update="hierarchy-config-grid,:source-tree-form,:target-tree-form,:grid-form,:editor-form:mdx-editor"

@@ -58,6 +58,8 @@ public class MemberSelectionHandler implements NodeFilter {
 
 	private CommandButton buttonApply;
 
+	private CommandButton buttonOk;
+
 	private MemberSelection selection;
 
 	@PostConstruct
@@ -167,6 +169,7 @@ public class MemberSelectionHandler implements NodeFilter {
 		buttonUp.setDisabled(true);
 		buttonDown.setDisabled(true);
 		buttonApply.setDisabled(true);
+		buttonOk.setDisabled(true);
 
 		this.hierarchyName = null;
 		this.hierarchy = null;
@@ -181,6 +184,7 @@ public class MemberSelectionHandler implements NodeFilter {
 		transform.placeMembers(getHierarchy(), getSelection().getMembers());
 
 		buttonApply.setDisabled(true);
+		buttonOk.setDisabled(true);
 	}
 
 	public void add() {
@@ -260,6 +264,7 @@ public class MemberSelectionHandler implements NodeFilter {
 		updateButtonStatus();
 
 		buttonApply.setDisabled(false);
+		buttonOk.setDisabled(false);
 	}
 
 	public void remove() {
@@ -339,6 +344,7 @@ public class MemberSelectionHandler implements NodeFilter {
 		updateButtonStatus();
 
 		buttonApply.setDisabled(false);
+		buttonOk.setDisabled(false);
 	}
 
 	public void moveUp() {
@@ -354,6 +360,7 @@ public class MemberSelectionHandler implements NodeFilter {
 		updateButtonStatus();
 
 		buttonApply.setDisabled(false);
+		buttonOk.setDisabled(false);
 	}
 
 	public void moveDown() {
@@ -369,6 +376,7 @@ public class MemberSelectionHandler implements NodeFilter {
 		updateButtonStatus();
 
 		buttonApply.setDisabled(false);
+		buttonOk.setDisabled(false);
 	}
 
 	public Hierarchy getHierarchy() {
@@ -611,6 +619,21 @@ public class MemberSelectionHandler implements NodeFilter {
 	 */
 	public void setButtonApply(CommandButton buttonApply) {
 		this.buttonApply = buttonApply;
+	}
+
+	/**
+	 * @return the buttonOk
+	 */
+	public CommandButton getButtonOk() {
+		return buttonOk;
+	}
+
+	/**
+	 * @param buttonOk
+	 *            the buttonOk to set
+	 */
+	public void setButtonOk(CommandButton buttonOk) {
+		this.buttonOk = buttonOk;
 	}
 
 	/**

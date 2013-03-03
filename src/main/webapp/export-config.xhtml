@@ -7,7 +7,8 @@
 	<h:form id="export-form">
 		<p:dialog id="export-config" header="#{msg['title.export.pdf']}"
 			widgetVar="exportConfig" modal="true" width="655" height="380"
-			closable="true" resizable="false" styleClass="export-config">
+			closable="true" resizable="false" dynamic="true"
+			styleClass="export-config">
 			<p:fieldset legend="#{msg['header.pdf_export.content_settings']}">
 				<h:panelGrid columns="2" columnClasses="field-name,field-input">
 					<p:outputLabel value="#{msg['label.pdf_export.header.show']}"
@@ -67,7 +68,7 @@
 				</h:panelGrid>
 			</p:fieldset>
 
-			<p:spacer height="5" />
+			<p:spacer height="2" />
 
 			<p:fieldset legend="#{msg['header.pdf_export.page_settings']}">
 				<h:panelGrid columns="2" columnClasses="field-name,field-input">
@@ -91,9 +92,8 @@
 				<h:panelGroup id="button-bar" styleClass="button-bar" layout="block">
 					<p:messages showDetail="true" closable="true" />
 
-					<p:commandButton value="#{msg['button.apply']}"
-						icon="ui-icon-check" action="#{pivotExportHandler.exportPdf}"
-						ajax="false" />
+					<p:commandButton value="#{msg['button.ok']}" icon="ui-icon-check"
+						action="#{pivotExportHandler.exportPdf}" ajax="false" />
 					<p:commandButton value="#{msg['button.close']}"
 						icon="ui-icon-close" onclick="exportConfig.hide();" />
 				</h:panelGroup>

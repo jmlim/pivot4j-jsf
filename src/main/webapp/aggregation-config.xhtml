@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<h:form id="aggregation-form">
+		<p:dialog id="aggregation-config" header="#{msg['title.aggregation']}"
+			widgetVar="aggregationConfig" modal="true" width="560" height="390"
+			closable="true" resizable="false" dynamic="true"
+			styleClass="aggregation-config">
+			<p:fieldset legend="#{msg['label.aggregation.position.grand']}">
+				<h:panelGrid columns="2" columnClasses="field-name,field-input">
+					<p:outputLabel value="#{msg['label.columns']}"
+						styleClass="ui-icon-cols" for="input-column-grand" />
+					<p:selectOneRadio id="input-column-grand"
+						value="#{aggregationHandler.columnAggregation}">
+						<f:selectItems value="#{aggregationHandler.aggregations}" />
+					</p:selectOneRadio>
+
+					<p:outputLabel value="#{msg['label.rows']}"
+						styleClass="ui-icon-rows" for="input-row-grand" />
+					<p:selectOneRadio id="input-row-grand"
+						value="#{aggregationHandler.rowAggregation}">
+						<f:selectItems value="#{aggregationHandler.aggregations}" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+			</p:fieldset>
+
+			<p:spacer height="2" />
+
+			<p:fieldset legend="#{msg['label.aggregation.position.hierarchy']}">
+				<h:panelGrid columns="2" columnClasses="field-name,field-input">
+					<p:outputLabel value="#{msg['label.columns']}"
+						styleClass="ui-icon-cols" for="input-column-hierarchy" />
+					<p:selectOneRadio id="input-column-hierarchy"
+						value="#{aggregationHandler.columnHierarchyAggregation}">
+						<f:selectItems value="#{aggregationHandler.aggregations}" />
+					</p:selectOneRadio>
+
+					<p:outputLabel value="#{msg['label.rows']}"
+						styleClass="ui-icon-rows" for="input-row-hierarchy" />
+					<p:selectOneRadio id="input-row-hierarchy"
+						value="#{aggregationHandler.rowHierarchyAggregation}">
+						<f:selectItems value="#{aggregationHandler.aggregations}" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+			</p:fieldset>
+
+			<p:spacer height="2" />
+
+			<p:fieldset legend="#{msg['label.aggregation.position.member']}">
+				<h:panelGrid columns="2" columnClasses="field-name,field-input">
+					<p:outputLabel value="#{msg['label.columns']}"
+						styleClass="ui-icon-cols" for="input-column-member" />
+					<p:selectOneRadio id="input-column-member"
+						value="#{aggregationHandler.columnMemberAggregation}">
+						<f:selectItems value="#{aggregationHandler.aggregations}" />
+					</p:selectOneRadio>
+
+					<p:outputLabel value="#{msg['label.rows']}"
+						styleClass="ui-icon-rows" for="input-row-member" />
+					<p:selectOneRadio id="input-row-member"
+						value="#{aggregationHandler.rowMemberAggregation}">
+						<f:selectItems value="#{aggregationHandler.aggregations}" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+			</p:fieldset>
+
+			<f:facet name="footer">
+				<h:panelGroup id="button-bar" styleClass="button-bar" layout="block">
+					<p:messages showDetail="true" closable="true" />
+
+					<p:commandButton value="#{msg['button.ok']}" icon="ui-icon-check"
+						action="#{aggregationHandler.apply}"
+						update=":grid-form,:editor-form:mdx-editor"
+						onsuccess="aggregationConfig.hide();" />
+					<p:commandButton value="#{msg['button.apply']}"
+						icon="ui-icon-check" action="#{aggregationHandler.apply}"
+						update=":grid-form,:editor-form:mdx-editor" />
+					<p:commandButton value="#{msg['button.close']}"
+						icon="ui-icon-close" onclick="aggregationConfig.hide();" />
+				</h:panelGroup>
+			</f:facet>
+		</p:dialog>
+	</h:form>
+</ui:composition>

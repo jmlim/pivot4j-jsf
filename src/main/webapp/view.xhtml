@@ -110,6 +110,16 @@
 									update=":grid-form,:editor-form:mdx-editor,:editor-form:editor-toolbar,:target-tree-form" />
 							</p:selectBooleanButton>
 							<p:separator rendered="#{!pivotStateManager.readOnly}" />
+							<p:commandButton value="#{msg['toolbar.aggregation']}"
+								title="#{msg['toolbar.aggregation.tooltip']}"
+								icon="ui-icon-calculator" update=":aggregation-form"
+								process=":aggregation-form"
+								oncomplete="aggregationConfig.show();"
+								disabled="#{!pivotGridHandler.valid}"
+								rendered="#{!pivotStateManager.readOnly}">
+								<f:param name="skipRender" value="true" />
+							</p:commandButton>
+							<p:separator rendered="#{!pivotStateManager.readOnly}" />
 							<p:menuButton value="#{msg['toolbar.export']}"
 								disabled="#{!pivotGridHandler.valid}" styleClass="export-menu">
 								<p:menuitem value="#{msg['toolbar.export.format.xls']}"
@@ -125,7 +135,6 @@
 								<p:menuitem value="#{msg['toolbar.export.format.pdf']}"
 									icon="ui-icon-print" onclick="exportConfig.show();" />
 							</p:menuButton>
-							<p:separator />
 							<p:commandButton value="#{msg['toolbar.print']}"
 								title="#{msg['toolbar.print.tooltip']}" type="button"
 								icon="ui-icon-print" disabled="#{!pivotGridHandler.valid}"
@@ -290,8 +299,7 @@
 			<pe:layoutPane id="content-pane" position="center">
 				<f:facet name="header">
 					<h:panelGroup layout="block">
-						<h:panelGroup
-							styleClass="ui-icon ui-icon-title ui-icon-calculator" />
+						<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-document" />
 						<h:outputText value="#{msg['header.grid']}"
 							rendered="#{!pivotStateManager.readOnly}" />
 						<h:outputText value="#{pivotGridHandler.cubeName}"
@@ -429,6 +437,7 @@
 
 		<ui:include src="about.xhtml" />
 		<ui:include src="hierarchy-config.xhtml" />
+		<ui:include src="aggregation-config.xhtml" />
 		<ui:include src="export-config.xhtml" />
 		<ui:include src="drillthrough.xhtml" />
 		<ui:include src="extension.xhtml" />

@@ -7,7 +7,7 @@
 	<p:dialog id="drillthrough-dialog" header="#{title.drillthrough}"
 		widgetVar="drillThroughDialog" modal="true" width="860" height="430"
 		closable="true" resizable="true" styleClass="drillthrough"
-		visible="#{drillThroughData.dataAvailable}">
+		dynamic="true" visible="#{drillThroughData.dataAvailable}">
 		<h:form id="drillthrough-form">
 			<p:dataTable id="drillthrough-grid" var="row"
 				widgetVar="drillThroughGrid" value="#{drillThroughData}" lazy="true"

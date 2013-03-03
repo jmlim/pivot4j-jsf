@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
@@ -13,6 +14,7 @@ import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGroup;
 import javax.faces.context.FacesContext;
 
+import org.olap4j.Axis;
 import org.olap4j.Cell;
 import org.primefaces.component.column.Column;
 import org.primefaces.component.commandbutton.CommandButton;
@@ -22,8 +24,10 @@ import org.primefaces.context.RequestContext;
 
 import com.eyeq.pivot4j.PivotModel;
 import com.eyeq.pivot4j.ui.AbstractPivotUIRenderer;
+import com.eyeq.pivot4j.ui.CellType;
 import com.eyeq.pivot4j.ui.PivotUIRenderer;
 import com.eyeq.pivot4j.ui.RenderContext;
+import com.eyeq.pivot4j.ui.aggregator.Aggregator;
 import com.eyeq.pivot4j.ui.command.BasicDrillThroughCommand;
 import com.eyeq.pivot4j.ui.command.CellCommand;
 import com.eyeq.pivot4j.ui.command.CellParameters;
@@ -45,6 +49,8 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 	private Column column;
 
 	private int commandIndex = 0;
+
+	private ResourceBundle bundle;
 
 	/**
 	 * @param facesContext
@@ -79,6 +85,11 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 	public void initialize() {
 		super.initialize();
 
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		this.bundle = context.getApplication()
+				.getResourceBundle(context, "msg");
+
 		// Map command mode names to jQuery's predefined icon names. It can be
 		// also done by CSS.
 		this.iconMap = new HashMap<String, String>();
@@ -100,6 +111,13 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 	}
 
 	/**
+	 * @return bundle
+	 */
+	protected ResourceBundle getBundle() {
+		return bundle;
+	}
+
+	/**
 	 * @see com.eyeq.pivot4j.ui.AbstractPivotUIRenderer#registerCommands()
 	 */
 	@Override
@@ -107,6 +125,29 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 		super.registerCommands();
 
 		addCommand(new DrillThroughCommandImpl(this));
+	}
+
+	/**
+	 * @see com.eyeq.pivot4j.ui.AbstractPivotRenderer#getCellLabel(com.eyeq.pivot4j.ui.RenderContext)
+	 */
+	@Override
+	protected String getCellLabel(RenderContext context) {
+		String label = super.getCellLabel(context);
+
+		if (context.getCellType() == CellType.Aggregation) {
+			Aggregator aggregator = context.getAggregator();
+
+			if (aggregator != null && context.getMember() == null) {
+				String key = "label.aggregation.type." + aggregator.getName();
+				String value = bundle.getString(key);
+
+				if (value != null) {
+					label = value;
+				}
+			}
+		}
+
+		return label;
 	}
 
 	/**
@@ -167,23 +208,60 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 		String styleClass;
 
 		switch (context.getCellType()) {
-		case ColumnHeader:
-		case ColumnTitle:
+		case Header:
+		case Title:
 		case None:
-			styleClass = "col-hdr-cell";
+			if (context.getAxis() == Axis.COLUMNS) {
+				styleClass = "col-hdr-cell";
+			} else {
+				if (context.getCellType() == CellType.Header) {
+					styleClass = "row-hdr-cell ui-widget-header";
+				} else {
+					styleClass = "ui-widget-header";
+				}
+			}
+
+			if (!getShowParentMembers() && context.getMember() != null) {
+				int padding = context.getMember().getDepth() * 10;
+				column.setStyle("padding-left: " + padding + "px");
+			}
+
 			break;
-		case RowHeader:
-			styleClass = "row-hdr-cell ui-widget-header";
-			break;
-		case RowTitle:
-			styleClass = "ui-widget-header";
+		case Aggregation:
+			if (context.getAxis() == Axis.ROWS) {
+				styleClass = "ui-widget-header ";
+			} else {
+				styleClass = "";
+			}
+
+			if (context.getMember() == null) {
+				styleClass += "agg-title";
+			} else {
+				styleClass += "agg-hdr";
+			}
+
+			if (!getShowParentMembers() && context.getMember() != null) {
+				int padding = context.getMember().getDepth() * 10;
+				column.setStyle("padding-left: " + padding + "px");
+			}
+
 			break;
 		case Value:
-			// PrimeFaces' Row class doesn't have the styleClass property.
-			if (context.getRowIndex() % 2 == 0) {
-				styleClass = "value-cell cell-even";
+			if (context.getAggregator() == null) {
+				// PrimeFaces' Row class doesn't have the styleClass property.
+				if (context.getRowIndex() % 2 == 0) {
+					styleClass = "value-cell cell-even";
+				} else {
+					styleClass = "value-cell cell-odd";
+				}
 			} else {
-				styleClass = "value-cell cell-odd";
+				styleClass = "ui-widget-header agg-cell";
+
+				if (context.getAxis() == Axis.COLUMNS) {
+					styleClass += " col-agg-cell";
+				} else if (context.getAxis() == Axis.ROWS) {
+					styleClass += " row-agg-cell";
+				}
 			}
 			break;
 		default:
@@ -191,11 +269,6 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 		}
 
 		column.setStyleClass(styleClass);
-
-		if (!getShowParentMembers() && context.getMember() != null) {
-			int padding = context.getMember().getDepth() * 10;
-			column.setStyle("padding-left: " + padding + "px");
-		}
 
 		if (expressionFactory != null) {
 			for (CellCommand<?> command : commands) {
