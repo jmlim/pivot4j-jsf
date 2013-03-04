@@ -234,11 +234,7 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 				styleClass = "";
 			}
 
-			if (context.getMember() == null) {
-				styleClass += "agg-title";
-			} else {
-				styleClass += "agg-hdr";
-			}
+			styleClass += "agg-title";
 
 			if (!getShowParentMembers() && context.getMember() != null) {
 				int padding = context.getMember().getDepth() * 10;
