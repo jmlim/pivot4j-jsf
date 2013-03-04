@@ -213,6 +213,10 @@ form {
 	background-image: none;
 }
 
+.pivot-grid .agg-title {
+	white-space: nowrap;
+}
+
 .pivot-grid .agg-cell, .pivot-grid .agg-title {
 	text-align: right;
 }
