@@ -16,6 +16,7 @@ import javax.faces.context.FacesContext;
 
 import org.olap4j.Axis;
 import org.olap4j.Cell;
+import org.olap4j.metadata.Measure;
 import org.primefaces.component.column.Column;
 import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.component.panelgrid.PanelGrid;
@@ -137,7 +138,8 @@ public class PrimeFacesPivotRenderer extends AbstractPivotUIRenderer {
 		if (context.getCellType() == CellType.Aggregation) {
 			Aggregator aggregator = context.getAggregator();
 
-			if (aggregator != null && context.getMember() == null) {
+			if (aggregator != null
+					&& (context.getMember() == null || !(context.getMember() instanceof Measure))) {
 				String key = "label.aggregation.type." + aggregator.getName();
 				String value = bundle.getString(key);
 
