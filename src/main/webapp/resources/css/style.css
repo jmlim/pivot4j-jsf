@@ -111,11 +111,11 @@ form {
 	background-image: url('../images/measure.gif');
 }
 
-.ui-treenode-icon.ui-icon-cols {
+.ui-treenode-icon.ui-icon-cols, .ui-widget-header .ui-icon-cols {
 	background-image: url('../images/columns.gif');
 }
 
-.ui-treenode-icon.ui-icon-rows {
+.ui-treenode-icon.ui-icon-rows, .ui-widget-header .ui-icon-rows {
 	background-image: url('../images/rows.gif');
 }
 
@@ -304,6 +304,7 @@ form {
 .ui-icon-title {
 	float: left;
 	margin-right: 2px;
+	border-radius: 0;
 }
 
 #content-pane .info-panel {
@@ -389,6 +390,24 @@ form {
 
 .hierarchy-contextmenu {
 	width: 180px;
+}
+
+.aggregation-config .ui-picklist-list {
+	width: 120px;
+	height: 160px;
+}
+
+.aggregation-config .ui-panel {
+	float: left;
+	width: 320px;
+}
+
+.aggregation-config .ui-tabs .ui-tabs-panel {
+	height: 235px; 
+}
+
+.aggregation-config .rows-panel {
+	margin-right: 10px; 
 }
 
 .ui-dialog .button-bar {

@@ -11,149 +11,125 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-import org.apache.commons.lang3.StringUtils;
 import org.olap4j.Axis;
+import org.primefaces.model.DualListModel;
 
-import com.eyeq.pivot4j.ui.aggregator.AggregatorFactory;
 import com.eyeq.pivot4j.ui.aggregator.AggregatorPosition;
 
 @ManagedBean(name = "aggregationHandler")
 @RequestScoped
 public class AggregationHandler {
 
-	private static final String NONE = "NONE";
-
 	@ManagedProperty(value = "#{pivotGridHandler.renderer}")
 	private PrimeFacesPivotRenderer renderer;
 
-	private List<SelectItem> aggregations;
+	private DualListModel<SelectItem> columnAggregators;
 
-	private String columnAggregation = NONE;
+	private DualListModel<SelectItem> columnHierarchyAggregators;
 
-	private String columnHierarchyAggregation = NONE;
+	private DualListModel<SelectItem> columnMemberAggregators;
 
-	private String columnMemberAggregation = NONE;
+	private DualListModel<SelectItem> rowAggregators;
 
-	private String rowAggregation = NONE;
+	private DualListModel<SelectItem> rowHierarchyAggregators;
 
-	private String rowHierarchyAggregation = NONE;
+	private DualListModel<SelectItem> rowMemberAggregators;
 
-	private String rowMemberAggregation = NONE;
+	private ResourceBundle bundle;
 
 	@PostConstruct
 	protected void initialize() {
-		this.columnAggregation = StringUtils.defaultString(renderer
-				.getAggregatorName(Axis.COLUMNS, AggregatorPosition.Grand),
-				NONE);
-		this.columnHierarchyAggregation = StringUtils.defaultString(renderer
-				.getAggregatorName(Axis.COLUMNS, AggregatorPosition.Hierarchy),
-				NONE);
-		this.columnMemberAggregation = StringUtils.defaultString(renderer
-				.getAggregatorName(Axis.COLUMNS, AggregatorPosition.Member),
-				NONE);
-		this.rowAggregation = StringUtils
-				.defaultString(renderer.getAggregatorName(Axis.ROWS,
-						AggregatorPosition.Grand), NONE);
-		this.rowHierarchyAggregation = StringUtils.defaultString(renderer
-				.getAggregatorName(Axis.ROWS, AggregatorPosition.Hierarchy),
-				NONE);
-		this.rowMemberAggregation = StringUtils.defaultString(renderer
-				.getAggregatorName(Axis.ROWS, AggregatorPosition.Member), NONE);
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		this.bundle = context.getApplication()
+				.getResourceBundle(context, "msg");
+
+		this.columnAggregators = createSelectionModel(Axis.COLUMNS,
+				AggregatorPosition.Grand);
+		this.columnHierarchyAggregators = createSelectionModel(Axis.COLUMNS,
+				AggregatorPosition.Hierarchy);
+		this.columnMemberAggregators = createSelectionModel(Axis.COLUMNS,
+				AggregatorPosition.Member);
+
+		this.rowAggregators = createSelectionModel(Axis.ROWS,
+				AggregatorPosition.Grand);
+		this.rowHierarchyAggregators = createSelectionModel(Axis.ROWS,
+				AggregatorPosition.Hierarchy);
+		this.rowMemberAggregators = createSelectionModel(Axis.ROWS,
+				AggregatorPosition.Member);
 	}
 
 	/**
+	 * @return bundle
+	 */
+	protected ResourceBundle getBundle() {
+		return bundle;
+	}
+
+	/**
+	 * @param model
+	 * @param axis
+	 * @param position
+	 */
+	protected DualListModel<SelectItem> createSelectionModel(Axis axis,
+			AggregatorPosition position) {
+		List<String> selected = renderer.getAggregators(axis, position);
+		List<String> available = renderer.getAggregatorFactory()
+				.getAvailableAggregations();
+
+		List<SelectItem> unselectedItems = new ArrayList<SelectItem>(
+				available.size());
+		List<SelectItem> selectedItems = new ArrayList<SelectItem>(
+				available.size());
+
+		for (String name : available) {
+			String key = "label.aggregation.type." + name;
+			String label = bundle.getString(key);
+
+			SelectItem item = new SelectItem(name, label);
+
+			if (selected.contains(name)) {
+				selectedItems.add(item);
+			} else {
+				unselectedItems.add(item);
+			}
+		}
+
+		return new DualListModel<SelectItem>(unselectedItems, selectedItems);
+	}
+
+	/**
+	 * @param selection
 	 * @param axis
 	 * @param position
 	 * @return
 	 */
-	protected String getAggregatorName(Axis axis, AggregatorPosition position) {
-		String name = renderer.getAggregatorName(axis, position);
-		if (name == null) {
-			name = NONE;
+	protected void applySelection(DualListModel<SelectItem> selection,
+			Axis axis, AggregatorPosition position) {
+		List<SelectItem> items = selection.getTarget();
+
+		List<String> aggregators = new ArrayList<String>(items.size());
+
+		for (SelectItem item : items) {
+			aggregators.add((String) item.getValue());
 		}
 
-		return name;
-	}
-
-	/**
-	 * @return the aggregations
-	 */
-	public List<SelectItem> getAggregations() {
-		if (aggregations == null) {
-			FacesContext context = FacesContext.getCurrentInstance();
-
-			ResourceBundle bundle = context.getApplication().getResourceBundle(
-					context, "msg");
-
-			this.aggregations = new ArrayList<SelectItem>();
-
-			aggregations.add(new SelectItem(NONE, bundle
-					.getString("label.none")));
-
-			AggregatorFactory factory = renderer.getAggregatorFactory();
-
-			if (factory != null) {
-				List<String> names = factory.getAvailableAggregations();
-				for (String name : names) {
-					String label = bundle.getString("label.aggregation.type."
-							+ name);
-
-					aggregations.add(new SelectItem(name, label));
-				}
-			}
-		}
-
-		return aggregations;
+		renderer.setAggregators(axis, position, aggregators);
 	}
 
 	public void apply() {
-		if (NONE.equals(columnAggregation)) {
-			renderer.setAggregatorName(Axis.COLUMNS, AggregatorPosition.Grand,
-					null);
-		} else {
-			renderer.setAggregatorName(Axis.COLUMNS, AggregatorPosition.Grand,
-					columnAggregation);
-		}
+		applySelection(rowAggregators, Axis.ROWS, AggregatorPosition.Grand);
+		applySelection(rowHierarchyAggregators, Axis.ROWS,
+				AggregatorPosition.Hierarchy);
+		applySelection(rowMemberAggregators, Axis.ROWS,
+				AggregatorPosition.Member);
 
-		if (NONE.equals(columnHierarchyAggregation)) {
-			renderer.setAggregatorName(Axis.COLUMNS,
-					AggregatorPosition.Hierarchy, null);
-		} else {
-			renderer.setAggregatorName(Axis.COLUMNS,
-					AggregatorPosition.Hierarchy, columnHierarchyAggregation);
-		}
-
-		if (NONE.equals(columnMemberAggregation)) {
-			renderer.setAggregatorName(Axis.COLUMNS, AggregatorPosition.Member,
-					null);
-		} else {
-			renderer.setAggregatorName(Axis.COLUMNS, AggregatorPosition.Member,
-					columnMemberAggregation);
-		}
-
-		if (NONE.equals(rowAggregation)) {
-			renderer.setAggregatorName(Axis.ROWS, AggregatorPosition.Grand,
-					null);
-		} else {
-			renderer.setAggregatorName(Axis.ROWS, AggregatorPosition.Grand,
-					rowAggregation);
-		}
-
-		if (NONE.equals(rowHierarchyAggregation)) {
-			renderer.setAggregatorName(Axis.ROWS, AggregatorPosition.Hierarchy,
-					null);
-		} else {
-			renderer.setAggregatorName(Axis.ROWS, AggregatorPosition.Hierarchy,
-					rowHierarchyAggregation);
-		}
-
-		if (NONE.equals(rowMemberAggregation)) {
-			renderer.setAggregatorName(Axis.ROWS, AggregatorPosition.Member,
-					null);
-		} else {
-			renderer.setAggregatorName(Axis.ROWS, AggregatorPosition.Member,
-					rowMemberAggregation);
-		}
+		applySelection(columnAggregators, Axis.COLUMNS,
+				AggregatorPosition.Grand);
+		applySelection(columnHierarchyAggregators, Axis.COLUMNS,
+				AggregatorPosition.Hierarchy);
+		applySelection(columnMemberAggregators, Axis.COLUMNS,
+				AggregatorPosition.Member);
 	}
 
 	/**
@@ -172,92 +148,96 @@ public class AggregationHandler {
 	}
 
 	/**
-	 * @return the columnAggregation
+	 * @return the columnAggregators
 	 */
-	public String getColumnAggregation() {
-		return columnAggregation;
+	public DualListModel<SelectItem> getColumnAggregators() {
+		return columnAggregators;
 	}
 
 	/**
-	 * @param columnAggregation
-	 *            the columnAggregation to set
+	 * @param columnAggregators
+	 *            the columnAggregators to set
 	 */
-	public void setColumnAggregation(String columnAggregation) {
-		this.columnAggregation = columnAggregation;
+	public void setColumnAggregators(DualListModel<SelectItem> columnAggregators) {
+		this.columnAggregators = columnAggregators;
 	}
 
 	/**
-	 * @return the columnHierarchyAggregation
+	 * @return the columnHierarchyAggregators
 	 */
-	public String getColumnHierarchyAggregation() {
-		return columnHierarchyAggregation;
+	public DualListModel<SelectItem> getColumnHierarchyAggregators() {
+		return columnHierarchyAggregators;
 	}
 
 	/**
-	 * @param columnHierarchyAggregation
-	 *            the columnHierarchyAggregation to set
+	 * @param columnHierarchyAggregators
+	 *            the columnHierarchyAggregators to set
 	 */
-	public void setColumnHierarchyAggregation(String columnHierarchyAggregation) {
-		this.columnHierarchyAggregation = columnHierarchyAggregation;
+	public void setColumnHierarchyAggregators(
+			DualListModel<SelectItem> columnHierarchyAggregators) {
+		this.columnHierarchyAggregators = columnHierarchyAggregators;
 	}
 
 	/**
-	 * @return the columnMemberAggregation
+	 * @return the columnMemberAggregators
 	 */
-	public String getColumnMemberAggregation() {
-		return columnMemberAggregation;
+	public DualListModel<SelectItem> getColumnMemberAggregators() {
+		return columnMemberAggregators;
 	}
 
 	/**
-	 * @param columnMemberAggregation
-	 *            the columnMemberAggregation to set
+	 * @param columnMemberAggregators
+	 *            the columnMemberAggregators to set
 	 */
-	public void setColumnMemberAggregation(String columnMemberAggregation) {
-		this.columnMemberAggregation = columnMemberAggregation;
+	public void setColumnMemberAggregators(
+			DualListModel<SelectItem> columnMemberAggregators) {
+		this.columnMemberAggregators = columnMemberAggregators;
 	}
 
 	/**
-	 * @return the rowAggregation
+	 * @return the rowAggregators
 	 */
-	public String getRowAggregation() {
-		return rowAggregation;
+	public DualListModel<SelectItem> getRowAggregators() {
+		return rowAggregators;
 	}
 
 	/**
-	 * @param rowAggregation
-	 *            the rowAggregation to set
+	 * @param rowAggregators
+	 *            the rowAggregators to set
 	 */
-	public void setRowAggregation(String rowAggregation) {
-		this.rowAggregation = rowAggregation;
+	public void setRowAggregators(DualListModel<SelectItem> rowAggregators) {
+		this.rowAggregators = rowAggregators;
 	}
 
 	/**
-	 * @return the rowHierarchyAggregation
+	 * @return the rowHierarchyAggregators
 	 */
-	public String getRowHierarchyAggregation() {
-		return rowHierarchyAggregation;
+	public DualListModel<SelectItem> getRowHierarchyAggregators() {
+		return rowHierarchyAggregators;
 	}
 
 	/**
-	 * @param rowHierarchyAggregation
-	 *            the rowHierarchyAggregation to set
+	 * @param rowHierarchyAggregators
+	 *            the rowHierarchyAggregators to set
 	 */
-	public void setRowHierarchyAggregation(String rowHierarchyAggregation) {
-		this.rowHierarchyAggregation = rowHierarchyAggregation;
+	public void setRowHierarchyAggregators(
+			DualListModel<SelectItem> rowHierarchyAggregators) {
+		this.rowHierarchyAggregators = rowHierarchyAggregators;
 	}
 
 	/**
-	 * @return the rowMemberAggregation
+	 * @return the rowMemberAggregators
 	 */
-	public String getRowMemberAggregation() {
-		return rowMemberAggregation;
+	public DualListModel<SelectItem> getRowMemberAggregators() {
+		return rowMemberAggregators;
 	}
 
 	/**
-	 * @param rowMemberAggregation
-	 *            the rowMemberAggregation to set
+	 * @param rowMemberAggregators
+	 *            the rowMemberAggregators to set
 	 */
-	public void setRowMemberAggregation(String rowMemberAggregation) {
-		this.rowMemberAggregation = rowMemberAggregation;
+	public void setRowMemberAggregators(
+			DualListModel<SelectItem> rowMemberAggregators) {
+		this.rowMemberAggregators = rowMemberAggregators;
 	}
 }

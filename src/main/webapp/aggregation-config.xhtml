@@ -6,66 +6,197 @@
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<h:form id="aggregation-form">
 		<p:dialog id="aggregation-config" header="#{msg['title.aggregation']}"
-			widgetVar="aggregationConfig" modal="true" width="560" height="390"
+			widgetVar="aggregationConfig" modal="true" width="730" height="305"
 			closable="true" resizable="false" dynamic="true"
 			styleClass="aggregation-config">
-			<p:fieldset legend="#{msg['label.aggregation.position.grand']}">
-				<h:panelGrid columns="2" columnClasses="field-name,field-input">
-					<p:outputLabel value="#{msg['label.columns']}"
-						styleClass="ui-icon-cols" for="input-column-grand" />
-					<p:selectOneRadio id="input-column-grand"
-						value="#{aggregationHandler.columnAggregation}">
-						<f:selectItems value="#{aggregationHandler.aggregations}" />
-					</p:selectOneRadio>
+			<p:tabView id="aggregator-tab" widgetVar="aggregatorTab">
+				<p:tab id="tab-grand"
+					title="#{msg['label.aggregation.position.grand']}">
+					<p:panel styleClass="rows-panel">
+						<f:facet name="header">
+							<h:panelGroup layout="block">
+								<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-rows" />
+								<h:outputText value="#{msg['label.rows']}" />
+							</h:panelGroup>
+						</f:facet>
+						<p:pickList value="#{aggregationHandler.rowAggregators}"
+							var="aggregator" itemValue="#{aggregator.value}"
+							converter="aggregatorConverter" itemLabel="#{aggregator.label}"
+							showTargetControls="true" showCheckbox="false"
+							addLabel="#{msg['button.add']}"
+							addAllLabel="#{msg['button.add_all']}"
+							removeLabel="#{msg['button.remove']}"
+							removeAllLabel="#{msg['button.remove_all']}"
+							upLabel="#{msg['button.up']}" downLabel="#{msg['button.down']}">
+							<f:facet name="sourceCaption">
+								<h:outputText value="#{msg['label.picklist.available']}" />
+							</f:facet>
 
-					<p:outputLabel value="#{msg['label.rows']}"
-						styleClass="ui-icon-rows" for="input-row-grand" />
-					<p:selectOneRadio id="input-row-grand"
-						value="#{aggregationHandler.rowAggregation}">
-						<f:selectItems value="#{aggregationHandler.aggregations}" />
-					</p:selectOneRadio>
-				</h:panelGrid>
-			</p:fieldset>
+							<f:facet name="targetCaption">
+								<h:outputText value="#{msg['label.picklist.selected']}" />
+							</f:facet>
 
-			<p:spacer height="2" />
+							<p:column>
+								<h:outputText value="#{aggregator.label}" />
+							</p:column>
+						</p:pickList>
+					</p:panel>
+					<p:panel styleClass="columns-panel">
+						<f:facet name="header">
+							<h:panelGroup layout="block">
+								<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-cols" />
+								<h:outputText value="#{msg['label.columns']}" />
+							</h:panelGroup>
+						</f:facet>
+						<p:pickList value="#{aggregationHandler.columnAggregators}"
+							var="aggregator" itemValue="#{aggregator.value}"
+							converter="aggregatorConverter" itemLabel="#{aggregator.label}"
+							showTargetControls="true" showCheckbox="false"
+							addLabel="#{msg['button.add']}"
+							addAllLabel="#{msg['button.add_all']}"
+							removeLabel="#{msg['button.remove']}"
+							removeAllLabel="#{msg['button.remove_all']}"
+							upLabel="#{msg['button.up']}" downLabel="#{msg['button.down']}">
+							<f:facet name="sourceCaption">
+								<h:outputText value="#{msg['label.picklist.available']}" />
+							</f:facet>
 
-			<p:fieldset legend="#{msg['label.aggregation.position.hierarchy']}">
-				<h:panelGrid columns="2" columnClasses="field-name,field-input">
-					<p:outputLabel value="#{msg['label.columns']}"
-						styleClass="ui-icon-cols" for="input-column-hierarchy" />
-					<p:selectOneRadio id="input-column-hierarchy"
-						value="#{aggregationHandler.columnHierarchyAggregation}">
-						<f:selectItems value="#{aggregationHandler.aggregations}" />
-					</p:selectOneRadio>
+							<f:facet name="targetCaption">
+								<h:outputText value="#{msg['label.picklist.selected']}" />
+							</f:facet>
 
-					<p:outputLabel value="#{msg['label.rows']}"
-						styleClass="ui-icon-rows" for="input-row-hierarchy" />
-					<p:selectOneRadio id="input-row-hierarchy"
-						value="#{aggregationHandler.rowHierarchyAggregation}">
-						<f:selectItems value="#{aggregationHandler.aggregations}" />
-					</p:selectOneRadio>
-				</h:panelGrid>
-			</p:fieldset>
+							<p:column>
+								<h:outputText value="#{aggregator.label}" />
+							</p:column>
+						</p:pickList>
+					</p:panel>
+				</p:tab>
 
-			<p:spacer height="2" />
+				<p:tab id="tab-hierarchy"
+					title="#{msg['label.aggregation.position.hierarchy']}">
+					<p:panel styleClass="rows-panel">
+						<f:facet name="header">
+							<h:panelGroup layout="block">
+								<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-rows" />
+								<h:outputText value="#{msg['label.rows']}" />
+							</h:panelGroup>
+						</f:facet>
+						<p:pickList value="#{aggregationHandler.rowHierarchyAggregators}"
+							var="aggregator" itemValue="#{aggregator.value}"
+							converter="aggregatorConverter" itemLabel="#{aggregator.label}"
+							showTargetControls="true" showCheckbox="false"
+							addLabel="#{msg['button.add']}"
+							addAllLabel="#{msg['button.add_all']}"
+							removeLabel="#{msg['button.remove']}"
+							removeAllLabel="#{msg['button.remove_all']}"
+							upLabel="#{msg['button.up']}" downLabel="#{msg['button.down']}">
+							<f:facet name="sourceCaption">
+								<h:outputText value="#{msg['label.picklist.available']}" />
+							</f:facet>
 
-			<p:fieldset legend="#{msg['label.aggregation.position.member']}">
-				<h:panelGrid columns="2" columnClasses="field-name,field-input">
-					<p:outputLabel value="#{msg['label.columns']}"
-						styleClass="ui-icon-cols" for="input-column-member" />
-					<p:selectOneRadio id="input-column-member"
-						value="#{aggregationHandler.columnMemberAggregation}">
-						<f:selectItems value="#{aggregationHandler.aggregations}" />
-					</p:selectOneRadio>
+							<f:facet name="targetCaption">
+								<h:outputText value="#{msg['label.picklist.selected']}" />
+							</f:facet>
 
-					<p:outputLabel value="#{msg['label.rows']}"
-						styleClass="ui-icon-rows" for="input-row-member" />
-					<p:selectOneRadio id="input-row-member"
-						value="#{aggregationHandler.rowMemberAggregation}">
-						<f:selectItems value="#{aggregationHandler.aggregations}" />
-					</p:selectOneRadio>
-				</h:panelGrid>
-			</p:fieldset>
+							<p:column>
+								<h:outputText value="#{aggregator.label}" />
+							</p:column>
+						</p:pickList>
+					</p:panel>
+					<p:panel styleClass="columns-panel">
+						<f:facet name="header">
+							<h:panelGroup layout="block">
+								<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-cols" />
+								<h:outputText value="#{msg['label.columns']}" />
+							</h:panelGroup>
+						</f:facet>
+						<p:pickList
+							value="#{aggregationHandler.columnHierarchyAggregators}"
+							var="aggregator" itemValue="#{aggregator.value}"
+							converter="aggregatorConverter" itemLabel="#{aggregator.label}"
+							showTargetControls="true" showCheckbox="false"
+							addLabel="#{msg['button.add']}"
+							addAllLabel="#{msg['button.add_all']}"
+							removeLabel="#{msg['button.remove']}"
+							removeAllLabel="#{msg['button.remove_all']}"
+							upLabel="#{msg['button.up']}" downLabel="#{msg['button.down']}">
+							<f:facet name="sourceCaption">
+								<h:outputText value="#{msg['label.picklist.available']}" />
+							</f:facet>
+
+							<f:facet name="targetCaption">
+								<h:outputText value="#{msg['label.picklist.selected']}" />
+							</f:facet>
+
+							<p:column>
+								<h:outputText value="#{aggregator.label}" />
+							</p:column>
+						</p:pickList>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="tab-member"
+					title="#{msg['label.aggregation.position.member']}">
+					<p:panel styleClass="rows-panel">
+						<f:facet name="header">
+							<h:panelGroup layout="block">
+								<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-rows" />
+								<h:outputText value="#{msg['label.rows']}" />
+							</h:panelGroup>
+						</f:facet>
+						<p:pickList value="#{aggregationHandler.rowMemberAggregators}"
+							var="aggregator" itemValue="#{aggregator.value}"
+							converter="aggregatorConverter" itemLabel="#{aggregator.label}"
+							showTargetControls="true" showCheckbox="false"
+							addLabel="#{msg['button.add']}"
+							addAllLabel="#{msg['button.add_all']}"
+							removeLabel="#{msg['button.remove']}"
+							removeAllLabel="#{msg['button.remove_all']}"
+							upLabel="#{msg['button.up']}" downLabel="#{msg['button.down']}">
+							<f:facet name="sourceCaption">
+								<h:outputText value="#{msg['label.picklist.available']}" />
+							</f:facet>
+
+							<f:facet name="targetCaption">
+								<h:outputText value="#{msg['label.picklist.selected']}" />
+							</f:facet>
+
+							<p:column>
+								<h:outputText value="#{aggregator.label}" />
+							</p:column>
+						</p:pickList>
+					</p:panel>
+					<p:panel styleClass="columns-panel">
+						<f:facet name="header">
+							<h:panelGroup layout="block">
+								<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-cols" />
+								<h:outputText value="#{msg['label.columns']}" />
+							</h:panelGroup>
+						</f:facet>
+						<p:pickList value="#{aggregationHandler.columnMemberAggregators}"
+							var="aggregator" itemValue="#{aggregator.value}"
+							converter="aggregatorConverter" itemLabel="#{aggregator.label}"
+							showTargetControls="true" showCheckbox="false"
+							addLabel="#{msg['button.add']}"
+							addAllLabel="#{msg['button.add_all']}"
+							removeLabel="#{msg['button.remove']}"
+							removeAllLabel="#{msg['button.remove_all']}"
+							upLabel="#{msg['button.up']}" downLabel="#{msg['button.down']}">
+							<f:facet name="sourceCaption">
+								<h:outputText value="#{msg['label.picklist.available']}" />
+							</f:facet>
+
+							<f:facet name="targetCaption">
+								<h:outputText value="#{msg['label.picklist.selected']}" />
+							</f:facet>
+
+							<p:column>
+								<h:outputText value="#{aggregator.label}" />
+							</p:column>
+						</p:pickList>
+					</p:panel>
+				</p:tab>
+			</p:tabView>
 
 			<f:facet name="footer">
 				<h:panelGroup id="button-bar" styleClass="button-bar" layout="block">
@@ -74,12 +205,14 @@
 					<p:commandButton value="#{msg['button.ok']}" icon="ui-icon-check"
 						action="#{aggregationHandler.apply}"
 						update=":grid-form,:editor-form:mdx-editor"
+						onstart="aggregatorTab.select(0);"
 						onsuccess="aggregationConfig.hide();" />
 					<p:commandButton value="#{msg['button.apply']}"
 						icon="ui-icon-check" action="#{aggregationHandler.apply}"
 						update=":grid-form,:editor-form:mdx-editor" />
 					<p:commandButton value="#{msg['button.close']}"
-						icon="ui-icon-close" onclick="aggregationConfig.hide();" />
+						icon="ui-icon-close"
+						onclick="aggregatorTab.select(0); aggregationConfig.hide();" />
 				</h:panelGroup>
 			</f:facet>
 		</p:dialog>
