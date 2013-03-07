@@ -298,7 +298,7 @@
 		<repository>
 			<id>dev.eyeq.co.kr</id>
 			<name>dev.eyeq.co.kr-snapshot</name>
-			<url>http://dev.eyeq.co.kr/artifactory/libs-release</url>
+			<url>http://dev.eyeq.co.kr/artifactory/libs-snapshot</url>
 		</repository>
 		<repository>
 			<id>pentaho</id>
