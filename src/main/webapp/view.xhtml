@@ -458,7 +458,7 @@
 		<p:growl id="growl" showDetail="true" sticky="true" />
 
 		<h:form id="poll-form">
-			<p:poll interval="#{viewStateHolder.keepAliveInterval}"
+			<p:poll interval="#{viewStateHolder.keepAliveInterval}" async="true"
 				listener="#{pivotStateManager.keepAlive}" process="@form">
 				<f:param name="skipRender" value="true" />
 			</p:poll>
