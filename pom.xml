@@ -160,6 +160,9 @@
 						<phase>pre-integration-test</phase>
 						<configuration>
 							<fork>true</fork>
+							<systemProperties>
+								<XX:MaxPermSize>256m</XX:MaxPermSize>
+							</systemProperties>
 						</configuration>
 					</execution>
 					<execution>
