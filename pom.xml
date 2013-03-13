@@ -161,7 +161,7 @@
 						<configuration>
 							<fork>true</fork>
 							<systemProperties>
-								<XX:MaxPermSize>256m</XX:MaxPermSize>
+								<JAVA_OPTS>-Xmx512m -XX:MaxPermSize=256m</JAVA_OPTS>
 							</systemProperties>
 						</configuration>
 					</execution>
