@@ -515,6 +515,7 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 	 */
 	@Override
 	public void modelInitialized(ModelChangeEvent e) {
+		configureFilter();
 	}
 
 	/**
