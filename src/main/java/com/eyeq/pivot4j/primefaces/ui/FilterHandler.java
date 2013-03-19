@@ -415,7 +415,7 @@ public class FilterHandler implements ModelChangeListener, NodeFilter {
 		parameter2.setName("hierarchy");
 		parameter2.setValue(hierarchy.getName());
 
-		link.getChildren().add(parameter);
+		closeButton.getChildren().add(parameter2);
 
 		panel.getChildren().add(closeButton);
 
