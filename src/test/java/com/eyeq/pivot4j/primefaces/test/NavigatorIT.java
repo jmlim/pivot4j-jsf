@@ -244,6 +244,7 @@ public class NavigatorIT extends AbstractIntegrationTestCase {
 		salesItem.click();
 
 		waitUntilAllAnimationsComplete();
+		waitUntilAjaxRequestCompletes();
 	}
 
 	/**
