@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -123,6 +124,9 @@ public class NavigatorIT extends AbstractIntegrationTestCase {
 		assertThat("Missing rows axis node.", rows, is(notNullValue()));
 		assertThat("Unexpected label on rows axis node.", rows.getText(),
 				is(equalToIgnoringWhiteSpace("Rows")));
+
+		JavascriptExecutor jsExec = (JavascriptExecutor) driver;
+		jsExec.executeScript("jQuery(\"#source-tree-pane .ui-layout-content\").get(0).scrollTop=200");
 
 		action = new Actions(driver);
 		action.dragAndDrop(product, rows).perform();
